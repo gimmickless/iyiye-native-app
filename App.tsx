@@ -4,7 +4,8 @@ import React from 'react'
 // import { StyleSheet, Text, View } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
-import HomeScreen from './src/screens/HomeScreen'
+import HomeScreen from 'src/screens/HomeScreen'
+import { RootStackParamList } from 'src/types/props'
 
 // const styles = StyleSheet.create({
 //   container: {
@@ -15,7 +16,7 @@ import HomeScreen from './src/screens/HomeScreen'
 //   }
 // })
 
-const Stack = createStackNavigator()
+const Stack = createStackNavigator<RootStackParamList>()
 
 const App: React.FC = () => {
   return (

@@ -9,10 +9,21 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "strict": true,
-    "baseUrl": "src",
+    "baseUrl": ".",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "paths": {
+      "src": [
+        "src/*"
+      ],
+      "tests": [
+        "tests/*"
+      ], 
+      "@components/*": [
+        "src/components/*"
+      ]
+    }
   },
   "include": [
     "src",
