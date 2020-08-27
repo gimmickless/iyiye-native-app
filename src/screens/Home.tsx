@@ -1,11 +1,13 @@
 import React from 'react'
-import { View } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
-const HomeScreen: React.FC = () => {
+const Home: React.FC = () => {
   const navigation = useNavigation()
   console.log(navigation)
   return <View />
 }
 
-export default HomeScreen
+const styles = StyleSheet.create({})
+
+export default Home

@@ -14,7 +14,7 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "paths": {
-      "src": [
+      "*": [
         "src/*"
       ],
       "tests": [
@@ -27,6 +27,7 @@
   },
   "include": [
     "src",
-    "App.tsx"
+    "App.tsx",
+    "i18n.ts"
   ]
 }

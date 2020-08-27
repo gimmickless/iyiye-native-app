@@ -15,6 +15,7 @@
     "@react-navigation/stack": "^5.9.0",
     "expo": "~38.0.8",
     "expo-status-bar": "^1.0.2",
+    "i18next": "^19.7.0",
     "react": "~16.11.0",
     "react-dom": "~16.11.0",
     "react-i18next": "^11.7.1",
