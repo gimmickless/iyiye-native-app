@@ -8,9 +8,11 @@ const Profile: React.FC = () => {
   const navigation = useNavigation()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  // console.log(navigation)
+
+  console.log(navigation)
+
   return (
-    <View>
+    <View style={styles.view}>
       <TextInput
         placeholder={t('screen.signIn.label.usernameOrEmail')}
         value={username}
@@ -26,6 +28,10 @@ const Profile: React.FC = () => {
   )
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  view: {
+    flex: 1
+  }
+})
 
 export default Profile

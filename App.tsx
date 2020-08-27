@@ -28,6 +28,8 @@ const Stack = createStackNavigator<RootStackParamList>()
 
 const App: React.FC = () => {
   const { user: authUser } = useContext(AuthUserContext)
+  console.log(authUser)
+  const isSignedIn = true
   return (
     <AuthUserContextProvider>
       <NavigationContainer>
