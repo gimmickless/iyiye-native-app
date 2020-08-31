@@ -32,6 +32,10 @@ const englishTranslation = {
       title: 'Home',
       label: {}
     },
+    notifications: {
+      title: 'Notifications',
+      label: {}
+    },
     profile: {
       title: 'Profile',
       label: {}
