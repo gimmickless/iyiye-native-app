@@ -2,6 +2,7 @@ import 'react-native-gesture-handler'
 import React, { useContext } from 'react'
 // import { StatusBar } from 'expo-status-bar'
 // import { StyleSheet, Text, View } from 'react-native'
+import { useTranslation } from 'react-i18next'
 import './i18n'
 import AuthUserContextProvider, { AuthUserContext } from 'contexts/Auth'
 import { NavigationContainer } from '@react-navigation/native'
@@ -27,6 +28,7 @@ import ResetPasswordScreen from 'screens/auth/ResetPassword'
 const Stack = createStackNavigator<RootStackParamList>()
 
 const App: React.FC = () => {
+  const { t } = useTranslation()
   const { user: authUser } = useContext(AuthUserContext)
   console.log(authUser)
   const isSignedIn = true
@@ -36,9 +38,27 @@ const App: React.FC = () => {
         <Stack.Navigator>
           {isSignedIn ? (
             <React.Fragment>
-              <Stack.Screen name="Home" component={HomeScreen} />
-              <Stack.Screen name="Profile" component={ProfileScreen} />
-              <Stack.Screen name="Settings" component={SettingsScreen} />
+              <Stack.Screen
+                name="Home"
+                component={HomeScreen}
+                options={{
+                  title: t('screen.home.title')
+                }}
+              />
+              <Stack.Screen
+                name="Profile"
+                component={ProfileScreen}
+                options={{
+                  title: t('screen.profile.title')
+                }}
+              />
+              <Stack.Screen
+                name="Settings"
+                component={SettingsScreen}
+                options={{
+                  title: t('screen.settings.title')
+                }}
+              />
             </React.Fragment>
           ) : (
             <React.Fragment>
@@ -46,28 +66,28 @@ const App: React.FC = () => {
                 name="SignIn"
                 component={SignInScreen}
                 options={{
-                  title: 'Sign In'
+                  title: t('screen.signIn.title')
                 }}
               />
               <Stack.Screen
                 name="SignUp"
                 component={SignUpScreen}
                 options={{
-                  title: 'Sign Up'
+                  title: t('screen.signUp.title')
                 }}
               />
               <Stack.Screen
                 name="ConfirmAccount"
                 component={ConfirmAccountScreen}
                 options={{
-                  title: 'Confirm Account'
+                  title: t('screen.confirmAccount.title')
                 }}
               />
               <Stack.Screen
                 name="ResetPassword"
                 component={ResetPasswordScreen}
                 options={{
-                  title: 'Reset Password'
+                  title: t('screen.resetPassword.title')
                 }}
               />
             </React.Fragment>

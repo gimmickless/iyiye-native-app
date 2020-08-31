@@ -14,3 +14,6 @@ web-build/
 
 # VSCode
 .vscode/
+
+# Firewall solutions
+.npmrc
