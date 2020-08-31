@@ -7,14 +7,23 @@ import './i18n'
 import AuthUserContextProvider, { AuthUserContext } from 'contexts/Auth'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
-import { RootStackParamList } from 'types/props'
+import { createDrawerNavigator } from '@react-navigation/drawer'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import {
+  UnauthStackParamList,
+  AuthDefaultTabParamList,
+  AuthDrawerParamList
+} from 'types/props'
+import { Ionicons } from '@expo/vector-icons'
 import HomeScreen from 'screens/Home'
+import NotificationsScreen from 'screens/Notifications'
 import ProfileScreen from 'screens/user/Profile'
 import SettingsScreen from 'screens/user/Settings'
 import SignInScreen from 'screens/auth/SignIn'
 import SignUpScreen from 'screens/auth/SignUp'
 import ConfirmAccountScreen from 'screens/auth/ConfirmAccount'
 import ResetPasswordScreen from 'screens/auth/ResetPassword'
+import { TFunction } from 'i18next'
 
 // const styles = StyleSheet.create({
 //   container: {
@@ -25,7 +34,45 @@ import ResetPasswordScreen from 'screens/auth/ResetPassword'
 //   }
 // })
 
-const Stack = createStackNavigator<RootStackParamList>()
+const UnauthStack = createStackNavigator<UnauthStackParamList>()
+const AuthDrawer = createDrawerNavigator<AuthDrawerParamList>()
+const AuthDefaultTab = createBottomTabNavigator<AuthDefaultTabParamList>()
+
+const AuthDefaultTabs = (t: TFunction) => (
+  <AuthDefaultTab.Navigator
+    screenOptions={({ route }) => ({
+      tabBarIcon: ({ focused, color, size }) => {
+        let iconName = ''
+        if (route.name === 'Home') {
+          iconName = 'ios-home'
+        } else if (route.name === 'Notifications') {
+          iconName = focused ? 'ios-notifications' : 'ios-notifications-outline'
+        }
+        return <Ionicons name={iconName} size={size} color={color} />
+      }
+    })}
+    tabBarOptions={{
+      activeTintColor: 'red',
+      inactiveTintColor: 'gray'
+    }}
+  >
+    <AuthDefaultTab.Screen
+      name="Home"
+      component={HomeScreen}
+      options={{
+        title: t('screen.home.title')
+      }}
+    />
+    <AuthDefaultTab.Screen
+      name="Notifications"
+      component={NotificationsScreen}
+      options={{
+        title: t('screen.notifications.title'),
+        tabBarBadge: 3
+      }}
+    />
+  </AuthDefaultTab.Navigator>
+)
 
 const App: React.FC = () => {
   const { t } = useTranslation()
@@ -35,64 +82,59 @@ const App: React.FC = () => {
   return (
     <AuthUserContextProvider>
       <NavigationContainer>
-        <Stack.Navigator>
-          {isSignedIn ? (
-            <React.Fragment>
-              <Stack.Screen
-                name="Home"
-                component={HomeScreen}
-                options={{
-                  title: t('screen.home.title')
-                }}
-              />
-              <Stack.Screen
-                name="Profile"
-                component={ProfileScreen}
-                options={{
-                  title: t('screen.profile.title')
-                }}
-              />
-              <Stack.Screen
-                name="Settings"
-                component={SettingsScreen}
-                options={{
-                  title: t('screen.settings.title')
-                }}
-              />
-            </React.Fragment>
-          ) : (
-            <React.Fragment>
-              <Stack.Screen
-                name="SignIn"
-                component={SignInScreen}
-                options={{
-                  title: t('screen.signIn.title')
-                }}
-              />
-              <Stack.Screen
-                name="SignUp"
-                component={SignUpScreen}
-                options={{
-                  title: t('screen.signUp.title')
-                }}
-              />
-              <Stack.Screen
-                name="ConfirmAccount"
-                component={ConfirmAccountScreen}
-                options={{
-                  title: t('screen.confirmAccount.title')
-                }}
-              />
-              <Stack.Screen
-                name="ResetPassword"
-                component={ResetPasswordScreen}
-                options={{
-                  title: t('screen.resetPassword.title')
-                }}
-              />
-            </React.Fragment>
-          )}
-        </Stack.Navigator>
+        {isSignedIn ? (
+          <AuthDrawer.Navigator initialRouteName="Default">
+            <AuthDrawer.Screen
+              name="Default"
+              component={() => AuthDefaultTabs(t)}
+            />
+            <AuthDrawer.Screen
+              name="Profile"
+              component={ProfileScreen}
+              options={{
+                title: t('screen.profile.title')
+              }}
+            />
+            <AuthDrawer.Screen
+              name="Settings"
+              component={SettingsScreen}
+              options={{
+                title: t('screen.settings.title')
+              }}
+            />
+          </AuthDrawer.Navigator>
+        ) : (
+          <UnauthStack.Navigator>
+            <UnauthStack.Screen
+              name="SignIn"
+              component={SignInScreen}
+              options={{
+                title: t('screen.signIn.title')
+              }}
+            />
+            <UnauthStack.Screen
+              name="SignUp"
+              component={SignUpScreen}
+              options={{
+                title: t('screen.signUp.title')
+              }}
+            />
+            <UnauthStack.Screen
+              name="ConfirmAccount"
+              component={ConfirmAccountScreen}
+              options={{
+                title: t('screen.confirmAccount.title')
+              }}
+            />
+            <UnauthStack.Screen
+              name="ResetPassword"
+              component={ResetPasswordScreen}
+              options={{
+                title: t('screen.resetPassword.title')
+              }}
+            />
+          </UnauthStack.Navigator>
+        )}
       </NavigationContainer>
     </AuthUserContextProvider>
   )
