@@ -1,21 +1,156 @@
-import React, { useState } from 'react'
+import React, { Dispatch, useReducer } from 'react'
+import Auth, { CognitoUser } from '@aws-amplify/auth'
 
-interface AuthUserContextDataType {}
-
-export interface AuthUserContextType {
-  user: AuthUserContextDataType | null
-  setUser: Function
+type AuthUserState = {
+  loaded: boolean
+  user?: {
+    firstName: string
+    lastName: string
+    username: string
+    email: string
+    address: string
+    birthDate: string
+    phone?: string
+  }
 }
 
-export const AuthUserContext = React.createContext<AuthUserContextType>({
-  user: null,
-  setUser: () => {}
+type CreateAuthUserData = {
+  firstName: string
+  lastName: string
+  username: string
+  email: string
+  address: string
+  birthDate: string
+  phone?: string
+}
+
+type UpdateAuthUserPayload = {
+  firstName: string
+  lastName: string
+  address: string
+  phone?: string
+}
+
+type AuthReducerAction =
+  | {
+      type: 'add_auth_user'
+      payload: CreateAuthUserData
+    }
+  | {
+      type: 'update_auth_user'
+      payload: UpdateAuthUserPayload
+    }
+  | {
+      type: 'remove_auth_user'
+      payload: undefined
+    }
+
+const initialState = {
+  loaded: false
+}
+
+export const AuthUserContext = React.createContext<{
+  state: AuthUserState
+  action: {
+    login: Dispatch<AuthReducerAction>
+    update: Dispatch<AuthReducerAction>
+    logout: Dispatch<AuthReducerAction>
+  }
+}>({
+  state: initialState,
+  action: {
+    login: () => null,
+    update: () => null,
+    logout: () => null
+  }
 })
 
+const authReducer = (
+  state: AuthUserState,
+  action: AuthReducerAction
+): AuthUserState => {
+  switch (action.type) {
+    case 'add_auth_user':
+      return {
+        loaded: true,
+        user: action.payload
+      }
+    case 'update_auth_user':
+      return {
+        loaded: true,
+        user: {
+          ...state.user,
+          ...action.payload
+        }
+      } as AuthUserState
+    case 'remove_auth_user':
+      return {
+        loaded: true,
+        user: undefined
+      }
+    default:
+      return state
+  }
+}
+
 export default ({ children }: any) => {
-  const [user, setUser] = useState<AuthUserContextDataType | null>(null)
+  const [state, dispatch] = useReducer(authReducer, initialState)
+
+  const login = () => {
+    return async (
+      payload: { usernameOrEmail: string; password: string },
+      callback: Function
+    ) => {
+      try {
+        const user = (await Auth.signIn(
+          payload.usernameOrEmail,
+          payload.password
+        )) as CognitoUser
+        console.log('Signed in user data: ' + user)
+        let [cognitoAuthUser, cognitoCredentials] = await Promise.all([
+          Auth.currentAuthenticatedUser(),
+          Auth.currentCredentials()
+        ])
+        // dispatch({ type: 'add_auth_user', payload: {} })
+        callback()
+      } catch (err) {}
+    }
+  }
+
+  const update = () => {
+    return async (
+      payload: {
+        firstName: string
+        lastName: string
+        address: string
+        phone?: string
+      },
+      callback: Function
+    ) => {
+      try {
+        let [cognitoAuthUser, cognitoCredentials] = await Promise.all([
+          Auth.currentAuthenticatedUser(),
+          Auth.currentCredentials()
+        ])
+        // dispatch({ type: 'update_auth_user', payload: {} })
+        callback()
+      } catch (err) {}
+    }
+  }
+
+  const logout = () => {
+    return async (payload: { id: string }, callback: Function) => {
+      try {
+        // dispatch({ type: 'remove_auth_user', payload })
+        callback()
+      } catch (err) {}
+    }
+  }
+
   return (
-    <AuthUserContext.Provider value={{ user, setUser }}>
+    <AuthUserContext.Provider
+      value={{ state, action: { login, update, logout } }}
+    >
       {children}
     </AuthUserContext.Provider>
   )
