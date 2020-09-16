@@ -1,5 +1,5 @@
 import React, { Dispatch, useReducer } from 'react'
-import Auth, { CognitoUser } from '@aws-amplify/auth'
+import Auth from '@aws-amplify/auth'
 
 type AuthUserState = {
   loaded: boolean
@@ -10,7 +10,10 @@ type AuthUserState = {
     email: string
     address: string
     birthDate: string
-    phone?: string
+    phoneNumber?: string
+    picture?: string
+    locale?: string
+    zoneInfo?: string
   }
 }
 
@@ -21,14 +24,20 @@ type CreateAuthUserInput = {
   email: string
   address: string
   birthDate: string
-  phone?: string
+  phoneNumber?: string
+  picture?: string
+  locale?: string
+  zoneInfo?: string
 }
 
 type UpdateAuthUserInput = {
   firstName: string
   lastName: string
   address: string
-  phone?: string
+  phoneNumber?: string
+  picture?: string
+  locale?: string
+  zoneInfo?: string
 }
 
 type AuthReducerAction =
@@ -96,56 +105,81 @@ export default ({ children }: any) => {
   const [state, dispatch] = useReducer(authReducer, initialState)
 
   const login = () => {
-    return async (
-      payload: { usernameOrEmail: string; password: string },
-      callback: Function
-    ) => {
+    return async (payload: { usernameOrEmail: string; password: string }) => {
       try {
-        const user = (await Auth.signIn(
+        const { username, attributes } = await Auth.signIn(
           payload.usernameOrEmail,
           payload.password
-        )) as CognitoUser
-        console.log('Signed in user data: ' + user)
-        // let [cognitoAuthUser, cognitoCredentials] = await Promise.all([
-        //   Auth.currentAuthenticatedUser(),
-        //   Auth.currentCredentials()
-        // ])
-        dispatch({ type: 'add_auth_user', payload: {} as CreateAuthUserInput })
-        callback()
-      } catch (err) {}
+        )
+        dispatch({
+          type: 'add_auth_user',
+          payload: {
+            username,
+            firstName: attributes.name,
+            lastName: attributes.family_name,
+            email: attributes.email,
+            address: attributes.address,
+            birthDate: attributes.birthdate,
+            phoneNumber: attributes.phone_number,
+            picture: attributes.picture,
+            locale: attributes.locale,
+            zoneInfo: attributes.zoneinfo
+          } as CreateAuthUserInput
+        })
+      } catch (err) {
+        console.log(`error ocurred: ${err}`)
+      }
     }
   }
 
   const update = () => {
-    return async (
-      payload: {
-        firstName: string
-        lastName: string
-        address: string
-        phone?: string
-      },
-      callback: Function
-    ) => {
+    return async (payload: {
+      firstName: string
+      lastName: string
+      address: string
+      phoneNumber?: string
+      picture?: string
+      locale?: string
+      zoneInfo?: string
+    }) => {
       try {
-        // let [cognitoAuthUser, cognitoCredentials] = await Promise.all([
-        //   Auth.currentAuthenticatedUser(),
-        //   Auth.currentCredentials()
-        // ])
+        let cognitoUser = await Auth.currentAuthenticatedUser()
+
+        await Auth.updateUserAttributes(cognitoUser, {
+          name: payload.firstName,
+          family_name: payload.lastName,
+          address: payload.address,
+          phone_number: payload.phoneNumber,
+          picture: payload.picture,
+          locale: payload.locale,
+          zoneinfo: payload.zoneInfo
+        })
         dispatch({
           type: 'update_auth_user',
-          payload: {} as UpdateAuthUserInput
+          payload: {
+            firstName: payload.firstName,
+            lastName: payload.lastName,
+            address: payload.address,
+            phoneNumber: payload.phoneNumber,
+            picture: payload.picture,
+            locale: payload.locale,
+            zoneInfo: payload.zoneInfo
+          } as UpdateAuthUserInput
         })
-        callback()
-      } catch (err) {}
+      } catch (err) {
+        console.log(`error ocurred: ${err}`)
+      }
     }
   }
 
   const logout = () => {
-    return async (payload: { id: string }, callback: Function) => {
+    return async () => {
       try {
+        await Auth.signOut()
         dispatch({ type: 'remove_auth_user' })
-        callback()
-      } catch (err) {}
+      } catch (err) {
+        console.log(`error ocurred: ${err}`)
+      }
     }
   }
 
