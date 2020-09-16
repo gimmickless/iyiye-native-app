@@ -14,7 +14,7 @@ type AuthUserState = {
   }
 }
 
-type CreateAuthUserData = {
+type CreateAuthUserInput = {
   firstName: string
   lastName: string
   username: string
@@ -24,7 +24,7 @@ type CreateAuthUserData = {
   phone?: string
 }
 
-type UpdateAuthUserPayload = {
+type UpdateAuthUserInput = {
   firstName: string
   lastName: string
   address: string
@@ -34,15 +34,14 @@ type UpdateAuthUserPayload = {
 type AuthReducerAction =
   | {
       type: 'add_auth_user'
-      payload: CreateAuthUserData
+      payload: CreateAuthUserInput
     }
   | {
       type: 'update_auth_user'
-      payload: UpdateAuthUserPayload
+      payload: UpdateAuthUserInput
     }
   | {
       type: 'remove_auth_user'
-      payload: undefined
     }
 
 const initialState = {
@@ -107,11 +106,11 @@ export default ({ children }: any) => {
           payload.password
         )) as CognitoUser
         console.log('Signed in user data: ' + user)
-        let [cognitoAuthUser, cognitoCredentials] = await Promise.all([
-          Auth.currentAuthenticatedUser(),
-          Auth.currentCredentials()
-        ])
-        // dispatch({ type: 'add_auth_user', payload: {} })
+        // let [cognitoAuthUser, cognitoCredentials] = await Promise.all([
+        //   Auth.currentAuthenticatedUser(),
+        //   Auth.currentCredentials()
+        // ])
+        dispatch({ type: 'add_auth_user', payload: {} as CreateAuthUserInput })
         callback()
       } catch (err) {}
     }
@@ -128,11 +127,14 @@ export default ({ children }: any) => {
       callback: Function
     ) => {
       try {
-        let [cognitoAuthUser, cognitoCredentials] = await Promise.all([
-          Auth.currentAuthenticatedUser(),
-          Auth.currentCredentials()
-        ])
-        // dispatch({ type: 'update_auth_user', payload: {} })
+        // let [cognitoAuthUser, cognitoCredentials] = await Promise.all([
+        //   Auth.currentAuthenticatedUser(),
+        //   Auth.currentCredentials()
+        // ])
+        dispatch({
+          type: 'update_auth_user',
+          payload: {} as UpdateAuthUserInput
+        })
         callback()
       } catch (err) {}
     }
@@ -141,7 +143,7 @@ export default ({ children }: any) => {
   const logout = () => {
     return async (payload: { id: string }, callback: Function) => {
       try {
-        // dispatch({ type: 'remove_auth_user', payload })
+        dispatch({ type: 'remove_auth_user' })
         callback()
       } catch (err) {}
     }
