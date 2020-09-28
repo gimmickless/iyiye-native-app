@@ -104,7 +104,11 @@ const App: React.FC = () => {
             />
           </AuthDrawer.Navigator>
         ) : (
-          <UnauthStack.Navigator>
+          <UnauthStack.Navigator
+            screenOptions={{
+              headerShown: false
+            }}
+          >
             <UnauthStack.Screen
               name="SignIn"
               component={SignInScreen}
