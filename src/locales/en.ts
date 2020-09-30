@@ -1,11 +1,27 @@
 const englishTranslation = {
-  common: {},
+  common: {
+    message: {
+      validation: {
+        required: 'This field is required',
+        tooShort: 'Too short',
+        tooLong: 'Too long'
+      }
+    }
+  },
   screen: {
     signIn: {
       title: 'Sign In',
       label: {
         usernameOrEmail: 'User Name (or e-mail)',
         password: 'Password'
+      },
+      button: {
+        done: 'Login'
+      },
+      message: {
+        validation: {
+          invalidUserNameOrEmail: 'Invalid username or email'
+        }
       }
     },
     signUp: {
