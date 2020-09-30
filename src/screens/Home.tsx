@@ -1,5 +1,6 @@
 import React, { useLayoutEffect } from 'react'
-import { View, StyleSheet, Button } from 'react-native'
+import { View, StyleSheet } from 'react-native'
+import { Button } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native'
 
 const Home: React.FC = () => {
@@ -11,7 +12,11 @@ const Home: React.FC = () => {
     })
   }, [navigation])
   console.log(navigation)
-  return <View style={styles.view} />
+  return (
+    <View style={styles.view}>
+      <Button title="To Login" onPress={() => navigation.navigate('SignIn')} />
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({

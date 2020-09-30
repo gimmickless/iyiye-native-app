@@ -10,9 +10,9 @@ const englishTranslation = {
   },
   screen: {
     signIn: {
-      title: 'Sign In',
+      title: 'Sign in to Iyiye',
       label: {
-        usernameOrEmail: 'User Name (or e-mail)',
+        usernameOrEmail: 'Username (or Email)',
         password: 'Password'
       },
       button: {

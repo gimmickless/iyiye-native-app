@@ -1,8 +1,8 @@
 import React from 'react'
-import { View, StyleSheet } from 'react-native'
+import { StyleSheet, Platform, KeyboardAvoidingView } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
-import { Input, Button } from 'react-native-elements'
+import { Input, Button, Text } from 'react-native-elements'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers'
 import * as Yup from 'yup'
@@ -50,8 +50,15 @@ const Profile: React.FC = () => {
   const onSubmit = (data: FormData) => console.log(data)
 
   return (
-    <View style={styles.view}>
-      {/* Username */}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+    >
+      {/* Title */}
+      <Text h3 style={styles.title}>
+        {t('screen.signIn.title')}
+      </Text>
+      {/* Form */}
       <Controller
         name="username"
         defaultValue=""
@@ -70,7 +77,6 @@ const Profile: React.FC = () => {
           />
         )}
       />
-      {/* Password */}
       <Controller
         name="password"
         defaultValue=""
@@ -95,13 +101,19 @@ const Profile: React.FC = () => {
         title={t('screen.signIn.button.done')}
         onPress={handleSubmit(onSubmit)}
       />
-    </View>
+    </KeyboardAvoidingView>
   )
 }
 
 const styles = StyleSheet.create({
-  view: {
-    flex: 1
+  container: {
+    flex: 1,
+    justifyContent: 'center'
+    // paddingBottom: 250
+    // marginBottom: 250
+  },
+  title: {
+    padding: 10
   },
   formInput: {},
   formDoneButton: {}

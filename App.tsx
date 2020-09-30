@@ -78,7 +78,7 @@ const App: React.FC = () => {
   const { t } = useTranslation()
   const { user: authUser } = useContext(AuthUserContext)
   console.log(authUser)
-  const isSignedIn = true
+  const isSignedIn = false
   return (
     <AuthUserContextProvider>
       <NavigationContainer>
