@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React from 'react'
 import { View, StyleSheet } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
@@ -26,25 +26,23 @@ const Profile: React.FC = () => {
   console.log(navigation)
 
   // Schema valdiation
-  const formSchema = useMemo(() => {
-    Yup.object<FormData>().shape({
-      username: Yup.string()
-        .min(
-          Math.min(emailMinLength, usernameMinLength),
-          t('common.message.validation.tooShort')
-        )
-        .max(
-          Math.max(emailMaxLength, usernameMaxLength),
-          t('common.message.validation.tooLong')
-        )
-        .matches(
-          /^[A-Z0-9]+$/i,
-          t('screen.signIn.message.validation.invalidUserNameOrEmail')
-        )
-        .required(t('common.message.validation.required')),
-      password: Yup.string().required(t('common.message.validation.required'))
-    })
-  }, [t])
+  const formSchema = Yup.object<FormData>().shape({
+    username: Yup.string()
+      .min(
+        Math.min(emailMinLength, usernameMinLength),
+        t('common.message.validation.tooShort')
+      )
+      .max(
+        Math.max(emailMaxLength, usernameMaxLength),
+        t('common.message.validation.tooLong')
+      )
+      .matches(
+        /^[A-Z0-9]+$/i,
+        t('screen.signIn.message.validation.invalidUserNameOrEmail')
+      )
+      .required(t('common.message.validation.required')),
+    password: Yup.string().required(t('common.message.validation.required'))
+  })
   const { control, handleSubmit, errors } = useForm<FormData>({
     resolver: yupResolver(formSchema)
   })
