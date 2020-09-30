@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, Platform, KeyboardAvoidingView } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
-import { Input, Button, Text } from 'react-native-elements'
+import { Input, Button, Text, Divider } from 'react-native-elements'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers'
 import * as Yup from 'yup'
@@ -58,7 +58,7 @@ const Profile: React.FC = () => {
       <Text h3 style={styles.title}>
         {t('screen.signIn.title')}
       </Text>
-      {/* Form */}
+      {/* Form Fields */}
       <Controller
         name="username"
         defaultValue=""
@@ -95,11 +95,25 @@ const Profile: React.FC = () => {
           />
         )}
       />
-      {/* Actions */}
+      {/* Form Actions */}
       <Button
-        style={styles.formDoneButton}
+        style={styles.formSubmitButton}
         title={t('screen.signIn.button.done')}
         onPress={handleSubmit(onSubmit)}
+      />
+      {/* Other Actions */}
+      <Divider />
+      <Button
+        type="clear"
+        style={styles.navigationButton}
+        title={t('screen.signIn.button.forgotPassword')}
+        onPress={() => navigation.navigate('ResetPassword')}
+      />
+      <Button
+        type="clear"
+        style={styles.navigationButton}
+        title={t('screen.signIn.button.signUp')}
+        onPress={() => navigation.navigate('SignUp')}
       />
     </KeyboardAvoidingView>
   )
@@ -116,7 +130,8 @@ const styles = StyleSheet.create({
     padding: 10
   },
   formInput: {},
-  formDoneButton: {}
+  formSubmitButton: {},
+  navigationButton: {}
 })
 
 export default Profile

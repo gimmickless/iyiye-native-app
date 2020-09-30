@@ -16,7 +16,9 @@ const englishTranslation = {
         password: 'Password'
       },
       button: {
-        done: 'Login'
+        done: 'Login',
+        forgotPassword: 'Forgot Password?',
+        signUp: 'No account yet?'
       },
       message: {
         validation: {
