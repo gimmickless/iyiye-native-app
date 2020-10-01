@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, Platform, KeyboardAvoidingView } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { useTranslation } from 'react-i18next'
-import { Input, Button, Text, Divider } from 'react-native-elements'
+import { Input, Button, Text } from 'react-native-elements'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers'
 import * as Yup from 'yup'
@@ -21,13 +21,11 @@ type FormData = {
 const Profile: React.FC = () => {
   const { t } = useTranslation()
   const navigation = useNavigation()
-  // const [username, setUsername] = useState('')
-  // const [password, setPassword] = useState('')
-  console.log(navigation)
 
   // Schema valdiation
   const formSchema = Yup.object<FormData>().shape({
     username: Yup.string()
+      .required(t('common.message.validation.required'))
       .min(
         Math.min(emailMinLength, usernameMinLength),
         t('common.message.validation.tooShort')
@@ -39,15 +37,17 @@ const Profile: React.FC = () => {
       .matches(
         /^[A-Z0-9]+$/i,
         t('screen.signIn.message.validation.invalidUserNameOrEmail')
-      )
-      .required(t('common.message.validation.required')),
+      ),
     password: Yup.string().required(t('common.message.validation.required'))
   })
   const { control, handleSubmit, errors } = useForm<FormData>({
     resolver: yupResolver(formSchema)
   })
 
-  const onSubmit = (data: FormData) => console.log(data)
+  const onSubmit = ({ username, password }: FormData) => {
+    console.log(username)
+    console.log(password)
+  }
 
   return (
     <KeyboardAvoidingView
@@ -66,14 +66,15 @@ const Profile: React.FC = () => {
         rules={{ required: true }}
         render={({ onChange, onBlur, value }) => (
           <Input
-            style={styles.formInput}
-            placeholder={t('screen.signIn.label.usernameOrEmail')}
-            // value={username}
-            // onChangeText={setUsername}
-            onBlur={onBlur}
-            onChangeText={(v) => onChange(v)}
             value={value}
+            placeholder={t('screen.signIn.label.usernameOrEmail')}
+            onChangeText={(v) => onChange(v)}
+            onBlur={onBlur}
             errorMessage={errors.username?.message}
+            style={styles.formInput}
+            autoCompleteType="username"
+            autoCorrect={false}
+            keyboardType="visible-password"
           />
         )}
       />
@@ -84,14 +85,15 @@ const Profile: React.FC = () => {
         rules={{ required: true }}
         render={({ onChange, onBlur, value }) => (
           <Input
-            style={styles.formInput}
-            placeholder={t('screen.signIn.label.password')}
-            // value={password}
-            // onChangeText={setPassword}
-            onBlur={onBlur}
-            onChangeText={(v) => onChange(v)}
             value={value}
+            placeholder={t('screen.signIn.label.password')}
+            onChangeText={(v) => onChange(v)}
+            onBlur={onBlur}
             errorMessage={errors.password?.message}
+            style={styles.formInput}
+            autoCompleteType="password"
+            autoCorrect={false}
+            secureTextEntry
           />
         )}
       />
@@ -102,7 +104,6 @@ const Profile: React.FC = () => {
         onPress={handleSubmit(onSubmit)}
       />
       {/* Other Actions */}
-      <Divider />
       <Button
         type="clear"
         style={styles.navigationButton}
