@@ -38,6 +38,9 @@ const englishTranslation = {
         birthDate: 'Birth Date'
       }
     },
+    signOut: {
+      title: 'Sign Out'
+    },
     confirmAccount: {
       title: 'Confirm Account',
       label: {}
@@ -53,6 +56,18 @@ const englishTranslation = {
     notifications: {
       title: 'Notifications',
       label: {}
+    },
+    favorites: {
+      title: 'Favorites'
+    },
+    cart: {
+      title: 'Cart',
+      summary: {
+        title: 'Checkout'
+      },
+      checkout: {
+        title: 'Checkout'
+      }
     },
     profile: {
       title: 'Profile',

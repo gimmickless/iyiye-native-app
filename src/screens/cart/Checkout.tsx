@@ -2,7 +2,7 @@ import React from 'react'
 import { View, StyleSheet } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
-const Notifications: React.FC = () => {
+const Checkout: React.FC = () => {
   const navigation = useNavigation()
   console.log(navigation)
   return <View style={styles.view} />
@@ -14,4 +14,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default Notifications
+export default Checkout
