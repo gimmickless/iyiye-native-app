@@ -107,9 +107,8 @@ const AuthDefaultTabs = (t: TFunction) => (
       inactiveTintColor: 'gray'
     }}
   >
-    <AuthDefaultTab.Screen
-      name="Home"
-      component={() => (
+    <AuthDefaultTab.Screen name="Home">
+      {() => (
         <RecipeScreenStack.Navigator initialRouteName="List">
           <RecipeScreenStack.Screen
             name="List"
@@ -122,10 +121,14 @@ const AuthDefaultTabs = (t: TFunction) => (
           <RecipeScreenStack.Screen name="Author" component={ProfileScreen} />
         </RecipeScreenStack.Navigator>
       )}
-    />
+    </AuthDefaultTab.Screen>
     <AuthDefaultTab.Screen
       name="Favorites"
-      component={() => (
+      options={{
+        title: t('screen.favorites.title')
+      }}
+    >
+      {() => (
         <FavoriteScreenStack.Navigator initialRouteName="List">
           <FavoriteScreenStack.Screen
             name="List"
@@ -141,13 +144,14 @@ const AuthDefaultTabs = (t: TFunction) => (
           <FavoriteScreenStack.Screen name="Author" component={ProfileScreen} />
         </FavoriteScreenStack.Navigator>
       )}
-      options={{
-        title: t('screen.favorites.title')
-      }}
-    />
+    </AuthDefaultTab.Screen>
     <AuthDefaultTab.Screen
       name="Cart"
-      component={() => (
+      options={{
+        tabBarBadge: 3
+      }}
+    >
+      {() => (
         <CartScreenStack.Navigator initialRouteName="Summary">
           <CartScreenStack.Screen
             name="Summary"
@@ -166,13 +170,14 @@ const AuthDefaultTabs = (t: TFunction) => (
           />
         </CartScreenStack.Navigator>
       )}
+    </AuthDefaultTab.Screen>
+    <AuthDefaultTab.Screen
+      name="Notifications"
       options={{
         tabBarBadge: 3
       }}
-    />
-    <AuthDefaultTab.Screen
-      name="Notifications"
-      component={() => (
+    >
+      {() => (
         <NotificationScreenStack.Navigator initialRouteName="List">
           <NotificationScreenStack.Screen
             name="List"
@@ -187,10 +192,7 @@ const AuthDefaultTabs = (t: TFunction) => (
           />
         </NotificationScreenStack.Navigator>
       )}
-      options={{
-        tabBarBadge: 3
-      }}
-    />
+    </AuthDefaultTab.Screen>
   </AuthDefaultTab.Navigator>
 )
 
@@ -212,16 +214,31 @@ const UnauthDefaultTabs = (t: TFunction) => (
   >
     <UnauthDefaultTab.Screen
       name="Home"
-      component={() => (
+      options={{
+        title: t('screen.recipes.title')
+      }}
+    >
+      {() => (
         <RecipeScreenStack.Navigator>
-          <RecipeScreenStack.Screen name="List" component={RecipeListScreen} />
+          <RecipeScreenStack.Screen
+            name="List"
+            component={RecipeListScreen}
+            options={() => ({
+              title: t('screen.recipes.title'),
+              headerLeft: () => (
+                <Avatar
+                  rounded
+                  icon={{ name: 'user', type: 'font-awesome' }}
+                  activeOpacity={0.7}
+                  onPress={() => console.log('Avatar Press!')}
+                />
+              )
+            })}
+          />
           <RecipeScreenStack.Screen name="Item" component={RecipeItemScreen} />
         </RecipeScreenStack.Navigator>
       )}
-      options={{
-        title: t('screen.home.title')
-      }}
-    />
+    </UnauthDefaultTab.Screen>
   </UnauthDefaultTab.Navigator>
 )
 
@@ -274,10 +291,9 @@ const App: React.FC = () => {
         <Drawer.Navigator initialRouteName="Default">
           {isSignedIn ? (
             <React.Fragment>
-              <Drawer.Screen
-                name="Default"
-                component={() => AuthDefaultTabs(t)}
-              />
+              <Drawer.Screen name="Default">
+                {() => AuthDefaultTabs(t)}
+              </Drawer.Screen>
               <Drawer.Screen
                 name="Profile"
                 component={ProfileScreen}
@@ -302,14 +318,12 @@ const App: React.FC = () => {
             </React.Fragment>
           ) : (
             <React.Fragment>
-              <Drawer.Screen
-                name="Default"
-                component={() => UnauthDefaultTabs(t)}
-              />
-              <Drawer.Screen
-                name="UnauthAccountOps"
-                component={() => UnauthAccountOpsStack(t)}
-              />
+              <Drawer.Screen name="Default">
+                {() => UnauthDefaultTabs(t)}
+              </Drawer.Screen>
+              <Drawer.Screen name="UnauthAccountOps">
+                {() => UnauthAccountOpsStack(t)}
+              </Drawer.Screen>
             </React.Fragment>
           )}
         </Drawer.Navigator>

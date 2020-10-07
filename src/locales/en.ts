@@ -49,8 +49,8 @@ const englishTranslation = {
       title: 'Reset Password',
       label: {}
     },
-    home: {
-      title: 'Home',
+    recipes: {
+      title: 'Recipes',
       label: {}
     },
     notifications: {
