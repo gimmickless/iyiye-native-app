@@ -1,7 +1,6 @@
 import 'react-native-gesture-handler'
 import React, { useContext } from 'react'
 // import { StatusBar } from 'expo-status-bar'
-// import { StyleSheet, Text, View } from 'react-native'
 import { useTranslation } from 'react-i18next'
 import './i18n'
 import AuthUserContextProvider, { AuthUserContext } from 'contexts/Auth'
@@ -113,9 +112,9 @@ const AuthDefaultTabs = (t: TFunction) => (
           <RecipeScreenStack.Screen
             name="List"
             component={RecipeListScreen}
-            options={() => ({
+            options={{
               headerLeft: () => <Avatar />
-            })}
+            }}
           />
           <RecipeScreenStack.Screen name="Item" component={RecipeItemScreen} />
           <RecipeScreenStack.Screen name="Author" component={ProfileScreen} />
@@ -133,9 +132,9 @@ const AuthDefaultTabs = (t: TFunction) => (
           <FavoriteScreenStack.Screen
             name="List"
             component={RecipeListScreen}
-            options={() => ({
+            options={{
               headerLeft: () => <Avatar />
-            })}
+            }}
           />
           <FavoriteScreenStack.Screen
             name="Item"
@@ -156,17 +155,17 @@ const AuthDefaultTabs = (t: TFunction) => (
           <CartScreenStack.Screen
             name="Summary"
             component={CartSummaryScreen}
-            options={() => ({
+            options={{
               title: t('screen.cart.summary.title'),
               headerLeft: () => <Avatar />
-            })}
+            }}
           />
           <CartScreenStack.Screen
             name="Checkout"
             component={CartCheckoutScreen}
-            options={() => ({
+            options={{
               title: t('screen.cart.checkout.title')
-            })}
+            }}
           />
         </CartScreenStack.Navigator>
       )}
@@ -182,9 +181,9 @@ const AuthDefaultTabs = (t: TFunction) => (
           <NotificationScreenStack.Screen
             name="List"
             component={NotificationListScreen}
-            options={() => ({
+            options={{
               headerLeft: () => <Avatar />
-            })}
+            }}
           />
           <NotificationScreenStack.Screen
             name="Item"
@@ -218,22 +217,23 @@ const UnauthDefaultTabs = (t: TFunction) => (
         title: t('screen.recipes.title')
       }}
     >
-      {() => (
+      {({ navigation }) => (
         <RecipeScreenStack.Navigator>
           <RecipeScreenStack.Screen
             name="List"
             component={RecipeListScreen}
-            options={() => ({
+            options={{
               title: t('screen.recipes.title'),
               headerLeft: () => (
                 <Avatar
                   rounded
                   icon={{ name: 'user', type: 'font-awesome' }}
+                  source={{ uri: 'foo.jpg' }} // Even if dummmy, if source does not exist, it does not show
                   activeOpacity={0.7}
-                  onPress={() => console.log('Avatar Press!')}
+                  onPress={() => navigation.toggleDrawer()}
                 />
               )
-            })}
+            }}
           />
           <RecipeScreenStack.Screen name="Item" component={RecipeItemScreen} />
         </RecipeScreenStack.Navigator>
@@ -318,7 +318,7 @@ const App: React.FC = () => {
             </React.Fragment>
           ) : (
             <React.Fragment>
-              <Drawer.Screen name="Default">
+              <Drawer.Screen name="Default" options={{}}>
                 {() => UnauthDefaultTabs(t)}
               </Drawer.Screen>
               <Drawer.Screen name="UnauthAccountOps">
