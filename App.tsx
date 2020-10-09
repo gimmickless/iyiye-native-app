@@ -2,13 +2,16 @@ import 'react-native-gesture-handler'
 import React, { useContext } from 'react'
 // import { StatusBar } from 'expo-status-bar'
 import { useTranslation } from 'react-i18next'
+import { TFunction } from 'i18next'
+import { Avatar } from 'react-native-elements'
 import './i18n'
-import AuthUserContextProvider, { AuthUserContext } from 'contexts/Auth'
+import { Ionicons } from '@expo/vector-icons'
+
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { Ionicons } from '@expo/vector-icons'
+import AuthUserContextProvider, { AuthUserContext } from 'contexts/Auth'
 import RecipeListScreen from 'screens/recipe/List'
 import RecipeItemScreen from 'screens/recipe/Item'
 import NotificationListScreen from 'screens/notification/List'
@@ -22,8 +25,7 @@ import SignUpScreen from 'screens/auth/SignUp'
 import ConfirmAccountScreen from 'screens/auth/ConfirmAccount'
 import ResetPasswordScreen from 'screens/auth/ResetPassword'
 import SignOutScreen from 'screens/auth/SignOut'
-import { TFunction } from 'i18next'
-import { Avatar } from 'react-native-elements'
+import { headerLeftContainerPaddingLeft } from 'utils/constants'
 
 type DrawerParamList = {
   Default: undefined
@@ -224,10 +226,13 @@ const UnauthDefaultTabs = (t: TFunction) => (
             component={RecipeListScreen}
             options={{
               title: t('screen.recipes.title'),
+              headerLeftContainerStyle: {
+                paddingLeft: headerLeftContainerPaddingLeft
+              },
               headerLeft: () => (
                 <Avatar
                   rounded
-                  icon={{ name: 'user', type: 'font-awesome' }}
+                  icon={{ name: 'ios-person', type: 'ionicon' }}
                   source={{ uri: 'foo.jpg' }} // Even if dummmy, if source does not exist, it does not show
                   activeOpacity={0.7}
                   onPress={() => navigation.toggleDrawer()}

@@ -12,3 +12,6 @@ export const nameMaxLength = 50
 export const maxNumOfSearchResults = 3
 export const commentMinLength = 3
 export const commentMaxLength = 255
+
+// Styles
+export const headerLeftContainerPaddingLeft = 10
