@@ -326,7 +326,19 @@ const App: React.FC = () => {
               <Drawer.Screen name="Default" options={{}}>
                 {() => UnauthDefaultTabs(t)}
               </Drawer.Screen>
-              <Drawer.Screen name="UnauthAccountOps">
+              <Drawer.Screen
+                name="UnauthAccountOps"
+                options={{
+                  drawerLabel: t('drawer.signIn.title'),
+                  drawerIcon: ({ focused, size }) => (
+                    <Ionicons
+                      name="md-home"
+                      size={size}
+                      color={focused ? '#7cc' : '#ccc'}
+                    />
+                  )
+                }}
+              >
                 {() => UnauthAccountOpsStack(t)}
               </Drawer.Screen>
             </React.Fragment>

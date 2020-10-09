@@ -8,6 +8,11 @@ const englishTranslation = {
       }
     }
   },
+  drawer: {
+    signIn: {
+      title: 'Sign In'
+    }
+  },
   screen: {
     signIn: {
       title: 'Sign in to Iyiye',
