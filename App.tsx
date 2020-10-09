@@ -25,7 +25,11 @@ import SignUpScreen from 'screens/auth/SignUp'
 import ConfirmAccountScreen from 'screens/auth/ConfirmAccount'
 import ResetPasswordScreen from 'screens/auth/ResetPassword'
 import SignOutScreen from 'screens/auth/SignOut'
-import { headerLeftContainerPaddingLeft } from 'utils/constants'
+import {
+  drawerItemBlurColor,
+  drawerItemFocusColor,
+  headerLeftContainerPaddingLeft
+} from 'utils/constants'
 
 type DrawerParamList = {
   Default: undefined
@@ -53,7 +57,7 @@ type AuthDefaultTabParamList = {
   Notifications: undefined
 }
 
-type RecipeScreenStackParamList = {
+type RecipeKitScreenStackParamList = {
   List: { sort: 'latest' | 'top' } | undefined
   Item: { id: string }
   Author?: { userId: string }
@@ -79,7 +83,9 @@ const Drawer = createDrawerNavigator<DrawerParamList>()
 const UnauthDefaultTab = createBottomTabNavigator<UnauthDefaultTabParamList>()
 const AuthDefaultTab = createBottomTabNavigator<AuthDefaultTabParamList>()
 const UnauthStack = createStackNavigator<UnauthStackParamList>()
-const RecipeScreenStack = createStackNavigator<RecipeScreenStackParamList>()
+const RecipeKitScreenStack = createStackNavigator<
+  RecipeKitScreenStackParamList
+>()
 const FavoriteScreenStack = createStackNavigator<FavoriteScreenStackParamList>()
 const CartScreenStack = createStackNavigator<CartScreenStackParamList>()
 const NotificationScreenStack = createStackNavigator<
@@ -110,17 +116,23 @@ const AuthDefaultTabs = (t: TFunction) => (
   >
     <AuthDefaultTab.Screen name="Home">
       {() => (
-        <RecipeScreenStack.Navigator initialRouteName="List">
-          <RecipeScreenStack.Screen
+        <RecipeKitScreenStack.Navigator initialRouteName="List">
+          <RecipeKitScreenStack.Screen
             name="List"
             component={RecipeListScreen}
             options={{
               headerLeft: () => <Avatar />
             }}
           />
-          <RecipeScreenStack.Screen name="Item" component={RecipeItemScreen} />
-          <RecipeScreenStack.Screen name="Author" component={ProfileScreen} />
-        </RecipeScreenStack.Navigator>
+          <RecipeKitScreenStack.Screen
+            name="Item"
+            component={RecipeItemScreen}
+          />
+          <RecipeKitScreenStack.Screen
+            name="Author"
+            component={ProfileScreen}
+          />
+        </RecipeKitScreenStack.Navigator>
       )}
     </AuthDefaultTab.Screen>
     <AuthDefaultTab.Screen
@@ -210,22 +222,29 @@ const UnauthDefaultTabs = (t: TFunction) => (
     })}
     tabBarOptions={{
       activeTintColor: 'red',
-      inactiveTintColor: 'gray'
+      inactiveTintColor: 'gray',
+      style: {
+        elevation: 0,
+        shadowOpacity: 0
+      }
     }}
   >
-    <UnauthDefaultTab.Screen
-      name="Home"
-      options={{
-        title: t('screen.recipes.title')
-      }}
-    >
+    <UnauthDefaultTab.Screen name="Home">
       {({ navigation }) => (
-        <RecipeScreenStack.Navigator>
-          <RecipeScreenStack.Screen
+        <RecipeKitScreenStack.Navigator
+          initialRouteName="List"
+          screenOptions={{
+            headerStyle: {
+              elevation: 0,
+              shadowOpacity: 0
+            }
+          }}
+        >
+          <RecipeKitScreenStack.Screen
             name="List"
             component={RecipeListScreen}
             options={{
-              title: t('screen.recipes.title'),
+              title: t('screen.recipeKits.title'),
               headerLeftContainerStyle: {
                 paddingLeft: headerLeftContainerPaddingLeft
               },
@@ -240,8 +259,11 @@ const UnauthDefaultTabs = (t: TFunction) => (
               )
             }}
           />
-          <RecipeScreenStack.Screen name="Item" component={RecipeItemScreen} />
-        </RecipeScreenStack.Navigator>
+          <RecipeKitScreenStack.Screen
+            name="Item"
+            component={RecipeItemScreen}
+          />
+        </RecipeKitScreenStack.Navigator>
       )}
     </UnauthDefaultTab.Screen>
   </UnauthDefaultTab.Navigator>
@@ -323,18 +345,34 @@ const App: React.FC = () => {
             </React.Fragment>
           ) : (
             <React.Fragment>
-              <Drawer.Screen name="Default" options={{}}>
+              <Drawer.Screen
+                name="Default"
+                options={{
+                  drawerLabel: t('drawer.default.title'),
+                  drawerIcon: ({ focused, size }) => (
+                    <Ionicons
+                      name="ios-home"
+                      size={size}
+                      color={
+                        focused ? drawerItemFocusColor : drawerItemBlurColor
+                      }
+                    />
+                  )
+                }}
+              >
                 {() => UnauthDefaultTabs(t)}
               </Drawer.Screen>
               <Drawer.Screen
                 name="UnauthAccountOps"
                 options={{
-                  drawerLabel: t('drawer.signIn.title'),
+                  drawerLabel: t('drawer.unauthAccountOps.title'),
                   drawerIcon: ({ focused, size }) => (
                     <Ionicons
-                      name="md-home"
+                      name="ios-log-in"
                       size={size}
-                      color={focused ? '#7cc' : '#ccc'}
+                      color={
+                        focused ? drawerItemFocusColor : drawerItemBlurColor
+                      }
                     />
                   )
                 }}

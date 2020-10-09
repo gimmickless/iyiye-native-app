@@ -9,7 +9,10 @@ const englishTranslation = {
     }
   },
   drawer: {
-    signIn: {
+    default: {
+      title: 'Home'
+    },
+    unauthAccountOps: {
       title: 'Sign In'
     }
   },
@@ -54,8 +57,8 @@ const englishTranslation = {
       title: 'Reset Password',
       label: {}
     },
-    recipes: {
-      title: 'Recipes',
+    recipeKits: {
+      title: 'Recipe Kits',
       label: {}
     },
     notifications: {

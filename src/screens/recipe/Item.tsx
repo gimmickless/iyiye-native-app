@@ -8,7 +8,7 @@ const Item: React.FC = () => {
   console.log(navigation)
   return (
     <View style={styles.view}>
-      <Text h1>Recipe Items</Text>
+      <Text h1>Recipe Kits Items</Text>
     </View>
   )
 }
