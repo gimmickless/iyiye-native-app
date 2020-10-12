@@ -318,28 +318,69 @@ const App: React.FC = () => {
         <Drawer.Navigator initialRouteName="Default">
           {isSignedIn ? (
             <React.Fragment>
-              <Drawer.Screen name="Default">
+              <Drawer.Screen
+                name="Default"
+                options={{
+                  drawerLabel: t('drawer.auth.default.title'),
+                  drawerIcon: ({ focused, size }) => (
+                    <Ionicons
+                      name="ios-home"
+                      size={size}
+                      color={
+                        focused ? drawerItemFocusColor : drawerItemBlurColor
+                      }
+                    />
+                  )
+                }}
+              >
                 {() => AuthDefaultTabs(t)}
               </Drawer.Screen>
               <Drawer.Screen
                 name="Profile"
                 component={ProfileScreen}
                 options={{
-                  title: t('screen.profile.title')
+                  drawerLabel: t('drawer.auth.profile.title'),
+                  drawerIcon: ({ focused, size }) => (
+                    <Ionicons
+                      name="ios-person"
+                      size={size}
+                      color={
+                        focused ? drawerItemFocusColor : drawerItemBlurColor
+                      }
+                    />
+                  )
                 }}
               />
               <Drawer.Screen
                 name="Settings"
                 component={SettingsScreen}
                 options={{
-                  title: t('screen.settings.title')
+                  drawerLabel: t('drawer.auth.settings.title'),
+                  drawerIcon: ({ focused, size }) => (
+                    <Ionicons
+                      name="ios-settings"
+                      size={size}
+                      color={
+                        focused ? drawerItemFocusColor : drawerItemBlurColor
+                      }
+                    />
+                  )
                 }}
               />
               <Drawer.Screen
                 name="SignOut"
                 component={SignOutScreen}
                 options={{
-                  title: t('screen.signOut.title')
+                  drawerLabel: t('drawer.auth.signOut.title'),
+                  drawerIcon: ({ focused, size }) => (
+                    <Ionicons
+                      name="ios-log-out"
+                      size={size}
+                      color={
+                        focused ? drawerItemFocusColor : drawerItemBlurColor
+                      }
+                    />
+                  )
                 }}
               />
             </React.Fragment>
@@ -348,7 +389,7 @@ const App: React.FC = () => {
               <Drawer.Screen
                 name="Default"
                 options={{
-                  drawerLabel: t('drawer.default.title'),
+                  drawerLabel: t('drawer.unauth.default.title'),
                   drawerIcon: ({ focused, size }) => (
                     <Ionicons
                       name="ios-home"
@@ -365,7 +406,7 @@ const App: React.FC = () => {
               <Drawer.Screen
                 name="UnauthAccountOps"
                 options={{
-                  drawerLabel: t('drawer.unauthAccountOps.title'),
+                  drawerLabel: t('drawer.unauth.accountOps.title'),
                   drawerIcon: ({ focused, size }) => (
                     <Ionicons
                       name="ios-log-in"

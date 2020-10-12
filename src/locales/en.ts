@@ -9,11 +9,27 @@ const englishTranslation = {
     }
   },
   drawer: {
-    default: {
-      title: 'Home'
+    auth: {
+      default: {
+        title: 'Home'
+      },
+      profile: {
+        title: 'Profile'
+      },
+      settings: {
+        title: 'Settings'
+      },
+      signOut: {
+        title: 'Sign Out'
+      }
     },
-    unauthAccountOps: {
-      title: 'Sign In'
+    unauth: {
+      default: {
+        title: 'Home'
+      },
+      accountOps: {
+        title: 'Sign In'
+      }
     }
   },
   screen: {
