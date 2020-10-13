@@ -92,7 +92,107 @@ const NotificationScreenStack = createStackNavigator<
   NotificationScreenStackParamList
 >()
 
-const AuthDefaultTabs = (t: TFunction) => (
+// May be used for reducing code duplications
+// const authTabStacks = (
+//   t: TFunction,
+//   cartItemCount: number,
+//   notificationItemCount: number
+// ) => [
+//   {
+//     name: 'Home',
+//     itemCount: undefined,
+//     obj: RecipeKitScreenStack,
+//     defaultScreen: 'List',
+//     screens: [
+//       {
+//         name: 'List',
+//         component: RecipeListScreen,
+//         title: t('screen.recipeKits.title'),
+//         showAvatar: true
+//       },
+//       {
+//         name: 'Item',
+//         component: RecipeItemScreen,
+//         title: undefined,
+//         showAvatar: false
+//       },
+//       {
+//         name: 'Author',
+//         component: ProfileScreen,
+//         title: undefined,
+//         showAvatar: false
+//       }
+//     ]
+//   },
+//   {
+//     name: 'Favorites',
+//     itemCount: undefined,
+//     obj: FavoriteScreenStack,
+//     defaultScreen: 'List',
+//     screens: [
+//       {
+//         name: 'List',
+//         component: RecipeListScreen,
+//         title: t('screen.favorites.title'),
+//         showAvatar: true
+//       },
+//       {
+//         name: 'Item',
+//         component: RecipeItemScreen,
+//         title: undefined,
+//         showAvatar: false
+//       },
+//       {
+//         name: 'Author',
+//         component: ProfileScreen,
+//         title: undefined,
+//         showAvatar: false
+//       }
+//     ]
+//   },
+//   {
+//     name: 'Cart',
+//     itemCount: cartItemCount,
+//     obj: CartScreenStack,
+//     defaultScreen: 'Summary',
+//     screens: [
+//       {
+//         name: 'Summary',
+//         component: CartSummaryScreen,
+//         title: t('screen.cart.summary.title'),
+//         showAvatar: true
+//       },
+//       {
+//         name: 'Checkout',
+//         component: CartCheckoutScreen,
+//         title: t('screen.cart.checkout.title'),
+//         showAvatar: false
+//       }
+//     ]
+//   },
+//   {
+//     name: 'Notifications',
+//     itemCount: notificationItemCount,
+//     obj: NotificationScreenStack,
+//     defaultScreen: 'List',
+//     screens: [
+//       {
+//         name: 'List',
+//         component: NotificationListScreen,
+//         title: t('screen.notifications.title'),
+//         showAvatar: true
+//       },
+//       {
+//         name: 'Item',
+//         component: NotificationItemScreen,
+//         title: undefined,
+//         showAvatar: false
+//       }
+//     ]
+//   }
+// ]
+
+const AuthDefaultTabs = (t: TFunction, authUserAvatarUrl: string) => (
   <AuthDefaultTab.Navigator
     screenOptions={({ route }) => ({
       tabBarIcon: ({ focused, color, size }) => {
@@ -115,13 +215,32 @@ const AuthDefaultTabs = (t: TFunction) => (
     }}
   >
     <AuthDefaultTab.Screen name="Home">
-      {() => (
-        <RecipeKitScreenStack.Navigator initialRouteName="List">
+      {({ navigation }) => (
+        <RecipeKitScreenStack.Navigator
+          initialRouteName="List"
+          screenOptions={{
+            headerStyle: {
+              elevation: 0,
+              shadowOpacity: 0
+            },
+            headerLeftContainerStyle: {
+              paddingLeft: headerLeftContainerPaddingLeft
+            }
+          }}
+        >
           <RecipeKitScreenStack.Screen
             name="List"
             component={RecipeListScreen}
             options={{
-              headerLeft: () => <Avatar />
+              title: t('screen.recipeKits.title'),
+              headerLeft: () => (
+                <Avatar
+                  rounded
+                  icon={{ name: 'ios-person', type: 'ionicon' }}
+                  source={{ uri: authUserAvatarUrl }}
+                  onPress={() => navigation.toggleDrawer()}
+                />
+              )
             }}
           />
           <RecipeKitScreenStack.Screen
@@ -135,19 +254,33 @@ const AuthDefaultTabs = (t: TFunction) => (
         </RecipeKitScreenStack.Navigator>
       )}
     </AuthDefaultTab.Screen>
-    <AuthDefaultTab.Screen
-      name="Favorites"
-      options={{
-        title: t('screen.favorites.title')
-      }}
-    >
-      {() => (
-        <FavoriteScreenStack.Navigator initialRouteName="List">
+    <AuthDefaultTab.Screen name="Favorites">
+      {({ navigation }) => (
+        <FavoriteScreenStack.Navigator
+          initialRouteName="List"
+          screenOptions={{
+            headerStyle: {
+              elevation: 0,
+              shadowOpacity: 0
+            },
+            headerLeftContainerStyle: {
+              paddingLeft: headerLeftContainerPaddingLeft
+            }
+          }}
+        >
           <FavoriteScreenStack.Screen
             name="List"
             component={RecipeListScreen}
             options={{
-              headerLeft: () => <Avatar />
+              title: t('screen.favorites.title'),
+              headerLeft: () => (
+                <Avatar
+                  rounded
+                  icon={{ name: 'ios-person', type: 'ionicon' }}
+                  source={{ uri: authUserAvatarUrl }}
+                  onPress={() => navigation.toggleDrawer()}
+                />
+              )
             }}
           />
           <FavoriteScreenStack.Screen
@@ -164,14 +297,32 @@ const AuthDefaultTabs = (t: TFunction) => (
         tabBarBadge: 3
       }}
     >
-      {() => (
-        <CartScreenStack.Navigator initialRouteName="Summary">
+      {({ navigation }) => (
+        <CartScreenStack.Navigator
+          initialRouteName="Summary"
+          screenOptions={{
+            headerStyle: {
+              elevation: 0,
+              shadowOpacity: 0
+            },
+            headerLeftContainerStyle: {
+              paddingLeft: headerLeftContainerPaddingLeft
+            }
+          }}
+        >
           <CartScreenStack.Screen
             name="Summary"
             component={CartSummaryScreen}
             options={{
               title: t('screen.cart.summary.title'),
-              headerLeft: () => <Avatar />
+              headerLeft: () => (
+                <Avatar
+                  rounded
+                  icon={{ name: 'ios-person', type: 'ionicon' }}
+                  source={{ uri: authUserAvatarUrl }}
+                  onPress={() => navigation.toggleDrawer()}
+                />
+              )
             }}
           />
           <CartScreenStack.Screen
@@ -190,13 +341,32 @@ const AuthDefaultTabs = (t: TFunction) => (
         tabBarBadge: 3
       }}
     >
-      {() => (
-        <NotificationScreenStack.Navigator initialRouteName="List">
+      {({ navigation }) => (
+        <NotificationScreenStack.Navigator
+          initialRouteName="List"
+          screenOptions={{
+            headerStyle: {
+              elevation: 0,
+              shadowOpacity: 0
+            },
+            headerLeftContainerStyle: {
+              paddingLeft: headerLeftContainerPaddingLeft
+            }
+          }}
+        >
           <NotificationScreenStack.Screen
             name="List"
             component={NotificationListScreen}
             options={{
-              headerLeft: () => <Avatar />
+              title: t('screen.notifications.title'),
+              headerLeft: () => (
+                <Avatar
+                  rounded
+                  icon={{ name: 'ios-person', type: 'ionicon' }}
+                  source={{ uri: authUserAvatarUrl }}
+                  onPress={() => navigation.toggleDrawer()}
+                />
+              )
             }}
           />
           <NotificationScreenStack.Screen
@@ -237,6 +407,9 @@ const UnauthDefaultTabs = (t: TFunction) => (
             headerStyle: {
               elevation: 0,
               shadowOpacity: 0
+            },
+            headerLeftContainerStyle: {
+              paddingLeft: headerLeftContainerPaddingLeft
             }
           }}
         >
@@ -245,15 +418,11 @@ const UnauthDefaultTabs = (t: TFunction) => (
             component={RecipeListScreen}
             options={{
               title: t('screen.recipeKits.title'),
-              headerLeftContainerStyle: {
-                paddingLeft: headerLeftContainerPaddingLeft
-              },
               headerLeft: () => (
                 <Avatar
                   rounded
                   icon={{ name: 'ios-person', type: 'ionicon' }}
                   source={{ uri: 'foo.jpg' }} // Even if dummmy, if source does not exist, it does not show
-                  activeOpacity={0.7}
                   onPress={() => navigation.toggleDrawer()}
                 />
               )
@@ -311,7 +480,10 @@ const App: React.FC = () => {
   const { t } = useTranslation()
   const { state: authUser } = useContext(AuthUserContext)
   console.log(authUser)
+  // TODO: Get User Avatar
+  const authUserAvatarUrl = 'avatar.jpg'
   const isSignedIn = false
+
   return (
     <AuthUserContextProvider>
       <NavigationContainer>
@@ -333,7 +505,7 @@ const App: React.FC = () => {
                   )
                 }}
               >
-                {() => AuthDefaultTabs(t)}
+                {() => AuthDefaultTabs(t, authUserAvatarUrl)}
               </Drawer.Screen>
               <Drawer.Screen
                 name="Profile"

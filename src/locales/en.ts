@@ -87,7 +87,7 @@ const englishTranslation = {
     cart: {
       title: 'Cart',
       summary: {
-        title: 'Checkout'
+        title: 'Cart'
       },
       checkout: {
         title: 'Checkout'
