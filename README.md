@@ -2,6 +2,12 @@
 
 Native app for iyiye
 
+## Upgrade dependencies
+
+```bash
+expo upgrade
+```
+
 ## Development
 
 ### npm start
