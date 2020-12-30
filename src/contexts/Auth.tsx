@@ -1,4 +1,4 @@
-import React, { Dispatch, useReducer } from 'react'
+import React, { useReducer } from 'react'
 import Auth from '@aws-amplify/auth'
 
 type AuthUserState = {
@@ -60,9 +60,9 @@ const initialState = {
 export const AuthUserContext = React.createContext<{
   state: AuthUserState
   action: {
-    login: Dispatch<AuthReducerAction>
-    update: Dispatch<AuthReducerAction>
-    logout: Dispatch<AuthReducerAction>
+    login: React.Dispatch<AuthReducerAction>
+    update: React.Dispatch<AuthReducerAction>
+    logout: React.Dispatch<AuthReducerAction>
   }
 }>({
   state: initialState,
