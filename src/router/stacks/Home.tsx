@@ -1,5 +1,4 @@
 import React from 'react'
-import { TFunction } from 'i18next'
 import { createStackNavigator } from '@react-navigation/stack'
 import { Default as HomeDefault } from 'screens/home'
 import { headerLeftContainerPaddingLeft } from 'utils/constants'
@@ -13,7 +12,7 @@ type HomeStackParamList = {
 
 const HomeStack = createStackNavigator<HomeStackParamList>()
 
-const HomeStackScreen = (t: Function) => (
+const HomeStackScreen = () => (
   <HomeStack.Navigator
     initialRouteName="Default"
     screenOptions={{

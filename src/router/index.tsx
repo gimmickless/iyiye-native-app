@@ -62,16 +62,16 @@ export const RootNavigator = () => {
           inactiveTintColor: 'gray'
         }}
       >
-        <Tab.Screen name={TabNames.Home}>{() => HomeStackScreen(t)}</Tab.Screen>
+        <Tab.Screen name={TabNames.Home}>{() => HomeStackScreen()}</Tab.Screen>
         <Tab.Screen name={TabNames.Search}>
-          {() => SearchStackScreen(t)}
+          {() => SearchStackScreen()}
         </Tab.Screen>
         <Tab.Screen name={TabNames.Notifications}>
-          {() => NotificationStackScreen(t)}
+          {() => NotificationStackScreen()}
         </Tab.Screen>
         {isSignedIn ? (
           <Tab.Screen name={TabNames.Profile}>
-            {() => ProfileStackScreen(t)}
+            {() => ProfileStackScreen()}
           </Tab.Screen>
         ) : (
           <Tab.Screen name={TabNames.Auth}>

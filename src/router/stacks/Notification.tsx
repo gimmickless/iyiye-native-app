@@ -1,5 +1,4 @@
 import React from 'react'
-import { TFunction } from 'i18next'
 import { createStackNavigator } from '@react-navigation/stack'
 import { Default as NotificationDefault } from 'screens/notification'
 import { headerLeftContainerPaddingLeft } from 'utils/constants'
@@ -10,7 +9,7 @@ type NotificationStackParamList = {
 
 const NotificationStack = createStackNavigator<NotificationStackParamList>()
 
-const NotificationStackScreen = (t: Function) => (
+const NotificationStackScreen = () => (
   <NotificationStack.Navigator
     initialRouteName="Default"
     screenOptions={{

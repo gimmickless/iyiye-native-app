@@ -1,5 +1,4 @@
 import React from 'react'
-import { TFunction } from 'i18next'
 import { createStackNavigator } from '@react-navigation/stack'
 import { Default as SearchDefault } from 'screens/search'
 import { headerLeftContainerPaddingLeft } from 'utils/constants'
@@ -15,7 +14,7 @@ type SearchStackParamList = {
 
 const SearchStack = createStackNavigator<SearchStackParamList>()
 
-const SearchStackScreen = (t: Function) => (
+const SearchStackScreen = () => (
   <SearchStack.Navigator
     initialRouteName="Default"
     screenOptions={{

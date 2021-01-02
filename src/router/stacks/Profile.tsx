@@ -1,5 +1,4 @@
 import React from 'react'
-import { TFunction } from 'i18next'
 import { createStackNavigator } from '@react-navigation/stack'
 import { Default as ProfileDefault } from 'screens/profile'
 import { headerLeftContainerPaddingLeft } from 'utils/constants'
@@ -12,7 +11,7 @@ type ProfileStackParamList = {
 
 const ProfileStack = createStackNavigator<ProfileStackParamList>()
 
-const ProfileStackScreen = (t: Function) => (
+const ProfileStackScreen = () => (
   <ProfileStack.Navigator
     initialRouteName="Default"
     screenOptions={{
