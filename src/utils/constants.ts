@@ -15,5 +15,3 @@ export const commentMaxLength = 255
 
 // Styles
 export const headerLeftContainerPaddingLeft = 10
-export const drawerItemFocusColor = '#7cc'
-export const drawerItemBlurColor = '#ccc'

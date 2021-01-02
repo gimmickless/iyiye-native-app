@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native'
 import { Button } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native'
 
-const Home: React.FC = () => {
+const Default: React.FC = () => {
   const navigation = useNavigation()
   // // Customize header
   // useLayoutEffect(() => {
@@ -25,4 +25,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default Home
+export default Default
