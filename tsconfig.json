@@ -27,7 +27,6 @@
   },
   "include": [
     "src",
-    "App.tsx",
-    "i18n.ts"
+    "App.tsx"
   ]
 }

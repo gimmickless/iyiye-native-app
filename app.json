@@ -19,6 +19,9 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
+      "infoPlist": {
+        "CFBundleAllowMixedLocalizations": true
+      },
       "supportsTablet": true
     },
     "web": {

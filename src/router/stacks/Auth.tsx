@@ -1,5 +1,4 @@
 import React from 'react'
-// import { TFunction } from 'i18next'
 import { createStackNavigator } from '@react-navigation/stack'
 import { ConfirmAccount, ResetPassword, SignIn, SignUp } from 'screens/auth'
 

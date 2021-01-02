@@ -1,10 +1,9 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { StyleSheet, Platform, KeyboardAvoidingView } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import { useTranslation } from 'react-i18next'
 import { Input, Button, Text } from 'react-native-elements'
 import { useForm, Controller } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers'
+import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
 import {
   emailMaxLength,
@@ -12,6 +11,7 @@ import {
   usernameMaxLength,
   usernameMinLength
 } from 'utils/constants'
+import { LocalizationContext } from 'contexts/Localization'
 
 type FormData = {
   username: string
@@ -19,7 +19,7 @@ type FormData = {
 }
 
 const Profile: React.FC = () => {
-  const { t } = useTranslation()
+  const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
 
   // Schema valdiation

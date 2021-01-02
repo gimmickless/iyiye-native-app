@@ -1,7 +1,1 @@
-import englishTranslation from './en'
-const resources = {
-  en: {
-    translation: englishTranslation
-  }
-}
-export default resources
+export { default as en } from './en'

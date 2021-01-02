@@ -1,6 +1,5 @@
 import React from 'react'
 import { useColorScheme } from 'react-native-appearance'
-import { useTranslation } from 'react-i18next'
 import { NavigationContainer } from '@react-navigation/native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { DefaultTheme, DarkTheme } from '@react-navigation/native'
@@ -13,6 +12,7 @@ import {
   ProfileStackScreen,
   SearchStackScreen
 } from './stacks'
+// import { LocalizationContext } from 'contexts/Localization'
 
 enum TabNames {
   Home = 'Home',
@@ -25,7 +25,7 @@ enum TabNames {
 const Tab = createBottomTabNavigator()
 
 export const RootNavigator = () => {
-  const { t } = useTranslation()
+  // const { t } = useContext(LocalizationContext)
   const scheme = useColorScheme()
   //TODO: Get isSignedIn value from AuthContext
   const isSignedIn = false
@@ -75,7 +75,7 @@ export const RootNavigator = () => {
           </Tab.Screen>
         ) : (
           <Tab.Screen name={TabNames.Auth}>
-            {() => AuthStackScreen(t)}
+            {() => AuthStackScreen()}
           </Tab.Screen>
         )}
       </Tab.Navigator>
