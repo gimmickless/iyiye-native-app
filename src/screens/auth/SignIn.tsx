@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { StyleSheet, Platform, KeyboardAvoidingView } from 'react-native'
+import { StyleSheet, Platform, KeyboardAvoidingView, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { Input, Button, Text } from 'react-native-elements'
 import { useForm, Controller } from 'react-hook-form'
@@ -78,25 +78,36 @@ const Profile: React.FC = () => {
           />
         )}
       />
-      <Controller
-        name="password"
-        defaultValue=""
-        control={control}
-        rules={{ required: true }}
-        render={({ onChange, onBlur, value }) => (
-          <Input
-            value={value}
-            placeholder={t('screen.signIn.label.password')}
-            onChangeText={(v) => onChange(v)}
-            onBlur={onBlur}
-            errorMessage={errors.password?.message}
-            style={styles.formInput}
-            autoCompleteType="password"
-            autoCorrect={false}
-            secureTextEntry
+      <View style={styles.passwordArea}>
+        <View>
+          <Controller
+            name="password"
+            defaultValue=""
+            control={control}
+            rules={{ required: true }}
+            render={({ onChange, onBlur, value }) => (
+              <Input
+                value={value}
+                placeholder={t('screen.signIn.label.password')}
+                onChangeText={(v) => onChange(v)}
+                onBlur={onBlur}
+                errorMessage={errors.password?.message}
+                style={styles.formInput}
+                autoCompleteType="password"
+                autoCorrect={false}
+                secureTextEntry
+              />
+            )}
           />
-        )}
-      />
+        </View>
+        <Button
+          type="clear"
+          style={styles.navigationButton}
+          title={t('screen.signIn.button.forgotPassword')}
+          onPress={() => navigation.navigate('ResetPassword')}
+        />
+      </View>
+
       {/* Form Actions */}
       <Button
         style={styles.formSubmitButton}
@@ -104,18 +115,15 @@ const Profile: React.FC = () => {
         onPress={handleSubmit(onSubmit)}
       />
       {/* Other Actions */}
-      <Button
-        type="clear"
-        style={styles.navigationButton}
-        title={t('screen.signIn.button.forgotPassword')}
-        onPress={() => navigation.navigate('ResetPassword')}
-      />
-      <Button
-        type="clear"
-        style={styles.navigationButton}
-        title={t('screen.signIn.button.signUp')}
-        onPress={() => navigation.navigate('SignUp')}
-      />
+      <View style={styles.signUpArea}>
+        <Text>{`${t('screen.signIn.text.notHavingAccount')} `}</Text>
+        <Button
+          type="clear"
+          style={styles.navigationButton}
+          title={t('screen.signIn.button.signUp')}
+          onPress={() => navigation.navigate('SignUp')}
+        />
+      </View>
     </KeyboardAvoidingView>
   )
 }
@@ -126,6 +134,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
     // paddingBottom: 250
     // marginBottom: 250
+  },
+  passwordArea: {
+    flex: 1,
+    flexDirection: 'row'
+  },
+  signUpArea: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap'
   },
   title: {
     padding: 10

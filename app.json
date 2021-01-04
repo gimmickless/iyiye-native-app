@@ -18,6 +18,9 @@
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": ["**/*"],
+    "android": {
+      "softwareKeyboardLayoutMode": "resize"
+    },
     "ios": {
       "infoPlist": {
         "CFBundleAllowMixedLocalizations": true

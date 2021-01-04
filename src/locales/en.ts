@@ -39,6 +39,9 @@ const englishTranslation = {
         usernameOrEmail: 'Username (or Email)',
         password: 'Password'
       },
+      text: {
+        notHavingAccount: 'Not having an account?'
+      },
       button: {
         done: 'Login',
         forgotPassword: 'Forgot Password?',
