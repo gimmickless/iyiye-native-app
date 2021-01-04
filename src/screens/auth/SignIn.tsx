@@ -23,7 +23,7 @@ const Profile: React.FC = () => {
   const navigation = useNavigation()
 
   // Schema valdiation
-  const formSchema = Yup.object<FormData>().shape({
+  const formSchema: Yup.SchemaOf<FormData> = Yup.object().shape({
     username: Yup.string()
       .required(t('common.message.validation.required'))
       .min(
