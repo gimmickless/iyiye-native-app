@@ -11,19 +11,25 @@ type AuthStackParamList = {
 
 const AuthStack = createStackNavigator<AuthStackParamList>()
 
-const AuthStackScreen = () => (
+const AuthStackScreen = (t: Function) => (
   <AuthStack.Navigator
     initialRouteName="SignIn"
     screenOptions={{
-      headerShown: false
+      // headerTintColor: 'ghostwhite',
+      headerStyle: {
+        // backgroundColor: 'transparent',
+        opacity: 0.6,
+        elevation: 0,
+        shadowOpacity: 0
+      }
     }}
   >
     <AuthStack.Screen
       name="SignIn"
       component={SignIn}
-      // options={{
-      //   title: t('screen.signIn.title')
-      // }}
+      options={{
+        title: t('screen.signIn.title')
+      }}
     />
     <AuthStack.Screen
       name="SignUp"

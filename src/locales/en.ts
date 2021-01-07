@@ -8,44 +8,21 @@ const englishTranslation = {
       }
     }
   },
-  drawer: {
-    auth: {
-      default: {
-        title: 'Home'
-      },
-      profile: {
-        title: 'Profile'
-      },
-      settings: {
-        title: 'Settings'
-      },
-      signOut: {
-        title: 'Sign Out'
-      }
-    },
-    unauth: {
-      default: {
-        title: 'Home'
-      },
-      accountOps: {
-        title: 'Sign In'
-      }
-    }
-  },
   screen: {
     signIn: {
-      title: 'Sign in to Iyiye',
+      title: 'Sign In',
       label: {
         usernameOrEmail: 'Username (or Email)',
         password: 'Password'
       },
       text: {
+        title: 'Welcome back!',
         notHavingAccount: 'Not having an account?'
       },
       button: {
-        done: 'Login',
-        forgotPassword: 'Forgot Password?',
-        signUp: 'No account yet?'
+        done: 'LOGIN',
+        forgotPassword: 'Forgot?',
+        signUp: 'Register Now'
       },
       message: {
         validation: {
@@ -63,6 +40,11 @@ const englishTranslation = {
         password: 'Password',
         retypePassword: 'Retype Password',
         birthDate: 'Birth Date'
+      },
+      message: {
+        validation: {
+          invalidUserName: 'Invalid username'
+        }
       }
     },
     signOut: {

@@ -12,13 +12,14 @@ import {
   usernameMinLength
 } from 'utils/constants'
 import { LocalizationContext } from 'contexts/Localization'
+import { ScrollView } from 'react-native-gesture-handler'
 
 type FormData = {
   username: string
   password: string
 }
 
-const Profile: React.FC = () => {
+const SignIn: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
 
@@ -54,76 +55,74 @@ const Profile: React.FC = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
-      {/* Title */}
-      <Text h3 style={styles.title}>
-        {t('screen.signIn.title')}
-      </Text>
-      {/* Form Fields */}
-      <Controller
-        name="username"
-        defaultValue=""
-        control={control}
-        rules={{ required: true }}
-        render={({ onChange, onBlur, value }) => (
-          <Input
-            value={value}
-            placeholder={t('screen.signIn.label.usernameOrEmail')}
-            onChangeText={(v) => onChange(v)}
-            onBlur={onBlur}
-            errorMessage={errors.username?.message}
-            style={styles.formInput}
-            autoCompleteType="username"
-            autoCorrect={false}
-            keyboardType="visible-password"
-          />
-        )}
-      />
-      <View style={styles.passwordArea}>
-        <View>
-          <Controller
-            name="password"
-            defaultValue=""
-            control={control}
-            rules={{ required: true }}
-            render={({ onChange, onBlur, value }) => (
-              <Input
-                value={value}
-                placeholder={t('screen.signIn.label.password')}
-                onChangeText={(v) => onChange(v)}
-                onBlur={onBlur}
-                errorMessage={errors.password?.message}
-                style={styles.formInput}
-                autoCompleteType="password"
-                autoCorrect={false}
-                secureTextEntry
-              />
-            )}
+      <ScrollView>
+        <Text h3 style={styles.title}>
+          {t('screen.signIn.text.title')}
+        </Text>
+        <Controller
+          name="username"
+          defaultValue=""
+          control={control}
+          rules={{ required: true }}
+          render={({ onChange, onBlur, value }) => (
+            <Input
+              value={value}
+              placeholder={t('screen.signIn.label.usernameOrEmail')}
+              onChangeText={(v) => onChange(v)}
+              onBlur={onBlur}
+              errorMessage={errors.username?.message}
+              style={styles.formInput}
+              autoCompleteType="username"
+              autoCorrect={false}
+              keyboardType="visible-password"
+            />
+          )}
+        />
+        <View style={styles.passwordArea}>
+          <View style={styles.passwordInputView}>
+            <Controller
+              name="password"
+              defaultValue=""
+              control={control}
+              rules={{ required: true }}
+              render={({ onChange, onBlur, value }) => (
+                <Input
+                  value={value}
+                  placeholder={t('screen.signIn.label.password')}
+                  onChangeText={(v) => onChange(v)}
+                  onBlur={onBlur}
+                  errorMessage={errors.password?.message}
+                  style={styles.formInput}
+                  autoCompleteType="password"
+                  autoCorrect={false}
+                  secureTextEntry
+                />
+              )}
+            />
+          </View>
+          <Button
+            type="clear"
+            style={styles.passwordInlineButton}
+            title={t('screen.signIn.button.forgotPassword')}
+            onPress={() => navigation.navigate('ResetPassword')}
           />
         </View>
         <Button
-          type="clear"
-          style={styles.navigationButton}
-          title={t('screen.signIn.button.forgotPassword')}
-          onPress={() => navigation.navigate('ResetPassword')}
+          style={styles.formSubmitButton}
+          title={t('screen.signIn.button.done')}
+          onPress={handleSubmit(onSubmit)}
         />
-      </View>
 
-      {/* Form Actions */}
-      <Button
-        style={styles.formSubmitButton}
-        title={t('screen.signIn.button.done')}
-        onPress={handleSubmit(onSubmit)}
-      />
-      {/* Other Actions */}
-      <View style={styles.signUpArea}>
-        <Text>{`${t('screen.signIn.text.notHavingAccount')} `}</Text>
+        <Text style={styles.centeredText}>{`${t(
+          'screen.signIn.text.notHavingAccount'
+        )} `}</Text>
         <Button
           type="clear"
           style={styles.navigationButton}
           title={t('screen.signIn.button.signUp')}
           onPress={() => navigation.navigate('SignUp')}
         />
-      </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   )
 }
@@ -131,25 +130,38 @@ const Profile: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center'
-    // paddingBottom: 250
-    // marginBottom: 250
+    justifyContent: 'center',
+    paddingHorizontal: 8
   },
   passwordArea: {
-    flex: 1,
+    justifyContent: 'space-between',
     flexDirection: 'row'
   },
   signUpArea: {
     flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
     flexDirection: 'row',
     flexWrap: 'wrap'
   },
   title: {
-    padding: 10
+    paddingVertical: 10,
+    textAlign: 'center',
+    color: 'dimgrey'
   },
-  formInput: {},
+  formInput: {
+    flex: 1
+  },
+  passwordInputView: {
+    flex: 1
+  },
+  passwordInlineButton: {},
   formSubmitButton: {},
+  centeredText: {
+    paddingTop: 24,
+    textAlign: 'center'
+  },
   navigationButton: {}
 })
 
-export default Profile
+export default SignIn

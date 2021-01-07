@@ -2,7 +2,6 @@ import 'react-native-gesture-handler'
 import React, { useContext } from 'react'
 // import { StatusBar } from 'expo-status-bar'
 import { enableScreens } from 'react-native-screens'
-import * as Localization from 'expo-localization'
 import i18n from 'i18n-js'
 import { AppearanceProvider } from 'react-native-appearance'
 
