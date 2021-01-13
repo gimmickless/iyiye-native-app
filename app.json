@@ -19,7 +19,7 @@
     },
     "assetBundlePatterns": ["**/*"],
     "android": {
-      "softwareKeyboardLayoutMode": "pan"
+      "softwareKeyboardLayoutMode": "resize"
     },
     "ios": {
       "infoPlist": {

@@ -4,7 +4,8 @@ const englishTranslation = {
       validation: {
         required: 'This field is required',
         tooShort: 'Too short',
-        tooLong: 'Too long'
+        tooLong: 'Too long',
+        mustCheck: 'This field must be checked'
       }
     }
   },
@@ -33,17 +34,26 @@ const englishTranslation = {
     signUp: {
       title: 'Sign Up',
       label: {
-        name: 'Name',
-        lastName: 'Last Name',
-        username: 'User Name',
+        fullName: 'Full Name',
+        username: 'Username',
         email: 'Email',
         password: 'Password',
         retypePassword: 'Retype Password',
         birthDate: 'Birth Date'
       },
+      text: {
+        title: 'Create Account',
+        alreadyHavingAccount: 'Already having an account?'
+      },
+      button: {
+        done: 'REGISTER',
+        signIn: 'Sign In'
+      },
       message: {
         validation: {
-          invalidUserName: 'Invalid username'
+          invalidUserName: 'Invalid username',
+          invalidEmail: 'Invalid email address',
+          passwordsNotMatch: 'Passwords do not match'
         }
       }
     },

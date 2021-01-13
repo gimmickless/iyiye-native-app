@@ -8,6 +8,7 @@ import * as Yup from 'yup'
 import {
   emailMaxLength,
   emailMinLength,
+  textColor,
   usernameMaxLength,
   usernameMinLength
 } from 'utils/constants'
@@ -75,6 +76,8 @@ const SignIn: React.FC = () => {
               autoCompleteType="username"
               autoCorrect={false}
               keyboardType="visible-password"
+              maxLength={Math.max(emailMaxLength, usernameMaxLength)}
+              textContentType="emailAddress"
             />
           )}
         />
@@ -96,6 +99,7 @@ const SignIn: React.FC = () => {
                   autoCompleteType="password"
                   autoCorrect={false}
                   secureTextEntry
+                  textContentType="password"
                 />
               )}
             />
@@ -147,7 +151,7 @@ const styles = StyleSheet.create({
   title: {
     paddingVertical: 10,
     textAlign: 'center',
-    color: 'dimgrey'
+    color: textColor.screenBody.title
   },
   formInput: {
     flex: 1

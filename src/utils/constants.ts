@@ -15,3 +15,12 @@ export const commentMaxLength = 255
 
 // Styles
 export const headerLeftContainerPaddingLeft = 10
+
+export const textColor = {
+  screenBody: {
+    title: 'dimgrey',
+    subtitle: 'dimgrey'
+  }
+}
+export const screenBodyTitleColor = 'dimgrey'
+export const screenBodySubtitleColor = 'dimgrey'

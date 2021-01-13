@@ -34,9 +34,9 @@ const AuthStackScreen = (t: Function) => (
     <AuthStack.Screen
       name="SignUp"
       component={SignUp}
-      // options={{
-      //   title: t('screen.signUp.title')
-      // }}
+      options={{
+        title: t('screen.signUp.title')
+      }}
     />
     <AuthStack.Screen
       name="ConfirmAccount"

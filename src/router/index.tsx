@@ -60,8 +60,15 @@ export const RootNavigator = () => {
         })}
         tabBarOptions={{
           activeTintColor: 'red',
+
           inactiveTintColor: 'gray',
-          keyboardHidesTabBar: true
+          keyboardHidesTabBar: true,
+          showLabel: false,
+          style: {
+            elevation: 0,
+            shadowOpacity: 0,
+            position: 'absolute'
+          }
         }}
       >
         <Tab.Screen name={TabNames.Home}>{() => HomeStackScreen()}</Tab.Screen>
