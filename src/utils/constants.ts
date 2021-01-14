@@ -24,3 +24,4 @@ export const textColor = {
 }
 export const screenBodyTitleColor = 'dimgrey'
 export const screenBodySubtitleColor = 'dimgrey'
+export const pressableTextColor = 'blue'

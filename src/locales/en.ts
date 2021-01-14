@@ -39,7 +39,14 @@ const englishTranslation = {
         email: 'Email',
         password: 'Password',
         retypePassword: 'Retype Password',
-        birthDate: 'Birth Date'
+        birthDate: 'Birth Date',
+        termsAgreed: {
+          start: 'I have read and accept',
+          terms: 'Terms of Service',
+          middle: 'and',
+          privacy: 'Privacy Policy',
+          end: ''
+        }
       },
       text: {
         title: 'Create Account',

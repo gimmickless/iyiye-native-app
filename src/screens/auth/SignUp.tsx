@@ -1,7 +1,14 @@
-import React, { useContext } from 'react'
-import { StyleSheet, Platform, KeyboardAvoidingView } from 'react-native'
+import React, { useContext, useState } from 'react'
+import {
+  StyleSheet,
+  Platform,
+  KeyboardAvoidingView,
+  Keyboard,
+  Pressable
+} from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import { Input, Button, Text } from 'react-native-elements'
+import { Input, Button, Text, CheckBox } from 'react-native-elements'
+import DateTimePicker from '@react-native-community/datetimepicker'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
@@ -9,6 +16,7 @@ import {
   emailMaxLength,
   emailMinLength,
   emailRegex,
+  pressableTextColor,
   usernameMaxLength,
   usernameMinLength
 } from 'utils/constants'
@@ -28,6 +36,7 @@ type FormData = {
 const SignUp: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
+  const [showDatePicker, setShowDatePicker] = useState(false)
 
   // Schema valdiation
   const formSchema: Yup.SchemaOf<FormData> = Yup.object().shape({
@@ -64,7 +73,13 @@ const SignUp: React.FC = () => {
       t('common.message.validation.mustCheck')
     )
   })
-  const { control, handleSubmit, errors } = useForm<FormData>({
+  const {
+    control,
+    handleSubmit,
+    errors,
+    getValues,
+    setValue
+  } = useForm<FormData>({
     resolver: yupResolver(formSchema)
   })
 
@@ -194,6 +209,81 @@ const SignUp: React.FC = () => {
             />
           )}
         />
+        <Controller
+          name="birthDate"
+          defaultValue=""
+          control={control}
+          rules={{ required: true, valueAsDate: true }}
+          render={({ onChange, onBlur, value }) => (
+            <Input
+              value={value}
+              placeholder={t('screen.signUp.label.birthDate')}
+              onFocus={() => {
+                setShowDatePicker(true)
+                Keyboard.dismiss()
+              }}
+              onChangeText={(v) => onChange(v)}
+              onBlur={onBlur}
+              errorMessage={errors.birthDate?.message}
+              style={styles.formInput}
+              autoCompleteType="off"
+              autoCorrect={false}
+              textContentType="none"
+              showSoftInputOnFocus={false}
+            />
+          )}
+        />
+        {showDatePicker && (
+          <DateTimePicker
+            value={getValues('birthDate') ?? new Date()}
+            mode="date"
+            display="default"
+            onChange={(_, date) => {
+              setValue('birthDate', date)
+            }}
+            maximumDate={new Date()}
+          />
+        )}
+        <Controller
+          name="termsAgreed"
+          defaultValue={false}
+          control={control}
+          rules={{ required: true }}
+          render={({ onChange, onBlur, value }) => (
+            <CheckBox
+              checked={value}
+              title={
+                <React.Fragment>
+                  <Text>{t('screen.signUp.label.termsAgreed.start')}</Text>
+                  <Pressable
+                    onPress={() => {
+                      //TODO: Open Terms modal
+                    }}
+                  >
+                    <Text style={styles.linkText}>
+                      {t('screen.signUp.label.termsAgreed.terms')}
+                    </Text>
+                  </Pressable>
+                  <Text>{t('screen.signUp.label.termsAgreed.middle')}</Text>
+                  <Pressable
+                    onPress={() => {
+                      //TODO: Open Privacy modal
+                    }}
+                  >
+                    <Text style={styles.linkText}>
+                      {t('screen.signUp.label.termsAgreed.privacy')}
+                    </Text>
+                  </Pressable>
+                  <Text>{t('screen.signUp.label.termsAgreed.end')}</Text>
+                </React.Fragment>
+              }
+              onPress={() => onChange(!value)}
+              onBlur={onBlur}
+              uncheckedColor="red"
+              style={styles.formCheckbox}
+            />
+          )}
+        />
         <Button
           style={styles.formSubmitButton}
           title={t('screen.signUp.button.done')}
@@ -235,10 +325,15 @@ const styles = StyleSheet.create({
   formInput: {
     flex: 1
   },
+  formCheckbox: {
+    flex: 1
+  },
   passwordInputView: {
     flex: 1
   },
-  passwordInlineButton: {},
+  linkText: {
+    color: pressableTextColor
+  },
   formSubmitButton: {},
   centeredText: {
     paddingTop: 24,
