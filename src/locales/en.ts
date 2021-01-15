@@ -60,7 +60,8 @@ const englishTranslation = {
         validation: {
           invalidUserName: 'Invalid username',
           invalidEmail: 'Invalid email address',
-          passwordsNotMatch: 'Passwords do not match'
+          passwordsNotMatch: 'Passwords do not match',
+          tooYoung: 'Not old enough'
         }
       }
     },

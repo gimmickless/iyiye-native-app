@@ -16,12 +16,14 @@ import {
   emailMaxLength,
   emailMinLength,
   emailRegex,
+  errorTextColor,
   pressableTextColor,
   usernameMaxLength,
   usernameMinLength
 } from 'utils/constants'
 import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
+import { getMaxDateFor18OrMoreYearsOld } from 'utils/validations'
 
 type FormData = {
   fullName: string
@@ -37,6 +39,7 @@ const SignUp: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
   const [showDatePicker, setShowDatePicker] = useState(false)
+  const maxBirthDate = getMaxDateFor18OrMoreYearsOld()
 
   // Schema valdiation
   const formSchema: Yup.SchemaOf<FormData> = Yup.object().shape({
@@ -67,7 +70,9 @@ const SignUp: React.FC = () => {
         [Yup.ref('password'), null],
         'screen.signUp.message.validation.passwordsNotMatch'
       ),
-    birthDate: Yup.date().required(t('common.message.validation.required')),
+    birthDate: Yup.date()
+      .required(t('common.message.validation.required'))
+      .min(maxBirthDate, t('screen.signUp.message.validation.tooYoung')),
     termsAgreed: Yup.boolean().oneOf(
       [true],
       t('common.message.validation.mustCheck')
@@ -279,11 +284,16 @@ const SignUp: React.FC = () => {
               }
               onPress={() => onChange(!value)}
               onBlur={onBlur}
-              uncheckedColor="red"
+              uncheckedColor={errorTextColor}
               style={styles.formCheckbox}
             />
           )}
         />
+        {errors.termsAgreed && (
+          <Text style={styles.errorMessageText}>
+            {errors.termsAgreed?.message}
+          </Text>
+        )}
         <Button
           style={styles.formSubmitButton}
           title={t('screen.signUp.button.done')}
@@ -333,6 +343,9 @@ const styles = StyleSheet.create({
   },
   linkText: {
     color: pressableTextColor
+  },
+  errorMessageText: {
+    color: errorTextColor
   },
   formSubmitButton: {},
   centeredText: {
