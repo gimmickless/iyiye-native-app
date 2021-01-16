@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useRef } from 'react'
 import { StyleSheet, Platform, KeyboardAvoidingView, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { Input, Button, Text } from 'react-native-elements'
@@ -23,8 +23,8 @@ type FormData = {
 const SignIn: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
+  const passwordRef = useRef<Input>(null)
 
-  // Schema valdiation
   const formSchema: Yup.SchemaOf<FormData> = Yup.object().shape({
     username: Yup.string()
       .required(t('common.message.validation.required'))
@@ -47,8 +47,10 @@ const SignIn: React.FC = () => {
   })
 
   const onSubmit = ({ username, password }: FormData) => {
+    console.log('pressed')
     console.log(username)
     console.log(password)
+    // TODO: Amplify Sign In + Navigate to Home
   }
 
   return (
@@ -60,62 +62,70 @@ const SignIn: React.FC = () => {
         <Text h3 style={styles.title}>
           {t('screen.signIn.text.title')}
         </Text>
-        <Controller
-          name="username"
-          defaultValue=""
-          control={control}
-          rules={{ required: true }}
-          render={({ onChange, onBlur, value }) => (
-            <Input
-              value={value}
-              placeholder={t('screen.signIn.label.usernameOrEmail')}
-              onChangeText={(v) => onChange(v)}
-              onBlur={onBlur}
-              errorMessage={errors.username?.message}
-              style={styles.formInput}
-              autoCompleteType="username"
-              autoCorrect={false}
-              keyboardType="visible-password"
-              maxLength={Math.max(emailMaxLength, usernameMaxLength)}
-              textContentType="emailAddress"
-            />
-          )}
-        />
-        <View style={styles.passwordArea}>
-          <View style={styles.passwordInputView}>
-            <Controller
-              name="password"
-              defaultValue=""
-              control={control}
-              rules={{ required: true }}
-              render={({ onChange, onBlur, value }) => (
-                <Input
-                  value={value}
-                  placeholder={t('screen.signIn.label.password')}
-                  onChangeText={(v) => onChange(v)}
-                  onBlur={onBlur}
-                  errorMessage={errors.password?.message}
-                  style={styles.formInput}
-                  autoCompleteType="password"
-                  autoCorrect={false}
-                  secureTextEntry
-                  textContentType="password"
-                />
-              )}
+        <View>
+          <Controller
+            name="username"
+            defaultValue=""
+            control={control}
+            rules={{ required: true }}
+            render={({ onChange, onBlur, value }) => (
+              <Input
+                value={value}
+                placeholder={t('screen.signIn.label.usernameOrEmail')}
+                onChangeText={(v) => onChange(v)}
+                onBlur={onBlur}
+                errorMessage={errors.username?.message}
+                style={styles.formInput}
+                autoCompleteType="username"
+                autoCorrect={false}
+                keyboardType="visible-password"
+                maxLength={Math.max(emailMaxLength, usernameMaxLength)}
+                textContentType="emailAddress"
+                returnKeyType="next"
+                blurOnSubmit={false}
+                onSubmitEditing={() => passwordRef.current?.focus()}
+              />
+            )}
+          />
+          <View style={styles.passwordArea}>
+            <View style={styles.passwordInputView}>
+              <Controller
+                name="password"
+                defaultValue=""
+                control={control}
+                rules={{ required: true }}
+                render={({ onChange, onBlur, value }) => (
+                  <Input
+                    value={value}
+                    ref={passwordRef}
+                    placeholder={t('screen.signIn.label.password')}
+                    onChangeText={(v) => onChange(v)}
+                    onBlur={onBlur}
+                    errorMessage={errors.password?.message}
+                    style={styles.formInput}
+                    autoCompleteType="password"
+                    autoCorrect={false}
+                    secureTextEntry
+                    textContentType="password"
+                    returnKeyType="send"
+                    onSubmitEditing={handleSubmit(onSubmit)}
+                  />
+                )}
+              />
+            </View>
+            <Button
+              type="clear"
+              style={styles.passwordInlineButton}
+              title={t('screen.signIn.button.forgotPassword')}
+              onPress={() => navigation.navigate('ResetPassword')}
             />
           </View>
           <Button
-            type="clear"
-            style={styles.passwordInlineButton}
-            title={t('screen.signIn.button.forgotPassword')}
-            onPress={() => navigation.navigate('ResetPassword')}
+            style={styles.formSubmitButton}
+            title={t('screen.signIn.button.done')}
+            onPress={handleSubmit(onSubmit)}
           />
         </View>
-        <Button
-          style={styles.formSubmitButton}
-          title={t('screen.signIn.button.done')}
-          onPress={handleSubmit(onSubmit)}
-        />
 
         <Text style={styles.centeredText}>{`${t(
           'screen.signIn.text.notHavingAccount'

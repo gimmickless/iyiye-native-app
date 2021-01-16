@@ -1,5 +1,9 @@
 const englishTranslation = {
   common: {
+    button: {
+      ok: 'OK',
+      accept: 'Accept'
+    },
     message: {
       validation: {
         required: 'This field is required',
@@ -50,7 +54,9 @@ const englishTranslation = {
       },
       text: {
         title: 'Create Account',
-        alreadyHavingAccount: 'Already having an account?'
+        alreadyHavingAccount: 'Already having an account?',
+        termsModalTitle: 'Terms of Service',
+        privacyModalTitle: 'Privacy Policy'
       },
       button: {
         done: 'REGISTER',

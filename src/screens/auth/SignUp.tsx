@@ -1,10 +1,11 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import {
   StyleSheet,
   Platform,
   KeyboardAvoidingView,
-  Keyboard,
-  Pressable
+  Pressable,
+  Modal,
+  View
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { Input, Button, Text, CheckBox } from 'react-native-elements'
@@ -18,6 +19,7 @@ import {
   emailRegex,
   errorTextColor,
   pressableTextColor,
+  screenBodyTitleColor,
   usernameMaxLength,
   usernameMinLength
 } from 'utils/constants'
@@ -39,6 +41,15 @@ const SignUp: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
   const [showDatePicker, setShowDatePicker] = useState(false)
+  const [showTermsModal, setShowTermsModal] = useState(false)
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false)
+
+  const usernameRef = useRef<Input>(null)
+  const emailRef = useRef<Input>(null)
+  const passwordRef = useRef<Input>(null)
+  const retypePasswordRef = useRef<Input>(null)
+  const birthDateRef = useRef<Input>(null)
+
   const maxBirthDate = getMaxDateFor18OrMoreYearsOld()
 
   // Schema valdiation
@@ -95,11 +106,14 @@ const SignUp: React.FC = () => {
     password,
     birthDate
   }: FormData) => {
+    console.log('pressed')
     console.log(fullName)
     console.log(username)
     console.log(email)
     console.log(password)
     console.log(birthDate)
+    // TODO: Amplify Sign Up
+    navigation.navigate('ConfirmAccount')
   }
 
   return (
@@ -128,6 +142,9 @@ const SignUp: React.FC = () => {
               autoCorrect={false}
               keyboardType="visible-password"
               textContentType="name"
+              returnKeyType="next"
+              blurOnSubmit={false}
+              onSubmitEditing={() => usernameRef.current?.focus()}
             />
           )}
         />
@@ -139,6 +156,7 @@ const SignUp: React.FC = () => {
           render={({ onChange, onBlur, value }) => (
             <Input
               value={value}
+              ref={usernameRef}
               placeholder={t('screen.signUp.label.username')}
               onChangeText={(v) => onChange(v)}
               onBlur={onBlur}
@@ -149,6 +167,9 @@ const SignUp: React.FC = () => {
               keyboardType="visible-password"
               maxLength={usernameMaxLength}
               textContentType="username"
+              returnKeyType="next"
+              blurOnSubmit={false}
+              onSubmitEditing={() => emailRef.current?.focus()}
             />
           )}
         />
@@ -160,6 +181,7 @@ const SignUp: React.FC = () => {
           render={({ onChange, onBlur, value }) => (
             <Input
               value={value}
+              ref={emailRef}
               placeholder={t('screen.signUp.label.email')}
               onChangeText={(v) => onChange(v)}
               onBlur={onBlur}
@@ -170,11 +192,15 @@ const SignUp: React.FC = () => {
               keyboardType="email-address"
               maxLength={emailMaxLength}
               textContentType="emailAddress"
+              returnKeyType="next"
+              blurOnSubmit={false}
+              onSubmitEditing={() => passwordRef.current?.focus()}
             />
           )}
         />
         <Controller
           name="password"
+          ref={passwordRef}
           defaultValue=""
           control={control}
           rules={{ required: true }}
@@ -191,11 +217,15 @@ const SignUp: React.FC = () => {
               secureTextEntry
               textContentType="newPassword"
               passwordRules="minlength: 20; required: lower; required: upper; required: digit;"
+              returnKeyType="next"
+              blurOnSubmit={false}
+              onSubmitEditing={() => retypePasswordRef.current?.focus()}
             />
           )}
         />
         <Controller
           name="retypePassword"
+          ref={retypePasswordRef}
           defaultValue=""
           control={control}
           rules={{ required: true }}
@@ -211,31 +241,35 @@ const SignUp: React.FC = () => {
               autoCorrect={false}
               secureTextEntry
               textContentType="none"
+              returnKeyType="next"
+              onSubmitEditing={() => birthDateRef.current?.focus()}
             />
           )}
         />
         <Controller
           name="birthDate"
-          defaultValue=""
+          defaultValue={undefined}
           control={control}
           rules={{ required: true, valueAsDate: true }}
-          render={({ onChange, onBlur, value }) => (
-            <Input
-              value={value}
-              placeholder={t('screen.signUp.label.birthDate')}
-              onFocus={() => {
-                setShowDatePicker(true)
-                Keyboard.dismiss()
-              }}
-              onChangeText={(v) => onChange(v)}
-              onBlur={onBlur}
-              errorMessage={errors.birthDate?.message}
-              style={styles.formInput}
-              autoCompleteType="off"
-              autoCorrect={false}
-              textContentType="none"
-              showSoftInputOnFocus={false}
-            />
+          render={({ onChange, value }) => (
+            <Pressable onPress={() => setShowDatePicker(true)}>
+              <View pointerEvents="none">
+                <Input
+                  editable={false}
+                  value={value ? value.toISOString().substring(0, 10) : ''}
+                  ref={birthDateRef}
+                  placeholder={t('screen.signUp.label.birthDate')}
+                  onFocus={() => setShowDatePicker(true)}
+                  onChangeText={(v) => onChange(v)}
+                  errorMessage={errors.birthDate?.message}
+                  style={styles.formInput}
+                  autoCompleteType="off"
+                  autoCorrect={false}
+                  textContentType="none"
+                  showSoftInputOnFocus={false}
+                />
+              </View>
+            </Pressable>
           )}
         />
         {showDatePicker && (
@@ -244,6 +278,7 @@ const SignUp: React.FC = () => {
             mode="date"
             display="default"
             onChange={(_, date) => {
+              setShowDatePicker(false)
               setValue('birthDate', date)
             }}
             maximumDate={new Date()}
@@ -258,34 +293,30 @@ const SignUp: React.FC = () => {
             <CheckBox
               checked={value}
               title={
-                <React.Fragment>
-                  <Text>{t('screen.signUp.label.termsAgreed.start')}</Text>
-                  <Pressable
-                    onPress={() => {
-                      //TODO: Open Terms modal
-                    }}
-                  >
+                <View style={styles.checkboxText}>
+                  <Text>
+                    {t('screen.signUp.label.termsAgreed.start')}&nbsp;
+                  </Text>
+                  <Pressable onPress={() => setShowTermsModal(true)}>
                     <Text style={styles.linkText}>
                       {t('screen.signUp.label.termsAgreed.terms')}
                     </Text>
                   </Pressable>
-                  <Text>{t('screen.signUp.label.termsAgreed.middle')}</Text>
-                  <Pressable
-                    onPress={() => {
-                      //TODO: Open Privacy modal
-                    }}
-                  >
+                  <Text>
+                    &nbsp;{t('screen.signUp.label.termsAgreed.middle')}&nbsp;
+                  </Text>
+                  <Pressable onPress={() => setShowPrivacyModal(true)}>
                     <Text style={styles.linkText}>
                       {t('screen.signUp.label.termsAgreed.privacy')}
                     </Text>
                   </Pressable>
-                  <Text>{t('screen.signUp.label.termsAgreed.end')}</Text>
-                </React.Fragment>
+                  <Text>&nbsp;{t('screen.signUp.label.termsAgreed.end')}</Text>
+                </View>
               }
               onPress={() => onChange(!value)}
               onBlur={onBlur}
               uncheckedColor={errorTextColor}
-              style={styles.formCheckbox}
+              containerStyle={styles.formCheckbox}
             />
           )}
         />
@@ -309,6 +340,45 @@ const SignUp: React.FC = () => {
           title={t('screen.signUp.button.signIn')}
           onPress={() => navigation.navigate('SignIn')}
         />
+
+        <Modal
+          visible={showTermsModal}
+          animationType="slide"
+          presentationStyle="fullScreen"
+        >
+          <View style={styles.modalContainerView}>
+            <ScrollView>
+              <Text h3 style={styles.modalTitle}>
+                {t('screen.signUp.text.termsModalTitle')}
+              </Text>
+              <Text>Terms of Service text here</Text>
+            </ScrollView>
+            <Button
+              style={styles.modalBottomButton}
+              title={t('common.button.ok')}
+              onPress={() => setShowTermsModal(false)}
+            />
+          </View>
+        </Modal>
+        <Modal
+          visible={showPrivacyModal}
+          animationType="slide"
+          presentationStyle="fullScreen"
+        >
+          <View style={styles.modalContainerView}>
+            <ScrollView>
+              <Text h3 style={styles.modalTitle}>
+                {t('screen.signUp.text.privacyModalTitle')}
+              </Text>
+              <Text>Privacy policy text here</Text>
+            </ScrollView>
+            <Button
+              style={styles.modalBottomButton}
+              title={t('common.button.ok')}
+              onPress={() => setShowPrivacyModal(false)}
+            />
+          </View>
+        </Modal>
       </ScrollView>
     </KeyboardAvoidingView>
   )
@@ -330,13 +400,18 @@ const styles = StyleSheet.create({
   title: {
     paddingVertical: 10,
     textAlign: 'center',
-    color: 'dimgrey'
+    color: screenBodyTitleColor
+  },
+  modalTitle: {
+    paddingVertical: 10,
+    color: screenBodyTitleColor
   },
   formInput: {
     flex: 1
   },
   formCheckbox: {
-    flex: 1
+    flex: 1,
+    backgroundColor: 'transparent'
   },
   passwordInputView: {
     flex: 1
@@ -344,15 +419,26 @@ const styles = StyleSheet.create({
   linkText: {
     color: pressableTextColor
   },
+  checkboxText: {
+    flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap'
+  },
   errorMessageText: {
-    color: errorTextColor
+    fontSize: 12,
+    color: errorTextColor,
+    marginLeft: 16
   },
   formSubmitButton: {},
   centeredText: {
     paddingTop: 24,
     textAlign: 'center'
   },
-  navigationButton: {}
+  navigationButton: {},
+  modalContainerView: {
+    flex: 1
+  },
+  modalBottomButton: {}
 })
 
 export default SignUp
