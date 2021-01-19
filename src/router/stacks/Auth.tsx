@@ -2,10 +2,10 @@ import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import { ConfirmAccount, ResetPassword, SignIn, SignUp } from 'screens/auth'
 
-type AuthStackParamList = {
+export type AuthStackParamList = {
   SignIn: undefined
   SignUp: undefined
-  ConfirmAccount: undefined
+  ConfirmAccount: { email: string }
   ResetPassword: undefined
 }
 
@@ -41,16 +41,16 @@ const AuthStackScreen = (t: Function) => (
     <AuthStack.Screen
       name="ConfirmAccount"
       component={ConfirmAccount}
-      // options={{
-      //   title: t('screen.confirmAccount.title')
-      // }}
+      options={{
+        title: t('screen.confirmAccount.title')
+      }}
     />
     <AuthStack.Screen
       name="ResetPassword"
       component={ResetPassword}
-      // options={{
-      //   title: t('screen.resetPassword.title')
-      // }}
+      options={{
+        title: t('screen.resetPassword.title')
+      }}
     />
   </AuthStack.Navigator>
 )

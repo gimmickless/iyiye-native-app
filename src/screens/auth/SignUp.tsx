@@ -10,8 +10,7 @@ import {
 import { useNavigation } from '@react-navigation/native'
 import { Input, Button, Text, CheckBox } from 'react-native-elements'
 import DateTimePicker from '@react-native-community/datetimepicker'
-import { useForm, Controller } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { Formik } from 'formik'
 import * as Yup from 'yup'
 import {
   emailMaxLength,
@@ -89,15 +88,6 @@ const SignUp: React.FC = () => {
       t('common.message.validation.mustCheck')
     )
   })
-  const {
-    control,
-    handleSubmit,
-    errors,
-    getValues,
-    setValue
-  } = useForm<FormData>({
-    resolver: yupResolver(formSchema)
-  })
 
   const onSubmit = ({
     fullName,
@@ -113,7 +103,7 @@ const SignUp: React.FC = () => {
     console.log(password)
     console.log(birthDate)
     // TODO: Amplify Sign Up
-    navigation.navigate('ConfirmAccount')
+    navigation.navigate('ConfirmAccount', { email })
   }
 
   return (
@@ -125,218 +115,204 @@ const SignUp: React.FC = () => {
         <Text h3 style={styles.title}>
           {t('screen.signUp.text.title')}
         </Text>
-        <Controller
-          name="fullName"
-          defaultValue=""
-          control={control}
-          rules={{ required: true }}
-          render={({ onChange, onBlur, value }) => (
-            <Input
-              value={value}
-              placeholder={t('screen.signUp.label.fullName')}
-              onChangeText={(v) => onChange(v)}
-              onBlur={onBlur}
-              errorMessage={errors.fullName?.message}
-              style={styles.formInput}
-              autoCompleteType="name"
-              autoCorrect={false}
-              keyboardType="visible-password"
-              textContentType="name"
-              returnKeyType="next"
-              blurOnSubmit={false}
-              onSubmitEditing={() => usernameRef.current?.focus()}
-            />
-          )}
-        />
-        <Controller
-          name="username"
-          defaultValue=""
-          control={control}
-          rules={{ required: true }}
-          render={({ onChange, onBlur, value }) => (
-            <Input
-              value={value}
-              ref={usernameRef}
-              placeholder={t('screen.signUp.label.username')}
-              onChangeText={(v) => onChange(v)}
-              onBlur={onBlur}
-              errorMessage={errors.username?.message}
-              style={styles.formInput}
-              autoCompleteType="username"
-              autoCorrect={false}
-              keyboardType="visible-password"
-              maxLength={usernameMaxLength}
-              textContentType="username"
-              returnKeyType="next"
-              blurOnSubmit={false}
-              onSubmitEditing={() => emailRef.current?.focus()}
-            />
-          )}
-        />
-        <Controller
-          name="email"
-          defaultValue=""
-          control={control}
-          rules={{ required: true }}
-          render={({ onChange, onBlur, value }) => (
-            <Input
-              value={value}
-              ref={emailRef}
-              placeholder={t('screen.signUp.label.email')}
-              onChangeText={(v) => onChange(v)}
-              onBlur={onBlur}
-              errorMessage={errors.email?.message}
-              style={styles.formInput}
-              autoCompleteType="email"
-              autoCorrect={false}
-              keyboardType="email-address"
-              maxLength={emailMaxLength}
-              textContentType="emailAddress"
-              returnKeyType="next"
-              blurOnSubmit={false}
-              onSubmitEditing={() => passwordRef.current?.focus()}
-            />
-          )}
-        />
-        <Controller
-          name="password"
-          ref={passwordRef}
-          defaultValue=""
-          control={control}
-          rules={{ required: true }}
-          render={({ onChange, onBlur, value }) => (
-            <Input
-              value={value}
-              placeholder={t('screen.signUp.label.password')}
-              onChangeText={(v) => onChange(v)}
-              onBlur={onBlur}
-              errorMessage={errors.password?.message}
-              style={styles.formInput}
-              autoCompleteType="password"
-              autoCorrect={false}
-              secureTextEntry
-              textContentType="newPassword"
-              passwordRules="minlength: 20; required: lower; required: upper; required: digit;"
-              returnKeyType="next"
-              blurOnSubmit={false}
-              onSubmitEditing={() => retypePasswordRef.current?.focus()}
-            />
-          )}
-        />
-        <Controller
-          name="retypePassword"
-          ref={retypePasswordRef}
-          defaultValue=""
-          control={control}
-          rules={{ required: true }}
-          render={({ onChange, onBlur, value }) => (
-            <Input
-              value={value}
-              placeholder={t('screen.signUp.label.retypePassword')}
-              onChangeText={(v) => onChange(v)}
-              onBlur={onBlur}
-              errorMessage={errors.retypePassword?.message}
-              style={styles.formInput}
-              autoCompleteType="off"
-              autoCorrect={false}
-              secureTextEntry
-              textContentType="none"
-              returnKeyType="next"
-              onSubmitEditing={() => birthDateRef.current?.focus()}
-            />
-          )}
-        />
-        <Controller
-          name="birthDate"
-          defaultValue={undefined}
-          control={control}
-          rules={{ required: true, valueAsDate: true }}
-          render={({ onChange, value }) => (
-            <Pressable onPress={() => setShowDatePicker(true)}>
-              <View pointerEvents="none">
-                <Input
-                  editable={false}
-                  value={value ? value.toISOString().substring(0, 10) : ''}
-                  ref={birthDateRef}
-                  placeholder={t('screen.signUp.label.birthDate')}
-                  onFocus={() => setShowDatePicker(true)}
-                  onChangeText={(v) => onChange(v)}
-                  errorMessage={errors.birthDate?.message}
-                  style={styles.formInput}
-                  autoCompleteType="off"
-                  autoCorrect={false}
-                  textContentType="none"
-                  showSoftInputOnFocus={false}
-                />
-              </View>
-            </Pressable>
-          )}
-        />
-        {showDatePicker && (
-          <DateTimePicker
-            value={getValues('birthDate') ?? new Date()}
-            mode="date"
-            display="default"
-            onChange={(_, date) => {
-              setShowDatePicker(false)
-              setValue('birthDate', date)
-            }}
-            maximumDate={new Date()}
-          />
-        )}
-        <Controller
-          name="termsAgreed"
-          defaultValue={false}
-          control={control}
-          rules={{ required: true }}
-          render={({ onChange, onBlur, value }) => (
-            <CheckBox
-              checked={value}
-              title={
-                <View style={styles.checkboxText}>
-                  <Text>
-                    {t('screen.signUp.label.termsAgreed.start')}&nbsp;
-                  </Text>
-                  <Pressable onPress={() => setShowTermsModal(true)}>
-                    <Text style={styles.linkText}>
-                      {t('screen.signUp.label.termsAgreed.terms')}
-                    </Text>
-                  </Pressable>
-                  <Text>
-                    &nbsp;{t('screen.signUp.label.termsAgreed.middle')}&nbsp;
-                  </Text>
-                  <Pressable onPress={() => setShowPrivacyModal(true)}>
-                    <Text style={styles.linkText}>
-                      {t('screen.signUp.label.termsAgreed.privacy')}
-                    </Text>
-                  </Pressable>
-                  <Text>&nbsp;{t('screen.signUp.label.termsAgreed.end')}</Text>
+        <Formik
+          initialValues={{
+            fullName: '',
+            username: '',
+            email: '',
+            password: '',
+            retypePassword: '',
+            birthDate: undefined,
+            termsAgreed: false
+          }}
+          validationSchema={formSchema}
+          onSubmit={onSubmit}
+        >
+          {({
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            values,
+            errors,
+            setFieldValue
+          }) => (
+            <View>
+              <Input
+                value={values.fullName}
+                placeholder={t('screen.signUp.label.fullName')}
+                onChangeText={handleChange('fullName')}
+                onBlur={handleBlur('fullName')}
+                errorMessage={errors.fullName}
+                style={styles.formInput}
+                autoCompleteType="name"
+                autoCorrect={false}
+                keyboardType="visible-password"
+                textContentType="name"
+                returnKeyType="next"
+                blurOnSubmit={false}
+                onSubmitEditing={() => usernameRef.current?.focus()}
+              />
+              <Input
+                value={values.username}
+                ref={usernameRef}
+                placeholder={t('screen.signUp.label.username')}
+                onChangeText={handleChange('username')}
+                onBlur={handleBlur('username')}
+                errorMessage={errors.username}
+                style={styles.formInput}
+                autoCompleteType="username"
+                autoCorrect={false}
+                keyboardType="visible-password"
+                maxLength={usernameMaxLength}
+                textContentType="username"
+                returnKeyType="next"
+                blurOnSubmit={false}
+                onSubmitEditing={() => emailRef.current?.focus()}
+              />
+              <Input
+                value={values.email}
+                ref={emailRef}
+                placeholder={t('screen.signUp.label.email')}
+                onChangeText={handleChange('email')}
+                onBlur={handleBlur('email')}
+                errorMessage={errors.email}
+                style={styles.formInput}
+                autoCompleteType="email"
+                autoCorrect={false}
+                keyboardType="email-address"
+                maxLength={emailMaxLength}
+                textContentType="emailAddress"
+                returnKeyType="next"
+                blurOnSubmit={false}
+                onSubmitEditing={() => passwordRef.current?.focus()}
+              />
+              <Input
+                value={values.password}
+                placeholder={t('screen.signUp.label.password')}
+                onChangeText={handleChange('password')}
+                onBlur={handleBlur('password')}
+                errorMessage={errors.password}
+                style={styles.formInput}
+                autoCompleteType="password"
+                autoCorrect={false}
+                secureTextEntry
+                textContentType="newPassword"
+                passwordRules="minlength: 20; required: lower; required: upper; required: digit;"
+                returnKeyType="next"
+                blurOnSubmit={false}
+                onSubmitEditing={() => retypePasswordRef.current?.focus()}
+              />
+              <Input
+                value={values.retypePassword}
+                placeholder={t('screen.signUp.label.retypePassword')}
+                onChangeText={handleChange('retypePassword')}
+                onBlur={handleBlur('retypePassword')}
+                errorMessage={errors.retypePassword}
+                style={styles.formInput}
+                autoCompleteType="off"
+                autoCorrect={false}
+                secureTextEntry
+                textContentType="none"
+                returnKeyType="next"
+                onSubmitEditing={() => birthDateRef.current?.focus()}
+              />
+              <Pressable onPress={() => setShowDatePicker(true)}>
+                <View pointerEvents="none">
+                  <Input
+                    editable={false}
+                    value={
+                      values.birthDate
+                        ? values.birthDate.toISOString().substring(0, 10)
+                        : ''
+                    }
+                    ref={birthDateRef}
+                    placeholder={t('screen.signUp.label.birthDate')}
+                    onFocus={() => setShowDatePicker(true)}
+                    onChangeText={handleChange('birthDate')}
+                    onBlur={handleBlur('birthDate')}
+                    errorMessage={errors.birthDate}
+                    style={styles.formInput}
+                    autoCompleteType="off"
+                    autoCorrect={false}
+                    textContentType="none"
+                    showSoftInputOnFocus={false}
+                  />
                 </View>
-              }
-              onPress={() => onChange(!value)}
-              onBlur={onBlur}
-              uncheckedColor={errorTextColor}
-              containerStyle={styles.formCheckbox}
-            />
+              </Pressable>
+              {showDatePicker && (
+                <DateTimePicker
+                  value={values.birthDate ?? new Date()}
+                  mode="date"
+                  display="default"
+                  onChange={(_, date) => {
+                    setShowDatePicker(false)
+                    setFieldValue('birthDate', date)
+                  }}
+                  maximumDate={new Date()}
+                />
+              )}
+              <CheckBox
+                checked={values.termsAgreed}
+                title={
+                  <View style={styles.checkboxText}>
+                    <Text>
+                      {t('screen.signUp.label.termsAgreed.start')}&nbsp;
+                    </Text>
+                    <Pressable onPress={() => setShowTermsModal(true)}>
+                      <Text style={styles.linkText}>
+                        {t('screen.signUp.label.termsAgreed.terms')}
+                      </Text>
+                    </Pressable>
+                    <Text>
+                      &nbsp;{t('screen.signUp.label.termsAgreed.middle')}&nbsp;
+                    </Text>
+                    <Pressable onPress={() => setShowPrivacyModal(true)}>
+                      <Text style={styles.linkText}>
+                        {t('screen.signUp.label.termsAgreed.privacy')}
+                      </Text>
+                    </Pressable>
+                    <Text>
+                      &nbsp;{t('screen.signUp.label.termsAgreed.end')}
+                    </Text>
+                  </View>
+                }
+                onPress={() =>
+                  setFieldValue('termsAgreed', !values.termsAgreed)
+                }
+                onBlur={handleBlur('termsAgreed')}
+                uncheckedColor={errorTextColor}
+                containerStyle={styles.formCheckbox}
+              />
+              {errors.termsAgreed && (
+                <Text style={styles.errorMessageText}>
+                  {errors.termsAgreed}
+                </Text>
+              )}
+              <Button
+                style={styles.formSubmitButton}
+                title={t('screen.signUp.button.done').toLocaleUpperCase()}
+                onPress={handleSubmit as any}
+              />
+              {/* TODO: Following added for test. Remove before Prod */}
+              <Button
+                style={styles.modalBottomButton}
+                title="To Confirm Account"
+                onPress={() =>
+                  navigation.navigate('ConfirmAccount', {
+                    email: values.email
+                  })
+                }
+              />
+            </View>
           )}
-        />
-        {errors.termsAgreed && (
-          <Text style={styles.errorMessageText}>
-            {errors.termsAgreed?.message}
-          </Text>
-        )}
-        <Button
-          style={styles.formSubmitButton}
-          title={t('screen.signUp.button.done')}
-          onPress={handleSubmit(onSubmit)}
-        />
+        </Formik>
 
         <Text style={styles.centeredText}>{`${t(
           'screen.signUp.text.alreadyHavingAccount'
         )} `}</Text>
         <Button
           type="clear"
-          style={styles.navigationButton}
+          style={styles.secondaryButton}
           title={t('screen.signUp.button.signIn')}
           onPress={() => navigation.navigate('SignIn')}
         />
@@ -434,7 +410,7 @@ const styles = StyleSheet.create({
     paddingTop: 24,
     textAlign: 'center'
   },
-  navigationButton: {},
+  secondaryButton: {},
   modalContainerView: {
     flex: 1
   },

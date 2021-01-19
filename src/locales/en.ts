@@ -25,7 +25,7 @@ const englishTranslation = {
         notHavingAccount: 'Not having an account?'
       },
       button: {
-        done: 'LOGIN',
+        done: 'Login',
         forgotPassword: 'Forgot?',
         signUp: 'Register Now'
       },
@@ -59,7 +59,7 @@ const englishTranslation = {
         privacyModalTitle: 'Privacy Policy'
       },
       button: {
-        done: 'REGISTER',
+        done: 'Register',
         signIn: 'Sign In'
       },
       message: {
@@ -76,7 +76,18 @@ const englishTranslation = {
     },
     confirmAccount: {
       title: 'Confirm Account',
-      label: {}
+      label: {
+        verificationCode: 'Verification Code'
+      },
+      text: {
+        title: 'Email Verification',
+        subtitle: "A verification code is sent to '{{email}}'",
+        notReceivedCode: 'Not received any damn?'
+      },
+      button: {
+        done: 'Done',
+        resend: 'Send Again'
+      }
     },
     resetPassword: {
       title: 'Reset Password',

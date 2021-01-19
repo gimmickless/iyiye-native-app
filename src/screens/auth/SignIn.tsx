@@ -2,8 +2,7 @@ import React, { useContext, useRef } from 'react'
 import { StyleSheet, Platform, KeyboardAvoidingView, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { Input, Button, Text } from 'react-native-elements'
-import { useForm, Controller } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { Formik } from 'formik'
 import * as Yup from 'yup'
 import {
   emailMaxLength,
@@ -16,7 +15,7 @@ import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
 
 type FormData = {
-  username: string
+  usernameOrEmail: string
   password: string
 }
 
@@ -26,7 +25,7 @@ const SignIn: React.FC = () => {
   const passwordRef = useRef<Input>(null)
 
   const formSchema: Yup.SchemaOf<FormData> = Yup.object().shape({
-    username: Yup.string()
+    usernameOrEmail: Yup.string()
       .required(t('common.message.validation.required'))
       .min(
         Math.min(emailMinLength, usernameMinLength),
@@ -42,13 +41,10 @@ const SignIn: React.FC = () => {
       ),
     password: Yup.string().required(t('common.message.validation.required'))
   })
-  const { control, handleSubmit, errors } = useForm<FormData>({
-    resolver: yupResolver(formSchema)
-  })
 
-  const onSubmit = ({ username, password }: FormData) => {
+  const onSubmit = ({ usernameOrEmail, password }: FormData) => {
     console.log('pressed')
-    console.log(username)
+    console.log(usernameOrEmail)
     console.log(password)
     // TODO: Amplify Sign In + Navigate to Home
   }
@@ -62,19 +58,22 @@ const SignIn: React.FC = () => {
         <Text h3 style={styles.title}>
           {t('screen.signIn.text.title')}
         </Text>
-        <View>
-          <Controller
-            name="username"
-            defaultValue=""
-            control={control}
-            rules={{ required: true }}
-            render={({ onChange, onBlur, value }) => (
+        <Formik
+          initialValues={{
+            usernameOrEmail: '',
+            password: ''
+          }}
+          validationSchema={formSchema}
+          onSubmit={onSubmit}
+        >
+          {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
+            <View>
               <Input
-                value={value}
+                value={values.usernameOrEmail}
                 placeholder={t('screen.signIn.label.usernameOrEmail')}
-                onChangeText={(v) => onChange(v)}
-                onBlur={onBlur}
-                errorMessage={errors.username?.message}
+                onChangeText={handleChange('usernameOrEmail')}
+                onBlur={handleBlur('usernameOrEmail')}
+                errorMessage={errors.usernameOrEmail}
                 style={styles.formInput}
                 autoCompleteType="username"
                 autoCorrect={false}
@@ -85,54 +84,46 @@ const SignIn: React.FC = () => {
                 blurOnSubmit={false}
                 onSubmitEditing={() => passwordRef.current?.focus()}
               />
-            )}
-          />
-          <View style={styles.passwordArea}>
-            <View style={styles.passwordInputView}>
-              <Controller
-                name="password"
-                defaultValue=""
-                control={control}
-                rules={{ required: true }}
-                render={({ onChange, onBlur, value }) => (
+              <View style={styles.passwordArea}>
+                <View style={styles.passwordInputView}>
                   <Input
-                    value={value}
+                    value={values.password}
                     ref={passwordRef}
                     placeholder={t('screen.signIn.label.password')}
-                    onChangeText={(v) => onChange(v)}
-                    onBlur={onBlur}
-                    errorMessage={errors.password?.message}
+                    onChangeText={handleChange('password')}
+                    onBlur={handleBlur('password')}
+                    errorMessage={errors.password}
                     style={styles.formInput}
                     autoCompleteType="password"
                     autoCorrect={false}
                     secureTextEntry
                     textContentType="password"
                     returnKeyType="send"
-                    onSubmitEditing={handleSubmit(onSubmit)}
+                    onSubmitEditing={handleSubmit as any}
                   />
-                )}
+                </View>
+                <Button
+                  type="clear"
+                  style={styles.passwordInlineButton}
+                  title={t('screen.signIn.button.forgotPassword')}
+                  onPress={() => navigation.navigate('ResetPassword')}
+                />
+              </View>
+              <Button
+                style={styles.formSubmitButton}
+                title={t('screen.signIn.button.done').toLocaleUpperCase()}
+                onPress={handleSubmit as any}
               />
             </View>
-            <Button
-              type="clear"
-              style={styles.passwordInlineButton}
-              title={t('screen.signIn.button.forgotPassword')}
-              onPress={() => navigation.navigate('ResetPassword')}
-            />
-          </View>
-          <Button
-            style={styles.formSubmitButton}
-            title={t('screen.signIn.button.done')}
-            onPress={handleSubmit(onSubmit)}
-          />
-        </View>
+          )}
+        </Formik>
 
         <Text style={styles.centeredText}>{`${t(
           'screen.signIn.text.notHavingAccount'
         )} `}</Text>
         <Button
           type="clear"
-          style={styles.navigationButton}
+          style={styles.secondaryButton}
           title={t('screen.signIn.button.signUp')}
           onPress={() => navigation.navigate('SignUp')}
         />
@@ -175,7 +166,7 @@ const styles = StyleSheet.create({
     paddingTop: 24,
     textAlign: 'center'
   },
-  navigationButton: {}
+  secondaryButton: {}
 })
 
 export default SignIn
