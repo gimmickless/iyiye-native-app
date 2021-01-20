@@ -17,10 +17,12 @@ import {
   emailMinLength,
   emailRegex,
   errorTextColor,
+  passwordRegex,
   pressableTextColor,
   screenBodyTitleColor,
   usernameMaxLength,
-  usernameMinLength
+  usernameMinLength,
+  usernameRegex
 } from 'utils/constants'
 import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -68,15 +70,20 @@ const SignUp: React.FC = () => {
         t('common.message.validation.tooLong')
       )
       .matches(
-        /^[A-Z0-9]+$/i,
-        t('screen.signUp.message.validation.invalidUserName')
+        usernameRegex,
+        t('screen.signUp.message.validation.invalidUsername')
       ),
     email: Yup.string()
       .required(t('common.message.validation.required'))
       .min(emailMinLength, t('common.message.validation.tooShort'))
       .max(emailMaxLength, t('common.message.validation.tooLong'))
       .matches(emailRegex, t('screen.signUp.message.validation.invalidEmail')),
-    password: Yup.string().required(t('common.message.validation.required')),
+    password: Yup.string()
+      .required(t('common.message.validation.required'))
+      .matches(
+        passwordRegex,
+        t('screen.signUp.message.validation.invalidPassword')
+      ),
     retypePassword: Yup.string()
       .required(t('common.message.validation.required'))
       .oneOf(

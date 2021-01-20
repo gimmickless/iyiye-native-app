@@ -1,12 +1,12 @@
 import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
-import { ConfirmAccount, ResetPassword, SignIn, SignUp } from 'screens/auth'
+import { ConfirmAccount, ForgotPassword, SignIn, SignUp } from 'screens/auth'
 
 export type AuthStackParamList = {
   SignIn: undefined
   SignUp: undefined
   ConfirmAccount: { email: string }
-  ResetPassword: undefined
+  ForgotPassword: undefined
 }
 
 const AuthStack = createStackNavigator<AuthStackParamList>()
@@ -46,10 +46,10 @@ const AuthStackScreen = (t: Function) => (
       }}
     />
     <AuthStack.Screen
-      name="ResetPassword"
-      component={ResetPassword}
+      name="ForgotPassword"
+      component={ForgotPassword}
       options={{
-        title: t('screen.resetPassword.title')
+        title: t('screen.forgotPassword.title')
       }}
     />
   </AuthStack.Navigator>

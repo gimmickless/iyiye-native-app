@@ -9,7 +9,8 @@ import {
   emailMinLength,
   textColor,
   usernameMaxLength,
-  usernameMinLength
+  usernameMinLength,
+  usernameOrEmailRegex
 } from 'utils/constants'
 import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -39,8 +40,8 @@ const SignIn: React.FC = () => {
         t('common.message.validation.tooLong')
       )
       .matches(
-        /^[A-Z0-9]+$/i,
-        t('screen.signIn.message.validation.invalidUserNameOrEmail')
+        usernameOrEmailRegex,
+        t('screen.signIn.message.validation.invalidUsernameOrEmail')
       ),
     password: Yup.string().required(t('common.message.validation.required'))
   })
@@ -116,7 +117,7 @@ const SignIn: React.FC = () => {
                   type="clear"
                   style={styles.passwordInlineButton}
                   title={t('screen.signIn.button.forgotPassword')}
-                  onPress={() => navigation.navigate('ResetPassword')}
+                  onPress={() => navigation.navigate('ForgotPassword')}
                 />
               </View>
               <Button

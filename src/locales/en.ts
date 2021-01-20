@@ -31,7 +31,7 @@ const englishTranslation = {
       },
       message: {
         validation: {
-          invalidUserNameOrEmail: 'Invalid username or email'
+          invalidUsernameOrEmail: 'Invalid username or email'
         }
       }
     },
@@ -64,8 +64,9 @@ const englishTranslation = {
       },
       message: {
         validation: {
-          invalidUserName: 'Invalid username',
+          invalidUsername: 'Invalid username',
           invalidEmail: 'Invalid email address',
+          invalidPassword: 'Invalid password',
           passwordsNotMatch: 'Passwords do not match',
           tooYoung: 'Not old enough'
         }
@@ -89,9 +90,27 @@ const englishTranslation = {
         resend: 'Send Again'
       }
     },
-    resetPassword: {
-      title: 'Reset Password',
-      label: {}
+    forgotPassword: {
+      title: 'Forgot Password',
+      text: {
+        title: 'We all forget'
+      },
+      label: {
+        username: 'Username',
+        confirmationCode: 'Confirmation Code',
+        newPassword: 'New Password'
+      },
+      button: {
+        sendEmail: 'Send ',
+        done: 'Change'
+      },
+      message: {
+        validation: {
+          invalidUsername: 'Invalid username',
+          invalidPassword: 'Invalid password',
+          invalidConfirmationCode: 'Invalid confirmation code'
+        }
+      }
     },
     recipeKits: {
       title: 'Recipe Kits',
