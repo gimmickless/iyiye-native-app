@@ -25,6 +25,7 @@ import {
 import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
 import { getMaxDateFor18OrMoreYearsOld } from 'utils/validations'
+import { useToast } from 'react-native-styled-toast'
 
 type FormData = {
   fullName: string
@@ -39,6 +40,8 @@ type FormData = {
 const SignUp: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
+  const [signUpLoading, setSignUpLoading] = useState(false)
+  const { toast } = useToast()
   const [showDatePicker, setShowDatePicker] = useState(false)
   const [showTermsModal, setShowTermsModal] = useState(false)
   const [showPrivacyModal, setShowPrivacyModal] = useState(false)
@@ -96,14 +99,21 @@ const SignUp: React.FC = () => {
     password,
     birthDate
   }: FormData) => {
-    console.log('pressed')
-    console.log(fullName)
-    console.log(username)
-    console.log(email)
-    console.log(password)
-    console.log(birthDate)
-    // TODO: Amplify Sign Up
-    navigation.navigate('ConfirmAccount', { email })
+    setSignUpLoading(true)
+    try {
+      console.log('pressed')
+      console.log(fullName)
+      console.log(username)
+      console.log(email)
+      console.log(password)
+      console.log(birthDate)
+      // TODO: Amplify Sign Up
+      navigation.navigate('ConfirmAccount', { email })
+    } catch (err) {
+      toast({ message: err.message ?? err, intent: 'ERROR', duration: 0 })
+    } finally {
+      setSignUpLoading(false)
+    }
   }
 
   return (
@@ -291,6 +301,8 @@ const SignUp: React.FC = () => {
               <Button
                 style={styles.formSubmitButton}
                 title={t('screen.signUp.button.done').toLocaleUpperCase()}
+                loading={signUpLoading}
+                disabled={signUpLoading}
                 onPress={handleSubmit as any}
               />
               {/* TODO: Following added for test. Remove before Prod */}

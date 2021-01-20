@@ -10,6 +10,7 @@ import { en } from 'locales'
 import { RootNavigator } from 'router'
 import AuthUserContextProvider, { AuthUserContext } from 'contexts/Auth'
 import LocalizationContextProvider from 'contexts/Localization'
+import { ToastProvider } from 'react-native-styled-toast'
 
 // Screen optimization: https://reactnavigation.org/docs/react-native-screens
 enableScreens()
@@ -23,13 +24,15 @@ const App: React.FC = () => {
   console.log(authUser)
 
   return (
-    <AuthUserContextProvider>
-      <AppearanceProvider>
-        <LocalizationContextProvider>
-          <RootNavigator />
-        </LocalizationContextProvider>
-      </AppearanceProvider>
-    </AuthUserContextProvider>
+    <AppearanceProvider>
+      <ToastProvider maxToasts={1} position="BOTTOM">
+        <AuthUserContextProvider>
+          <LocalizationContextProvider>
+            <RootNavigator />
+          </LocalizationContextProvider>
+        </AuthUserContextProvider>
+      </ToastProvider>
+    </AppearanceProvider>
   )
 }
 

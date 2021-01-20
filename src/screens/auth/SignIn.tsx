@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import { StyleSheet, Platform, KeyboardAvoidingView, View } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { Input, Button, Text } from 'react-native-elements'
@@ -13,6 +13,7 @@ import {
 } from 'utils/constants'
 import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
+import { useToast } from 'react-native-styled-toast'
 
 type FormData = {
   usernameOrEmail: string
@@ -21,6 +22,8 @@ type FormData = {
 
 const SignIn: React.FC = () => {
   const { t } = useContext(LocalizationContext)
+  const [signInLoading, setSignInLoading] = useState(false)
+  const { toast } = useToast()
   const navigation = useNavigation()
   const passwordRef = useRef<Input>(null)
 
@@ -43,10 +46,17 @@ const SignIn: React.FC = () => {
   })
 
   const onSubmit = ({ usernameOrEmail, password }: FormData) => {
-    console.log('pressed')
-    console.log(usernameOrEmail)
-    console.log(password)
-    // TODO: Amplify Sign In + Navigate to Home
+    setSignInLoading(true)
+    try {
+      console.log('pressed')
+      console.log(usernameOrEmail)
+      console.log(password)
+      // TODO: Amplify Sign In + Navigate to Home
+    } catch (err) {
+      toast({ message: err.message ?? err, intent: 'ERROR', duration: 0 })
+    } finally {
+      setSignInLoading(false)
+    }
   }
 
   return (
@@ -111,6 +121,8 @@ const SignIn: React.FC = () => {
               </View>
               <Button
                 style={styles.formSubmitButton}
+                loading={signInLoading}
+                disabled={signInLoading}
                 title={t('screen.signIn.button.done').toLocaleUpperCase()}
                 onPress={handleSubmit as any}
               />
