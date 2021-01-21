@@ -128,7 +128,7 @@ const SignUp: React.FC = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
-      <ScrollView>
+      <ScrollView keyboardShouldPersistTaps="handled">
         <Text h3 style={styles.title}>
           {t('screen.signUp.text.title')}
         </Text>

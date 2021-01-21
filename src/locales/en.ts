@@ -93,22 +93,26 @@ const englishTranslation = {
     forgotPassword: {
       title: 'Forgot Password',
       text: {
-        title: 'We all forget'
+        title: 'People forget',
+        checkEmail: 'Check your emails for the code'
       },
       label: {
         username: 'Username',
         confirmationCode: 'Confirmation Code',
-        newPassword: 'New Password'
+        newPassword: 'New Password',
+        retypeNewPassword: 'Retype New Password'
       },
       button: {
         sendEmail: 'Send ',
+        resendEmail: 'Resend',
         done: 'Change'
       },
       message: {
         validation: {
           invalidUsername: 'Invalid username',
           invalidPassword: 'Invalid password',
-          invalidConfirmationCode: 'Invalid confirmation code'
+          invalidConfirmationCode: 'Invalid confirmation code',
+          passwordsNotMatch: 'Passwords do not match'
         }
       }
     },
