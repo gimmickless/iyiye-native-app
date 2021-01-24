@@ -140,9 +140,9 @@ const SignIn: React.FC = () => {
           )}
         </Formik>
 
-        <Text style={styles.centeredText}>{`${t(
-          'screen.signIn.text.notHavingAccount'
-        )} `}</Text>
+        <Text style={styles.centeredText}>
+          {`${t('screen.signIn.text.notHavingAccount')}`}&nbsp;
+        </Text>
         <Button
           type="clear"
           style={styles.secondaryButton}
