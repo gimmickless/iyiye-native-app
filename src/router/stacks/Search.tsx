@@ -4,19 +4,19 @@ import { Default as SearchDefault } from 'screens/search'
 import { headerLeftContainerPaddingLeft } from 'utils/constants'
 
 type SearchStackParamList = {
-  Default: undefined
-  List: { sort: 'latest' | 'top' } | undefined
-  Item: { id: string }
-  Author: { userId: string }
-  Summary: undefined
-  Checkout: undefined
+  SearchDefault: undefined
+  SearchList: { sort: 'latest' | 'top' } | undefined
+  SearchItem: { id: string }
+  SearchAuthor: { userId: string }
+  SearchSummary: undefined
+  SearchCheckout: undefined
 }
 
 const SearchStack = createStackNavigator<SearchStackParamList>()
 
 const SearchStackScreen = () => (
   <SearchStack.Navigator
-    initialRouteName="Default"
+    initialRouteName="SearchDefault"
     screenOptions={{
       headerStyle: {
         elevation: 0,
@@ -27,7 +27,7 @@ const SearchStackScreen = () => (
       }
     }}
   >
-    <SearchStack.Screen name="Default" component={SearchDefault} />
+    <SearchStack.Screen name="SearchDefault" component={SearchDefault} />
   </SearchStack.Navigator>
 )
 

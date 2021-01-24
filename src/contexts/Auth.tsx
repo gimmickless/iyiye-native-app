@@ -4,8 +4,7 @@ import Auth from '@aws-amplify/auth'
 type AuthUserState = {
   loaded: boolean
   user?: {
-    firstName: string
-    lastName: string
+    fullName: string
     username: string
     email: string
     address: string
@@ -13,13 +12,11 @@ type AuthUserState = {
     phoneNumber?: string
     picture?: string
     locale?: string
-    zoneInfo?: string
   }
 }
 
 type CreateAuthUserInput = {
-  firstName: string
-  lastName: string
+  fullName: string
   username: string
   email: string
   address: string
@@ -27,17 +24,27 @@ type CreateAuthUserInput = {
   phoneNumber?: string
   picture?: string
   locale?: string
-  zoneInfo?: string
 }
 
 type UpdateAuthUserInput = {
-  firstName: string
-  lastName: string
+  fullName: string
   address: string
   phoneNumber?: string
   picture?: string
   locale?: string
-  zoneInfo?: string
+}
+
+type LoginInput = {
+  usernameOrEmail: string
+  password: string
+}
+
+type UpdateInput = {
+  fullName: string
+  address: string
+  phoneNumber?: string
+  picture?: string
+  locale?: string
 }
 
 type AuthReducerAction =
@@ -60,16 +67,16 @@ const initialState = {
 export const AuthUserContext = React.createContext<{
   state: AuthUserState
   action: {
-    login: React.Dispatch<AuthReducerAction>
-    update: React.Dispatch<AuthReducerAction>
-    logout: React.Dispatch<AuthReducerAction>
+    login: (payload: LoginInput) => Promise<void>
+    update: (payload: UpdateInput) => Promise<void>
+    logout: () => Promise<void>
   }
 }>({
   state: initialState,
   action: {
-    login: () => null,
-    update: () => null,
-    logout: () => null
+    login: () => Promise.resolve(),
+    update: () => Promise.resolve(),
+    logout: () => Promise.resolve()
   }
 })
 
@@ -104,82 +111,71 @@ const authReducer = (
 export default ({ children }: any) => {
   const [state, dispatch] = useReducer(authReducer, initialState)
 
-  const login = () => {
-    return async (payload: { usernameOrEmail: string; password: string }) => {
-      try {
-        const { username, attributes } = await Auth.signIn(
-          payload.usernameOrEmail,
-          payload.password
-        )
-        dispatch({
-          type: 'add_auth_user',
-          payload: {
-            username,
-            firstName: attributes.name,
-            lastName: attributes.family_name,
-            email: attributes.email,
-            address: attributes.address,
-            birthDate: attributes.birthdate,
-            phoneNumber: attributes.phone_number,
-            picture: attributes.picture,
-            locale: attributes.locale,
-            zoneInfo: attributes.zoneinfo
-          } as CreateAuthUserInput
-        })
-      } catch (err) {
-        console.log(`error ocurred: ${err}`)
-      }
+  const login = async (payload: {
+    usernameOrEmail: string
+    password: string
+  }) => {
+    try {
+      const { username, attributes } = await Auth.signIn(
+        payload.usernameOrEmail,
+        payload.password
+      )
+      dispatch({
+        type: 'add_auth_user',
+        payload: {
+          username,
+          fullName: attributes.name,
+          email: attributes.email,
+          address: attributes.address,
+          birthDate: attributes.birthdate,
+          phoneNumber: attributes.phone_number,
+          picture: attributes.picture,
+          locale: attributes.locale
+        } as CreateAuthUserInput
+      })
+    } catch (err) {
+      console.log(`error ocurred: ${err}`)
     }
   }
 
-  const update = () => {
-    return async (payload: {
-      firstName: string
-      lastName: string
-      address: string
-      phoneNumber?: string
-      picture?: string
-      locale?: string
-      zoneInfo?: string
-    }) => {
-      try {
-        let cognitoUser = await Auth.currentAuthenticatedUser()
+  const update = async (payload: {
+    fullName: string
+    address: string
+    phoneNumber?: string
+    picture?: string
+    locale?: string
+  }) => {
+    try {
+      let cognitoUser = await Auth.currentAuthenticatedUser()
 
-        await Auth.updateUserAttributes(cognitoUser, {
-          name: payload.firstName,
-          family_name: payload.lastName,
+      await Auth.updateUserAttributes(cognitoUser, {
+        name: payload.fullName,
+        address: payload.address,
+        phone_number: payload.phoneNumber,
+        picture: payload.picture,
+        locale: payload.locale
+      })
+      dispatch({
+        type: 'update_auth_user',
+        payload: {
+          fullName: payload.fullName,
           address: payload.address,
-          phone_number: payload.phoneNumber,
+          phoneNumber: payload.phoneNumber,
           picture: payload.picture,
-          locale: payload.locale,
-          zoneinfo: payload.zoneInfo
-        })
-        dispatch({
-          type: 'update_auth_user',
-          payload: {
-            firstName: payload.firstName,
-            lastName: payload.lastName,
-            address: payload.address,
-            phoneNumber: payload.phoneNumber,
-            picture: payload.picture,
-            locale: payload.locale,
-            zoneInfo: payload.zoneInfo
-          } as UpdateAuthUserInput
-        })
-      } catch (err) {
-        console.log(`error ocurred: ${err}`)
-      }
+          locale: payload.locale
+        } as UpdateAuthUserInput
+      })
+    } catch (err) {
+      console.log(`error ocurred: ${err}`)
     }
   }
 
-  const logout = () => {
-    return async () => {
-      try {
-        await Auth.signOut()
-        dispatch({ type: 'remove_auth_user' })
-      } catch (err) {
-        console.log(`error ocurred: ${err}`)
-      }
+  const logout = async () => {
+    try {
+      await Auth.signOut()
+      dispatch({ type: 'remove_auth_user' })
+    } catch (err) {
+      console.log(`error ocurred: ${err}`)
     }
   }
 

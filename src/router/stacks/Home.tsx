@@ -4,17 +4,17 @@ import { Default as HomeDefault } from 'screens/home'
 import { headerLeftContainerPaddingLeft } from 'utils/constants'
 
 type HomeStackParamList = {
-  Default: undefined
-  List: { sort: 'latest' | 'top' } | undefined
-  Item: { id: string }
-  Author?: { userId: string }
+  HomeDefault: undefined
+  HomeList: { sort: 'latest' | 'top' } | undefined
+  HomeItem: { id: string }
+  HomeAuthor?: { userId: string }
 }
 
 const HomeStack = createStackNavigator<HomeStackParamList>()
 
 const HomeStackScreen = () => (
   <HomeStack.Navigator
-    initialRouteName="Default"
+    initialRouteName="HomeDefault"
     screenOptions={{
       headerStyle: {
         elevation: 0,
@@ -25,7 +25,7 @@ const HomeStackScreen = () => (
       }
     }}
   >
-    <HomeStack.Screen name="Default" component={HomeDefault} />
+    <HomeStack.Screen name="HomeDefault" component={HomeDefault} />
   </HomeStack.Navigator>
 )
 

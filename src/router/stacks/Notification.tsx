@@ -4,14 +4,14 @@ import { Default as NotificationDefault } from 'screens/notification'
 import { headerLeftContainerPaddingLeft } from 'utils/constants'
 
 type NotificationStackParamList = {
-  Default: undefined
+  NotificationDefault: undefined
 }
 
 const NotificationStack = createStackNavigator<NotificationStackParamList>()
 
 const NotificationStackScreen = () => (
   <NotificationStack.Navigator
-    initialRouteName="Default"
+    initialRouteName="NotificationDefault"
     screenOptions={{
       headerStyle: {
         elevation: 0,
@@ -22,7 +22,10 @@ const NotificationStackScreen = () => (
       }
     }}
   >
-    <NotificationStack.Screen name="Default" component={NotificationDefault} />
+    <NotificationStack.Screen
+      name="NotificationDefault"
+      component={NotificationDefault}
+    />
   </NotificationStack.Navigator>
 )
 

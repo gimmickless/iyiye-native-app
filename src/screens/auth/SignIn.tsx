@@ -15,6 +15,8 @@ import {
 import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
 import { useToast } from 'react-native-styled-toast'
+import { AuthUserContext } from 'contexts/Auth'
+import { TabNames } from 'types'
 
 type FormData = {
   usernameOrEmail: string
@@ -23,6 +25,7 @@ type FormData = {
 
 const SignIn: React.FC = () => {
   const { t } = useContext(LocalizationContext)
+  const { action } = useContext(AuthUserContext)
   const [signInLoading, setSignInLoading] = useState(false)
   const { toast } = useToast()
   const navigation = useNavigation()
@@ -46,12 +49,12 @@ const SignIn: React.FC = () => {
     password: Yup.string().required(t('common.message.validation.required'))
   })
 
-  const onSubmit = ({ usernameOrEmail, password }: FormData) => {
+  const onSubmit = async ({ usernameOrEmail, password }: FormData) => {
     setSignInLoading(true)
     try {
       console.log('pressed')
-      console.log(usernameOrEmail)
-      console.log(password)
+      await action.login({ usernameOrEmail, password })
+      navigation.navigate(TabNames.Home)
       // TODO: Amplify Sign In + Navigate to Home
     } catch (err) {
       toast({ message: err.message ?? err, intent: 'ERROR', duration: 0 })
@@ -126,6 +129,12 @@ const SignIn: React.FC = () => {
                 disabled={signInLoading}
                 title={t('screen.signIn.button.done').toLocaleUpperCase()}
                 onPress={handleSubmit as any}
+              />
+              {/* TODO: Following added for test. Remove before Prod */}
+              <Button
+                style={styles.formSubmitButton}
+                title="To Home"
+                onPress={() => navigation.navigate(TabNames.Home)}
               />
             </View>
           )}

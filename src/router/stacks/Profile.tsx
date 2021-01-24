@@ -4,16 +4,16 @@ import { Default as ProfileDefault } from 'screens/profile'
 import { headerLeftContainerPaddingLeft } from 'utils/constants'
 
 type ProfileStackParamList = {
-  Default: undefined
-  List: undefined
-  Item: { id: string }
+  ProfileDefault: undefined
+  ProfileList: undefined
+  ProfileItem: { id: string }
 }
 
 const ProfileStack = createStackNavigator<ProfileStackParamList>()
 
 const ProfileStackScreen = () => (
   <ProfileStack.Navigator
-    initialRouteName="Default"
+    initialRouteName="ProfileDefault"
     screenOptions={{
       headerStyle: {
         elevation: 0,
@@ -24,7 +24,7 @@ const ProfileStackScreen = () => (
       }
     }}
   >
-    <ProfileStack.Screen name="Default" component={ProfileDefault} />
+    <ProfileStack.Screen name="ProfileDefault" component={ProfileDefault} />
   </ProfileStack.Navigator>
 )
 

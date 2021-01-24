@@ -13,15 +13,7 @@ import {
   SearchStackScreen
 } from './stacks'
 import { LocalizationContext } from 'contexts/Localization'
-// import { LocalizationContext } from 'contexts/Localization'
-
-enum TabNames {
-  Home = 'Home',
-  Search = 'Search',
-  Notifications = 'Notification',
-  Profile = 'Profile',
-  Auth = 'Auth'
-}
+import { TabNames } from 'types'
 
 const Tab = createBottomTabNavigator()
 
