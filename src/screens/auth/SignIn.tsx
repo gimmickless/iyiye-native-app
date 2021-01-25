@@ -1,6 +1,6 @@
 import React, { useContext, useRef, useState } from 'react'
 import { StyleSheet, Platform, KeyboardAvoidingView, View } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
+import { CommonActions, useNavigation } from '@react-navigation/native'
 import { Input, Button, Text } from 'react-native-elements'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
@@ -16,7 +16,7 @@ import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
 import { useToast } from 'react-native-styled-toast'
 import { AuthUserContext } from 'contexts/Auth'
-import { TabNames } from 'types'
+import { AuthStackScreenNames, TabNames } from 'types/route'
 
 type FormData = {
   usernameOrEmail: string
@@ -54,8 +54,7 @@ const SignIn: React.FC = () => {
     try {
       console.log('pressed')
       await action.login({ usernameOrEmail, password })
-      navigation.navigate(TabNames.Home)
-      // TODO: Amplify Sign In + Navigate to Home
+      navigation.dispatch(CommonActions.goBack()) // Return to previous screen
     } catch (err) {
       toast({ message: err.message ?? err, intent: 'ERROR', duration: 0 })
     } finally {
@@ -120,7 +119,9 @@ const SignIn: React.FC = () => {
                   type="clear"
                   style={styles.passwordInlineButton}
                   title={t('screen.signIn.button.forgotPassword')}
-                  onPress={() => navigation.navigate('ForgotPassword')}
+                  onPress={() =>
+                    navigation.navigate(AuthStackScreenNames.ForgotPassword)
+                  }
                 />
               </View>
               <Button
@@ -147,7 +148,7 @@ const SignIn: React.FC = () => {
           type="clear"
           style={styles.secondaryButton}
           title={t('screen.signIn.button.signUp')}
-          onPress={() => navigation.navigate('SignUp')}
+          onPress={() => navigation.navigate(AuthStackScreenNames.SignUp)}
         />
       </ScrollView>
     </KeyboardAvoidingView>

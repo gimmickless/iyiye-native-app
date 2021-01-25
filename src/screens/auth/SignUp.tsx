@@ -28,6 +28,7 @@ import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
 import { getMaxDateFor18OrMoreYearsOld } from 'utils/validations'
 import { useToast } from 'react-native-styled-toast'
+import { AuthStackScreenNames } from 'types/route'
 
 type FormData = {
   fullName: string
@@ -115,7 +116,7 @@ const SignUp: React.FC = () => {
       console.log(password)
       console.log(birthDate)
       // TODO: Amplify Sign Up
-      navigation.navigate('ConfirmAccount', { email })
+      navigation.navigate(AuthStackScreenNames.ConfirmAccount, { email })
     } catch (err) {
       toast({ message: err.message ?? err, intent: 'ERROR', duration: 0 })
     } finally {
@@ -317,7 +318,7 @@ const SignUp: React.FC = () => {
                 style={styles.modalBottomButton}
                 title="To Confirm Account"
                 onPress={() =>
-                  navigation.navigate('ConfirmAccount', {
+                  navigation.navigate(AuthStackScreenNames.ConfirmAccount, {
                     email: values.email
                   })
                 }
@@ -333,7 +334,7 @@ const SignUp: React.FC = () => {
           type="clear"
           style={styles.secondaryButton}
           title={t('screen.signUp.button.signIn')}
-          onPress={() => navigation.navigate('SignIn')}
+          onPress={() => navigation.navigate(AuthStackScreenNames.SignIn)}
         />
 
         <Modal

@@ -2,6 +2,7 @@ import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import { Default as HomeDefault } from 'screens/home'
 import { headerLeftContainerPaddingLeft } from 'utils/constants'
+import { HomeStackScreenNames } from 'types/route'
 
 type HomeStackParamList = {
   HomeDefault: undefined
@@ -14,7 +15,7 @@ const HomeStack = createStackNavigator<HomeStackParamList>()
 
 const HomeStackScreen = () => (
   <HomeStack.Navigator
-    initialRouteName="HomeDefault"
+    initialRouteName={HomeStackScreenNames.Default}
     screenOptions={{
       headerStyle: {
         elevation: 0,
@@ -25,7 +26,10 @@ const HomeStackScreen = () => (
       }
     }}
   >
-    <HomeStack.Screen name="HomeDefault" component={HomeDefault} />
+    <HomeStack.Screen
+      name={HomeStackScreenNames.Default}
+      component={HomeDefault}
+    />
   </HomeStack.Navigator>
 )
 

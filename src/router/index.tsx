@@ -13,7 +13,7 @@ import {
   SearchStackScreen
 } from './stacks'
 import { LocalizationContext } from 'contexts/Localization'
-import { TabNames } from 'types'
+import { TabNames } from 'types/route'
 
 const Tab = createBottomTabNavigator()
 
@@ -34,7 +34,7 @@ export const RootNavigator = () => {
               iconName = focused ? 'home' : 'home-outline'
             } else if (route.name === TabNames.Search) {
               iconName = 'magnify'
-            } else if (route.name === TabNames.Notifications) {
+            } else if (route.name === TabNames.Notification) {
               iconName = focused ? 'bell' : 'bell-outline'
             } else if (route.name === TabNames.Profile) {
               iconName = focused ? 'account' : 'account-outline'
@@ -66,7 +66,7 @@ export const RootNavigator = () => {
         <Tab.Screen name={TabNames.Search}>
           {() => SearchStackScreen()}
         </Tab.Screen>
-        <Tab.Screen name={TabNames.Notifications}>
+        <Tab.Screen name={TabNames.Notification}>
           {() => NotificationStackScreen()}
         </Tab.Screen>
         {isSignedIn ? (

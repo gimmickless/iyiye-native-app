@@ -1,6 +1,7 @@
 import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import { ConfirmAccount, ForgotPassword, SignIn, SignUp } from 'screens/auth'
+import { AuthStackScreenNames } from 'types/route'
 
 export type AuthStackParamList = {
   SignIn: undefined
@@ -13,7 +14,7 @@ const AuthStack = createStackNavigator<AuthStackParamList>()
 
 const AuthStackScreen = (t: Function) => (
   <AuthStack.Navigator
-    initialRouteName="SignIn"
+    initialRouteName={AuthStackScreenNames.SignIn}
     screenOptions={{
       // headerTintColor: 'ghostwhite',
       headerStyle: {
@@ -25,28 +26,28 @@ const AuthStackScreen = (t: Function) => (
     }}
   >
     <AuthStack.Screen
-      name="SignIn"
+      name={AuthStackScreenNames.SignIn}
       component={SignIn}
       options={{
         title: t('screen.signIn.title')
       }}
     />
     <AuthStack.Screen
-      name="SignUp"
+      name={AuthStackScreenNames.SignUp}
       component={SignUp}
       options={{
         title: t('screen.signUp.title')
       }}
     />
     <AuthStack.Screen
-      name="ConfirmAccount"
+      name={AuthStackScreenNames.ConfirmAccount}
       component={ConfirmAccount}
       options={{
         title: t('screen.confirmAccount.title')
       }}
     />
     <AuthStack.Screen
-      name="ForgotPassword"
+      name={AuthStackScreenNames.ForgotPassword}
       component={ForgotPassword}
       options={{
         title: t('screen.forgotPassword.title')

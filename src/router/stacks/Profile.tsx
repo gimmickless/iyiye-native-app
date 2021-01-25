@@ -2,6 +2,7 @@ import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import { Default as ProfileDefault } from 'screens/profile'
 import { headerLeftContainerPaddingLeft } from 'utils/constants'
+import { ProfileStackScreenNames } from 'types/route'
 
 type ProfileStackParamList = {
   ProfileDefault: undefined
@@ -13,7 +14,7 @@ const ProfileStack = createStackNavigator<ProfileStackParamList>()
 
 const ProfileStackScreen = () => (
   <ProfileStack.Navigator
-    initialRouteName="ProfileDefault"
+    initialRouteName={ProfileStackScreenNames.Default}
     screenOptions={{
       headerStyle: {
         elevation: 0,
@@ -24,7 +25,10 @@ const ProfileStackScreen = () => (
       }
     }}
   >
-    <ProfileStack.Screen name="ProfileDefault" component={ProfileDefault} />
+    <ProfileStack.Screen
+      name={ProfileStackScreenNames.Default}
+      component={ProfileDefault}
+    />
   </ProfileStack.Navigator>
 )
 

@@ -2,6 +2,7 @@ import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import { Default as NotificationDefault } from 'screens/notification'
 import { headerLeftContainerPaddingLeft } from 'utils/constants'
+import { NotificationStackScreenNames } from 'types/route'
 
 type NotificationStackParamList = {
   NotificationDefault: undefined
@@ -11,7 +12,7 @@ const NotificationStack = createStackNavigator<NotificationStackParamList>()
 
 const NotificationStackScreen = () => (
   <NotificationStack.Navigator
-    initialRouteName="NotificationDefault"
+    initialRouteName={NotificationStackScreenNames.Default}
     screenOptions={{
       headerStyle: {
         elevation: 0,
@@ -23,7 +24,7 @@ const NotificationStackScreen = () => (
     }}
   >
     <NotificationStack.Screen
-      name="NotificationDefault"
+      name={NotificationStackScreenNames.Default}
       component={NotificationDefault}
     />
   </NotificationStack.Navigator>

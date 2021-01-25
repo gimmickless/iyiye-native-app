@@ -22,6 +22,7 @@ import {
 import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
 import { useToast } from 'react-native-styled-toast'
+import { AuthStackScreenNames } from 'types/route'
 
 type UserInfoFormData = {
   username: string
@@ -106,7 +107,7 @@ const ForgotPasword: React.FC = () => {
       console.log('pressed')
       console.log(confirmationCode)
       console.log(newPassword)
-      navigation.navigate('SignIn')
+      navigation.navigate(AuthStackScreenNames.SignIn)
       // TODO: Amplify ForgotPasswordSubmit
     } catch (err) {
       toast({ message: err.message ?? err, intent: 'ERROR', duration: 0 })
