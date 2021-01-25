@@ -72,18 +72,21 @@ const SignUp: React.FC = () => {
       )
       .matches(
         usernameRegex,
-        t('screen.signUp.message.validation.invalidUsername')
+        t('screen.auth.signUp.message.validation.invalidUsername')
       ),
     email: Yup.string()
       .required(t('common.message.validation.required'))
       .min(emailMinLength, t('common.message.validation.tooShort'))
       .max(emailMaxLength, t('common.message.validation.tooLong'))
-      .matches(emailRegex, t('screen.signUp.message.validation.invalidEmail')),
+      .matches(
+        emailRegex,
+        t('screen.auth.signUp.message.validation.invalidEmail')
+      ),
     password: Yup.string()
       .required(t('common.message.validation.required'))
       .matches(
         passwordRegex,
-        t('screen.signUp.message.validation.invalidPassword')
+        t('screen.auth.signUp.message.validation.invalidPassword')
       ),
     retypePassword: Yup.string()
       .required(t('common.message.validation.required'))
@@ -93,7 +96,7 @@ const SignUp: React.FC = () => {
       ),
     birthDate: Yup.date()
       .required(t('common.message.validation.required'))
-      .min(maxBirthDate, t('screen.signUp.message.validation.tooYoung')),
+      .min(maxBirthDate, t('screen.auth.signUp.message.validation.tooYoung')),
     termsAgreed: Yup.boolean().oneOf(
       [true],
       t('common.message.validation.mustCheck')
@@ -131,7 +134,7 @@ const SignUp: React.FC = () => {
     >
       <ScrollView keyboardShouldPersistTaps="handled">
         <Text h3 style={styles.title}>
-          {t('screen.signUp.text.title')}
+          {t('screen.auth.signUp.text.title')}
         </Text>
         <Formik
           initialValues={{
@@ -157,7 +160,7 @@ const SignUp: React.FC = () => {
             <View>
               <Input
                 value={values.fullName}
-                placeholder={t('screen.signUp.label.fullName')}
+                placeholder={t('screen.auth.signUp.label.fullName')}
                 onChangeText={handleChange('fullName')}
                 onBlur={handleBlur('fullName')}
                 errorMessage={errors.fullName}
@@ -173,7 +176,7 @@ const SignUp: React.FC = () => {
               <Input
                 value={values.username}
                 ref={usernameRef}
-                placeholder={t('screen.signUp.label.username')}
+                placeholder={t('screen.auth.signUp.label.username')}
                 onChangeText={handleChange('username')}
                 onBlur={handleBlur('username')}
                 errorMessage={errors.username}
@@ -190,7 +193,7 @@ const SignUp: React.FC = () => {
               <Input
                 value={values.email}
                 ref={emailRef}
-                placeholder={t('screen.signUp.label.email')}
+                placeholder={t('screen.auth.signUp.label.email')}
                 onChangeText={handleChange('email')}
                 onBlur={handleBlur('email')}
                 errorMessage={errors.email}
@@ -206,7 +209,7 @@ const SignUp: React.FC = () => {
               />
               <Input
                 value={values.password}
-                placeholder={t('screen.signUp.label.password')}
+                placeholder={t('screen.auth.signUp.label.password')}
                 onChangeText={handleChange('password')}
                 onBlur={handleBlur('password')}
                 errorMessage={errors.password}
@@ -222,7 +225,7 @@ const SignUp: React.FC = () => {
               />
               <Input
                 value={values.retypePassword}
-                placeholder={t('screen.signUp.label.retypePassword')}
+                placeholder={t('screen.auth.signUp.label.retypePassword')}
                 onChangeText={handleChange('retypePassword')}
                 onBlur={handleBlur('retypePassword')}
                 errorMessage={errors.retypePassword}
@@ -244,7 +247,7 @@ const SignUp: React.FC = () => {
                         : ''
                     }
                     ref={birthDateRef}
-                    placeholder={t('screen.signUp.label.birthDate')}
+                    placeholder={t('screen.auth.signUp.label.birthDate')}
                     onFocus={() => setShowDatePicker(true)}
                     onChangeText={handleChange('birthDate')}
                     onBlur={handleBlur('birthDate')}
@@ -274,23 +277,24 @@ const SignUp: React.FC = () => {
                 title={
                   <View style={styles.checkboxText}>
                     <Text>
-                      {t('screen.signUp.label.termsAgreed.start')}&nbsp;
+                      {t('screen.auth.signUp.label.termsAgreed.start')}&nbsp;
                     </Text>
                     <Pressable onPress={() => setShowTermsModal(true)}>
                       <Text style={styles.linkText}>
-                        {t('screen.signUp.label.termsAgreed.terms')}
+                        {t('screen.auth.signUp.label.termsAgreed.terms')}
                       </Text>
                     </Pressable>
                     <Text>
-                      &nbsp;{t('screen.signUp.label.termsAgreed.middle')}&nbsp;
+                      &nbsp;{t('screen.auth.signUp.label.termsAgreed.middle')}
+                      &nbsp;
                     </Text>
                     <Pressable onPress={() => setShowPrivacyModal(true)}>
                       <Text style={styles.linkText}>
-                        {t('screen.signUp.label.termsAgreed.privacy')}
+                        {t('screen.auth.signUp.label.termsAgreed.privacy')}
                       </Text>
                     </Pressable>
                     <Text>
-                      &nbsp;{t('screen.signUp.label.termsAgreed.end')}
+                      &nbsp;{t('screen.auth.signUp.label.termsAgreed.end')}
                     </Text>
                   </View>
                 }
@@ -308,7 +312,7 @@ const SignUp: React.FC = () => {
               )}
               <Button
                 style={styles.formSubmitButton}
-                title={t('screen.signUp.button.done').toLocaleUpperCase()}
+                title={t('screen.auth.signUp.button.done').toLocaleUpperCase()}
                 loading={signUpLoading}
                 disabled={signUpLoading}
                 onPress={handleSubmit as any}
@@ -333,7 +337,7 @@ const SignUp: React.FC = () => {
         <Button
           type="clear"
           style={styles.secondaryButton}
-          title={t('screen.signUp.button.signIn')}
+          title={t('screen.auth.signUp.button.signIn')}
           onPress={() => navigation.navigate(AuthStackScreenNames.SignIn)}
         />
 
@@ -345,7 +349,7 @@ const SignUp: React.FC = () => {
           <View style={styles.modalContainerView}>
             <ScrollView>
               <Text h3 style={styles.modalTitle}>
-                {t('screen.signUp.text.termsModalTitle')}
+                {t('screen.auth.signUp.text.termsModalTitle')}
               </Text>
               <Text>Terms of Service text here</Text>
             </ScrollView>
@@ -364,7 +368,7 @@ const SignUp: React.FC = () => {
           <View style={styles.modalContainerView}>
             <ScrollView>
               <Text h3 style={styles.modalTitle}>
-                {t('screen.signUp.text.privacyModalTitle')}
+                {t('screen.auth.signUp.text.privacyModalTitle')}
               </Text>
               <Text>Privacy policy text here</Text>
             </ScrollView>

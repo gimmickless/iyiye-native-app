@@ -56,7 +56,7 @@ const ForgotPasword: React.FC = () => {
       .max(usernameMaxLength, t('common.message.validation.tooLong'))
       .matches(
         usernameRegex,
-        t('screen.forgotPassword.message.validation.invalidUsername')
+        t('screen.auth.forgotPassword.message.validation.invalidUsername')
       )
   })
 
@@ -66,19 +66,21 @@ const ForgotPasword: React.FC = () => {
         .required(t('common.message.validation.required'))
         .matches(
           forgotPasswordConfirmationCodeRegex,
-          t('screen.forgotPassword.message.validation.invalidConfirmationCode')
+          t(
+            'screen.auth.forgotPassword.message.validation.invalidConfirmationCode'
+          )
         ),
       newPassword: Yup.string()
         .required(t('common.message.validation.required'))
         .matches(
           passwordRegex,
-          t('screen.forgotPassword.message.validation.invalidPassword')
+          t('screen.auth.forgotPassword.message.validation.invalidPassword')
         ),
       retypeNewPassword: Yup.string()
         .required(t('common.message.validation.required'))
         .oneOf(
           [Yup.ref('newPassword'), null],
-          'screen.forgotPassword.message.validation.passwordsNotMatch'
+          'screen.auth.forgotPassword.message.validation.passwordsNotMatch'
         )
     }
   )
@@ -123,7 +125,7 @@ const ForgotPasword: React.FC = () => {
     >
       <ScrollView keyboardShouldPersistTaps="handled">
         <Text h3 style={styles.title}>
-          {t('screen.forgotPassword.text.title')}
+          {t('screen.auth.forgotPassword.text.title')}
         </Text>
 
         <Formik
@@ -138,7 +140,7 @@ const ForgotPasword: React.FC = () => {
               <View style={styles.inputAndButtonCol1}>
                 <Input
                   value={values.username}
-                  placeholder={t('screen.forgotPassword.label.username')}
+                  placeholder={t('screen.auth.forgotPassword.label.username')}
                   onChangeText={handleChange('username')}
                   onBlur={handleBlur('username')}
                   errorMessage={errors.username}
@@ -159,8 +161,8 @@ const ForgotPasword: React.FC = () => {
                   loading={sendEmailLoading}
                   disabled={sendEmailLoading}
                   title={(!emailSent
-                    ? t('screen.forgotPassword.button.sendEmail')
-                    : t('screen.forgotPassword.button.resendEmail')
+                    ? t('screen.auth.forgotPassword.button.sendEmail')
+                    : t('screen.auth.forgotPassword.button.resendEmail')
                   ).toLocaleUpperCase()}
                   onPress={handleSubmit as any}
                 />
@@ -174,7 +176,7 @@ const ForgotPasword: React.FC = () => {
         {emailSent && (
           <Card>
             <Text h4 style={styles.title}>
-              {t('screen.forgotPassword.text.checkEmail')}
+              {t('screen.auth.forgotPassword.text.checkEmail')}
             </Text>
             <Formik
               initialValues={{
@@ -190,7 +192,7 @@ const ForgotPasword: React.FC = () => {
                   <Input
                     value={values.confirmationCode}
                     placeholder={t(
-                      'screen.forgotPassword.label.confirmationCode'
+                      'screen.auth.forgotPassword.label.confirmationCode'
                     )}
                     onChangeText={handleChange('confirmationCode')}
                     onBlur={handleBlur('confirmationCode')}
@@ -207,7 +209,9 @@ const ForgotPasword: React.FC = () => {
                   <Input
                     value={values.newPassword}
                     ref={newPasswordRef}
-                    placeholder={t('screen.forgotPassword.label.newPassword')}
+                    placeholder={t(
+                      'screen.auth.forgotPassword.label.newPassword'
+                    )}
                     onChangeText={handleChange('newPassword')}
                     onBlur={handleBlur('newPassword')}
                     errorMessage={errors.newPassword}
@@ -225,7 +229,7 @@ const ForgotPasword: React.FC = () => {
                     value={values.retypeNewPassword}
                     ref={retypeNewPasswordRef}
                     placeholder={t(
-                      'screen.forgotPassword.label.retypeNewPassword'
+                      'screen.auth.forgotPassword.label.retypeNewPassword'
                     )}
                     onChangeText={handleChange('retypeNewPassword')}
                     onBlur={handleBlur('retypeNewPassword')}
@@ -243,7 +247,7 @@ const ForgotPasword: React.FC = () => {
                     loading={sendNewPasswordLoading}
                     disabled={sendNewPasswordLoading}
                     title={t(
-                      'screen.forgotPassword.button.done'
+                      'screen.auth.forgotPassword.button.done'
                     ).toLocaleUpperCase()}
                     onPress={handleSubmit as any}
                   />

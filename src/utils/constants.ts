@@ -19,9 +19,14 @@ export const commentMinLength = 3
 export const commentMaxLength = 255
 
 // Styles
+export const homeHeaderHeight = 120
 export const headerLeftContainerPaddingLeft = 10
 
 export const textColor = {
+  header: {
+    title: 'dimgrey',
+    subtitle: 'dimgrey'
+  },
   screenBody: {
     title: 'dimgrey',
     subtitle: 'dimgrey'

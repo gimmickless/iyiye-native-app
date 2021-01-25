@@ -1,19 +1,6 @@
 import React, { useReducer } from 'react'
 import Auth from '@aws-amplify/auth'
-
-type AuthUserState = {
-  loaded: boolean
-  user?: {
-    fullName: string
-    username: string
-    email: string
-    address: string
-    birthDate: string
-    phoneNumber?: string
-    picture?: string
-    locale?: string
-  }
-}
+import { AuthUserState } from 'types/context'
 
 type CreateAuthUserInput = {
   fullName: string
@@ -88,20 +75,20 @@ const authReducer = (
     case 'add_auth_user':
       return {
         loaded: true,
-        user: action.payload
+        props: action.payload
       }
     case 'update_auth_user':
       return {
         loaded: true,
-        user: {
-          ...state.user,
+        props: {
+          ...state.props,
           ...action.payload
         }
       } as AuthUserState
     case 'remove_auth_user':
       return {
         loaded: true,
-        user: undefined
+        props: undefined
       }
     default:
       return state

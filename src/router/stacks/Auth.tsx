@@ -29,28 +29,28 @@ const AuthStackScreen = (t: Function) => (
       name={AuthStackScreenNames.SignIn}
       component={SignIn}
       options={{
-        title: t('screen.signIn.title')
+        title: t('screen.auth.signIn.title')
       }}
     />
     <AuthStack.Screen
       name={AuthStackScreenNames.SignUp}
       component={SignUp}
       options={{
-        title: t('screen.signUp.title')
+        title: t('screen.auth.signUp.title')
       }}
     />
     <AuthStack.Screen
       name={AuthStackScreenNames.ConfirmAccount}
       component={ConfirmAccount}
       options={{
-        title: t('screen.confirmAccount.title')
+        title: t('screen.auth.confirmAccount.title')
       }}
     />
     <AuthStack.Screen
       name={AuthStackScreenNames.ForgotPassword}
       component={ForgotPassword}
       options={{
-        title: t('screen.forgotPassword.title')
+        title: t('screen.auth.forgotPassword.title')
       }}
     />
   </AuthStack.Navigator>

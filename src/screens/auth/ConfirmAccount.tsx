@@ -47,10 +47,10 @@ const ConfirmAccount: React.FC = () => {
     >
       <ScrollView keyboardShouldPersistTaps="handled">
         <Text h3 style={styles.title}>
-          {t('screen.confirmAccount.text.title')}
+          {t('screen.auth.confirmAccount.text.title')}
         </Text>
         <Text h4 style={styles.description}>
-          {t('screen.confirmAccount.text.subtitle', { email })}
+          {t('screen.auth.confirmAccount.text.subtitle', { email })}
         </Text>
         <Formik
           initialValues={{
@@ -63,7 +63,9 @@ const ConfirmAccount: React.FC = () => {
             <View>
               <Input
                 value={values.verificationCode}
-                placeholder={t('screen.confirmAccount.label.verificationCode')}
+                placeholder={t(
+                  'screen.auth.confirmAccount.label.verificationCode'
+                )}
                 onChangeText={handleChange('verificationCode')}
                 onBlur={handleBlur('verificationCode')}
                 errorMessage={errors.verificationCode}
@@ -78,7 +80,7 @@ const ConfirmAccount: React.FC = () => {
               <Button
                 style={styles.formSubmitButton}
                 title={t(
-                  'screen.confirmAccount.button.done'
+                  'screen.auth.confirmAccount.button.done'
                 ).toLocaleUpperCase()}
                 onPress={handleSubmit as any}
               />
@@ -87,12 +89,12 @@ const ConfirmAccount: React.FC = () => {
         </Formik>
 
         <Text style={styles.centeredText}>{`${t(
-          'screen.confirmAccount.text.notReceivedCode'
+          'screen.auth.confirmAccount.text.notReceivedCode'
         )} `}</Text>
         <Button
           type="clear"
           style={styles.secondaryButton}
-          title={t('screen.confirmAccount.button.resend')}
+          title={t('screen.auth.confirmAccount.button.resend')}
           onPress={onResendCode}
         />
       </ScrollView>

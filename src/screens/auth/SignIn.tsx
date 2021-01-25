@@ -44,7 +44,7 @@ const SignIn: React.FC = () => {
       )
       .matches(
         usernameOrEmailRegex,
-        t('screen.signIn.message.validation.invalidUsernameOrEmail')
+        t('screen.auth.signIn.message.validation.invalidUsernameOrEmail')
       ),
     password: Yup.string().required(t('common.message.validation.required'))
   })
@@ -69,7 +69,7 @@ const SignIn: React.FC = () => {
     >
       <ScrollView keyboardShouldPersistTaps="handled">
         <Text h3 style={styles.title}>
-          {t('screen.signIn.text.title')}
+          {t('screen.auth.signIn.text.title')}
         </Text>
         <Formik
           initialValues={{
@@ -83,7 +83,7 @@ const SignIn: React.FC = () => {
             <View>
               <Input
                 value={values.usernameOrEmail}
-                placeholder={t('screen.signIn.label.usernameOrEmail')}
+                placeholder={t('screen.auth.signIn.label.usernameOrEmail')}
                 onChangeText={handleChange('usernameOrEmail')}
                 onBlur={handleBlur('usernameOrEmail')}
                 errorMessage={errors.usernameOrEmail}
@@ -102,7 +102,7 @@ const SignIn: React.FC = () => {
                   <Input
                     value={values.password}
                     ref={passwordRef}
-                    placeholder={t('screen.signIn.label.password')}
+                    placeholder={t('screen.auth.signIn.label.password')}
                     onChangeText={handleChange('password')}
                     onBlur={handleBlur('password')}
                     errorMessage={errors.password}
@@ -118,7 +118,7 @@ const SignIn: React.FC = () => {
                 <Button
                   type="clear"
                   style={styles.passwordInlineButton}
-                  title={t('screen.signIn.button.forgotPassword')}
+                  title={t('screen.auth.signIn.button.forgotPassword')}
                   onPress={() =>
                     navigation.navigate(AuthStackScreenNames.ForgotPassword)
                   }
@@ -128,7 +128,7 @@ const SignIn: React.FC = () => {
                 style={styles.formSubmitButton}
                 loading={signInLoading}
                 disabled={signInLoading}
-                title={t('screen.signIn.button.done').toLocaleUpperCase()}
+                title={t('screen.auth.signIn.button.done').toLocaleUpperCase()}
                 onPress={handleSubmit as any}
               />
               {/* TODO: Following added for test. Remove before Prod */}
@@ -142,12 +142,12 @@ const SignIn: React.FC = () => {
         </Formik>
 
         <Text style={styles.centeredText}>
-          {`${t('screen.signIn.text.notHavingAccount')}`}&nbsp;
+          {`${t('screen.auth.signIn.text.notHavingAccount')}`}&nbsp;
         </Text>
         <Button
           type="clear"
           style={styles.secondaryButton}
-          title={t('screen.signIn.button.signUp')}
+          title={t('screen.auth.signIn.button.signUp')}
           onPress={() => navigation.navigate(AuthStackScreenNames.SignUp)}
         />
       </ScrollView>
