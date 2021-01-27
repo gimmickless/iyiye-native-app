@@ -9,5 +9,12 @@ export type AuthUserState = {
     phoneNumber?: string
     picture?: string
     locale?: string
+    theme?: string
+    bio?: string
+    contactable?: boolean
+    homeAddress?: string
+    officeAddress?: string
+    otherAddress1?: string
+    otherAddress2?: string
   }
 }

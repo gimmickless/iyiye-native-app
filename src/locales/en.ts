@@ -134,6 +134,11 @@ const englishTranslation = {
             current: 'Current'
           }
         }
+      },
+      addresses: {
+        button: {
+          create: 'Create New Address'
+        }
       }
     },
     recipeKits: {

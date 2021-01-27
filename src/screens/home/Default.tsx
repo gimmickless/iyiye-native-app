@@ -1,5 +1,5 @@
-import React, { useContext, useLayoutEffect } from 'react'
-import { View, StyleSheet, ActivityIndicator, Pressable } from 'react-native'
+import React, { useContext, useLayoutEffect, useMemo } from 'react'
+import { View, StyleSheet, Pressable } from 'react-native'
 import { Button, Text } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native'
 import { AuthUserContext } from 'contexts/Auth'
@@ -8,17 +8,18 @@ import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
 import { MaterialIcons } from '@expo/vector-icons'
 import { HomeStackScreenNames } from 'types/route'
+import LoadingView from 'components/shared/LoadingView'
 
 const Default: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
   const { state: authUser } = useContext(AuthUserContext)
+  const isAuthUser = useMemo(() => authUser.props ?? undefined, [authUser])
   // Customize header
   useLayoutEffect(() => {
     navigation.setOptions({
       headerStyle: { height: homeHeaderHeight, elevation: 0, shadowOpacity: 0 },
       headerTitle: () => {
-        const isAuthUser = authUser.props ?? undefined
         return (
           <View style={styles.headerTitleContainer}>
             <Text h3 style={styles.headerTitlePrimaryText}>
@@ -60,12 +61,10 @@ const Default: React.FC = () => {
         </Pressable>
       )
     })
-  }, [authUser, navigation, t])
+  }, [authUser, isAuthUser, navigation, t])
 
   return !authUser.loaded ? (
-    <View style={styles.loadingView}>
-      <ActivityIndicator />
-    </View>
+    <LoadingView />
   ) : (
     <ScrollView style={styles.view}>
       <Button title="To Login" onPress={() => navigation.navigate('SignIn')} />
@@ -76,10 +75,6 @@ const Default: React.FC = () => {
 const styles = StyleSheet.create({
   view: {
     flex: 1
-  },
-  loadingView: {
-    flex: 1,
-    justifyContent: 'center'
   },
   headerTitleContainer: {
     flex: 1,

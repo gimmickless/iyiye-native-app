@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useMemo } from 'react'
 import { StyleSheet, Platform, KeyboardAvoidingView, View } from 'react-native'
 import { RouteProp, useRoute } from '@react-navigation/native'
 import { Input, Button, Text } from 'react-native-elements'
@@ -21,7 +21,7 @@ type ConfirmAccountScreenRouteProp = RouteProp<
 const ConfirmAccount: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const route = useRoute<ConfirmAccountScreenRouteProp>()
-  const email = route.params.email
+  const email = useMemo(() => route.params.email, [route])
 
   const formSchema: Yup.SchemaOf<FormData> = Yup.object().shape({
     verificationCode: Yup.string().required(
