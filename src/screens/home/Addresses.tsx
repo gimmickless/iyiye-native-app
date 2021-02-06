@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from 'react'
+import React, { useContext, useLayoutEffect, useMemo, useState } from 'react'
 import { View, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native'
 import { Button } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native'
@@ -26,6 +26,7 @@ enum AddressTypes {
 
 const Addresses: React.FC = () => {
   const { t } = useContext(LocalizationContext)
+  const navigation = useNavigation()
   const { state: authUser } = useContext(AuthUserContext)
   const [upsertAddressModal, setUpsertAddressModal] = useState(false)
   const addresses = useMemo(
@@ -38,6 +39,17 @@ const Addresses: React.FC = () => {
     ],
     [authUser]
   )
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Button
+          onPress={() => setUpsertAddressModal(false)}
+          title={t('screen.home.addresses.button.create')}
+        />
+      )
+    })
+  }, [navigation, t])
 
   return !authUser.loaded ? (
     <LoadingView />
