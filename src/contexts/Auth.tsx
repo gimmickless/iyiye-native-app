@@ -14,10 +14,11 @@ type CreateAuthUserInput = {
   theme?: string
   bio?: string
   contactable?: boolean
-  homeAddress?: string
-  officeAddress?: string
-  otherAddress1?: string
-  otherAddress2?: string
+  altAddress1?: string
+  altAddress2?: string
+  altAddress3?: string
+  altAddress4?: string
+  altAddress5?: string
 }
 
 type UpdateAuthUserInput = {
@@ -29,10 +30,11 @@ type UpdateAuthUserInput = {
   theme?: string
   bio?: string
   contactable?: boolean
-  homeAddress?: string
-  officeAddress?: string
-  otherAddress1?: string
-  otherAddress2?: string
+  altAddress1?: string
+  altAddress2?: string
+  altAddress3?: string
+  altAddress4?: string
+  altAddress5?: string
 }
 
 type LoginInput = {
@@ -49,10 +51,11 @@ type UpdateInput = {
   theme?: string
   bio?: string
   contactable?: boolean
-  homeAddress?: string
-  officeAddress?: string
-  otherAddress1?: string
-  otherAddress2?: string
+  altAddress1?: string
+  altAddress2?: string
+  altAddress3?: string
+  altAddress4?: string
+  altAddress5?: string
 }
 
 type AuthReducerAction =
@@ -139,10 +142,11 @@ export default ({ children }: any) => {
           theme: attributes['custom:theme'],
           bio: attributes['custom:bio'],
           contactable: !!attributes['custom:contactable'],
-          homeAddress: attributes['custom:homeAddress'],
-          officeAddress: attributes['custom:officeAddress'],
-          otherAddress1: attributes['custom:otherAddress1'],
-          otherAddress2: attributes['custom:otherAddress2']
+          altAddress1: attributes['custom:altAddress1'],
+          altAddress2: attributes['custom:altAddress2'],
+          altAddress3: attributes['custom:altAddress3'],
+          altAddress4: attributes['custom:altAddress4'],
+          altAddress5: attributes['custom:altAddress5']
         }
       })
     } catch (err) {
@@ -163,10 +167,11 @@ export default ({ children }: any) => {
         'custom:theme': payload.theme,
         'custom:bio': payload.bio,
         'custom:contactable': payload.contactable,
-        'custom:homeAddress': payload.homeAddress,
-        'custom:officeAddress': payload.officeAddress,
-        'custom:otherAddress1': payload.otherAddress1,
-        'custom:otherAddress2': payload.otherAddress2
+        'custom:altAddress1': payload.altAddress1,
+        'custom:altAddress2': payload.altAddress2,
+        'custom:altAddress3': payload.altAddress3,
+        'custom:altAddress4': payload.altAddress4,
+        'custom:altAddress5': payload.altAddress5
       })
       dispatch({
         type: 'update_auth_user',
@@ -179,10 +184,11 @@ export default ({ children }: any) => {
           theme: payload.theme,
           bio: payload.bio,
           contactable: payload.contactable,
-          homeAddress: payload.homeAddress,
-          officeAddress: payload.officeAddress,
-          otherAddress1: payload.otherAddress1,
-          otherAddress2: payload.otherAddress2
+          altAddress1: payload.altAddress1,
+          altAddress2: payload.altAddress2,
+          altAddress3: payload.altAddress3,
+          altAddress4: payload.altAddress4,
+          altAddress5: payload.altAddress5
         }
       })
     } catch (err) {

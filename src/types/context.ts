@@ -12,9 +12,10 @@ export type AuthUserState = {
     theme?: string
     bio?: string
     contactable?: boolean
-    homeAddress?: string
-    officeAddress?: string
-    otherAddress1?: string
-    otherAddress2?: string
+    altAddress1?: string
+    altAddress2?: string
+    altAddress3?: string
+    altAddress4?: string
+    altAddress5?: string
   }
 }

@@ -11,10 +11,11 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 enum AddressTypes {
   Default = 'default',
-  Home = 'home',
-  Office = 'office',
-  Other1 = 'other1',
-  Other2 = 'other2'
+  AltAddress1 = 'altAddress1',
+  AltAddress2 = 'altAddress2',
+  AltAddress3 = 'altAddress3',
+  AltAddress4 = 'altAddress4',
+  AltAddress5 = 'altAddress5'
 }
 
 // const Item = (type?: string, value?: string) => (
@@ -31,11 +32,12 @@ const Addresses: React.FC = () => {
   const [upsertAddressModal, setUpsertAddressModal] = useState(false)
   const addresses = useMemo(
     () => [
-      { type: AddressTypes.Default, value: authUser.props?.address },
-      { type: AddressTypes.Home, value: authUser.props?.homeAddress },
-      { type: AddressTypes.Office, value: authUser.props?.officeAddress },
-      { type: AddressTypes.Other1, value: authUser.props?.otherAddress1 },
-      { type: AddressTypes.Other2, value: authUser.props?.otherAddress2 }
+      { key: AddressTypes.Default, value: authUser.props?.address },
+      { key: AddressTypes.AltAddress1, value: authUser.props?.altAddress1 },
+      { key: AddressTypes.AltAddress2, value: authUser.props?.altAddress2 },
+      { key: AddressTypes.AltAddress3, value: authUser.props?.altAddress3 },
+      { key: AddressTypes.AltAddress4, value: authUser.props?.altAddress4 },
+      { key: AddressTypes.AltAddress5, value: authUser.props?.altAddress5 }
     ],
     [authUser]
   )
@@ -57,13 +59,9 @@ const Addresses: React.FC = () => {
     <SafeAreaView style={styles.container}>
       {/* <FlatList
         data={addresses}
-        renderItem={(item) => <Item type={item.type} value={item.value} />}
-        keyExtractor={(address) => address.type}
+        renderItem={(item) => <Item type={item.key} value={item.value} />}
+        keyExtractor={(address) => address.key}
       /> */}
-      <Button
-        title={t('screen.home.addresses.button.create')}
-        onPress={() => setUpsertAddressModal(false)}
-      />
     </SafeAreaView>
   )
 }
