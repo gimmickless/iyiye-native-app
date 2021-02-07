@@ -9,6 +9,7 @@ import PubSub from '@aws-amplify/pubsub'
 import { ToastProvider } from 'react-native-styled-toast'
 import AuthUserContextProvider from 'contexts/Auth'
 import LocalizationContextProvider from 'contexts/Localization'
+import { OverflowMenuProvider } from 'react-navigation-header-buttons'
 import { en } from 'locales'
 import { RootNavigator } from 'router'
 import { AwsConfig } from 'config'
@@ -31,7 +32,9 @@ const App: React.FC = () => {
       <ToastProvider maxToasts={1} position="BOTTOM">
         <AuthUserContextProvider>
           <LocalizationContextProvider>
-            <RootNavigator />
+            <OverflowMenuProvider>
+              <RootNavigator />
+            </OverflowMenuProvider>
           </LocalizationContextProvider>
         </AuthUserContextProvider>
       </ToastProvider>

@@ -17,7 +17,7 @@ type HomeStackParamList = {
 
 const HomeStack = createStackNavigator<HomeStackParamList>()
 
-const HomeStackScreen = () => (
+const HomeStackScreen = (t: Function) => (
   <HomeStack.Navigator
     initialRouteName={HomeStackScreenNames.Default}
     screenOptions={{
@@ -37,6 +37,9 @@ const HomeStackScreen = () => (
     <HomeStack.Screen
       name={HomeStackScreenNames.Addresses}
       component={HomeAddresses}
+      options={{
+        title: t('screen.home.addresses.title')
+      }}
     />
   </HomeStack.Navigator>
 )

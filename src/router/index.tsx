@@ -62,7 +62,7 @@ export const RootNavigator = () => {
         }}
         backBehavior="history"
       >
-        <Tab.Screen name={TabNames.Home}>{() => HomeStackScreen()}</Tab.Screen>
+        <Tab.Screen name={TabNames.Home}>{() => HomeStackScreen(t)}</Tab.Screen>
         <Tab.Screen name={TabNames.Search}>
           {() => SearchStackScreen()}
         </Tab.Screen>

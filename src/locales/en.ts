@@ -136,8 +136,17 @@ const englishTranslation = {
         }
       },
       addresses: {
+        title: 'Addresses',
         button: {
-          create: 'Create New Address'
+          create: 'Add New'
+        },
+        message: {
+          locationPermissionDenied: 'Permission to access location was denied'
+        },
+        list: {
+          currentLocation: {
+            title: 'Current Location'
+          }
         }
       }
     },
