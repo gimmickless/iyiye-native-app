@@ -5,18 +5,10 @@ import React, {
   useMemo,
   useState
 } from 'react'
-import {
-  View,
-  StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
-  Dimensions,
-  Pressable
-} from 'react-native'
-import { Button, Text } from 'react-native-elements'
+import { StyleSheet, Pressable } from 'react-native'
+import { Text } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native'
 import { AuthUserContext } from 'contexts/Auth'
-import { textColor } from 'utils/constants'
 import { LocalizationContext } from 'contexts/Localization'
 import LoadingView from 'components/shared/LoadingView'
 import { FlatList } from 'react-native-gesture-handler'
@@ -45,7 +37,10 @@ const Addresses: React.FC = () => {
     currentLocation,
     setCurrentLocation
   ] = useState<Location.LocationObject | null>(null)
-  const [markerCoordinate, setMarkerCoordinate] = useState<LatLng | null>(null)
+  const [markerCoordinate, setMarkerCoordinate] = useState<LatLng>({
+    latitude: 0,
+    longitude: 0
+  })
   const [upsertAddressModal, setUpsertAddressModal] = useState(false)
   const [selectedKey, setSelectedKey] = useState('')
 
@@ -99,16 +94,19 @@ const Addresses: React.FC = () => {
     })()
   }, [t, toast])
 
-  console.log(JSON.stringify(authUser.loaded))
-
   return !authUser.loaded ? (
     <LoadingView />
   ) : (
     <SafeAreaView style={styles.container}>
-      <Text>dasd</Text>
       <MapView
         style={styles.map}
         initialRegion={{
+          latitude: currentLocation?.coords.latitude ?? 0,
+          longitude: currentLocation?.coords.longitude ?? 0,
+          latitudeDelta: 0,
+          longitudeDelta: 0
+        }}
+        region={{
           latitude: currentLocation?.coords.latitude ?? 0,
           longitude: currentLocation?.coords.longitude ?? 0,
           latitudeDelta: 0,
@@ -121,6 +119,7 @@ const Addresses: React.FC = () => {
         />
       </MapView>
       <FlatList
+        style={styles.listContainer}
         data={addresses}
         renderItem={({ item }) => (
           <Pressable
@@ -131,7 +130,7 @@ const Addresses: React.FC = () => {
                 : { ...styles.listItem, ...styles.unselectedListItem }
             }
           >
-            <Text h1>Asddsa</Text>
+            <Text h4>Asddsa</Text>
           </Pressable>
         )}
         keyExtractor={(item) => item.key}
@@ -144,13 +143,12 @@ const Addresses: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 8
+    justifyContent: 'center'
   },
   map: {
-    width: Dimensions.get('window').width,
     height: 200
   },
+  listContainer: { paddingHorizontal: 8 },
   listItem: {},
   selectedListItem: {},
   unselectedListItem: {}

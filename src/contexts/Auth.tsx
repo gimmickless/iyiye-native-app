@@ -1,6 +1,8 @@
-import React, { useReducer } from 'react'
-import Auth from '@aws-amplify/auth'
+import React, { useEffect, useReducer } from 'react'
+import Auth, { CognitoUser } from '@aws-amplify/auth'
 import { AuthUserState } from 'types/context'
+import { cognitoNotAuthenticatedMessageList } from 'utils/constants'
+import { useToast } from 'react-native-styled-toast'
 
 type CreateAuthUserInput = {
   fullName: string
@@ -121,6 +123,51 @@ const authReducer = (
 
 export default ({ children }: any) => {
   const [state, dispatch] = useReducer(authReducer, initialState)
+  const { toast } = useToast()
+
+  useEffect(() => {
+    ;(async () => {
+      try {
+        let currentAuthUser = await Auth.currentAuthenticatedUser()
+        if (!currentAuthUser) {
+          dispatch({ type: 'remove_auth_user' })
+          return
+        }
+        const { attributes: currentAuthUserAttributes } = currentAuthUser
+
+        dispatch({
+          type: 'add_auth_user',
+          payload: {
+            username: currentAuthUser.username,
+            fullName: currentAuthUserAttributes.name,
+            email: currentAuthUserAttributes.email,
+            address: currentAuthUserAttributes.address,
+            birthDate: currentAuthUserAttributes.birthdate,
+            phoneNumber: currentAuthUserAttributes.phone_number,
+            picture: currentAuthUserAttributes.picture,
+            locale: currentAuthUserAttributes.locale,
+            theme: currentAuthUserAttributes['custom:theme'],
+            bio: currentAuthUserAttributes['custom:bio'],
+            contactable: !!currentAuthUserAttributes['custom:contactable'],
+            altAddress1: currentAuthUserAttributes['custom:altAddress1'],
+            altAddress2: currentAuthUserAttributes['custom:altAddress2'],
+            altAddress3: currentAuthUserAttributes['custom:altAddress3'],
+            altAddress4: currentAuthUserAttributes['custom:altAddress4'],
+            altAddress5: currentAuthUserAttributes['custom:altAddress5']
+          }
+        })
+      } catch (err) {
+        if (!cognitoNotAuthenticatedMessageList.includes(err.toString())) {
+          toast({
+            message: JSON.stringify(err),
+            intent: 'ERROR',
+            duration: 0
+          })
+        }
+        dispatch({ type: 'remove_auth_user' })
+      }
+    })()
+  }, [toast])
 
   const login = async (payload: LoginInput) => {
     try {
@@ -150,7 +197,11 @@ export default ({ children }: any) => {
         }
       })
     } catch (err) {
-      console.log(`error ocurred: ${err}`)
+      toast({
+        message: JSON.stringify(err),
+        intent: 'ERROR',
+        duration: 0
+      })
     }
   }
 
@@ -192,7 +243,11 @@ export default ({ children }: any) => {
         }
       })
     } catch (err) {
-      console.log(`error ocurred: ${err}`)
+      toast({
+        message: JSON.stringify(err),
+        intent: 'ERROR',
+        duration: 0
+      })
     }
   }
 
@@ -201,7 +256,11 @@ export default ({ children }: any) => {
       await Auth.signOut()
       dispatch({ type: 'remove_auth_user' })
     } catch (err) {
-      console.log(`error ocurred: ${err}`)
+      toast({
+        message: JSON.stringify(err),
+        intent: 'ERROR',
+        duration: 0
+      })
     }
   }
 
