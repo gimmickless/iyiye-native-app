@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useState
 } from 'react'
-import { StyleSheet, Pressable } from 'react-native'
+import { StyleSheet, Pressable, View } from 'react-native'
 import { Text } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native'
 import { AuthUserContext } from 'contexts/Auth'
@@ -17,6 +17,7 @@ import * as Location from 'expo-location'
 import { useToast } from 'react-native-styled-toast'
 import MapView, { LatLng, Marker } from 'react-native-maps'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
+import Swipeable from 'react-native-gesture-handler/Swipeable'
 
 enum AddressTypes {
   CurrentLocation = 'currentLocation',
@@ -94,6 +95,27 @@ const Addresses: React.FC = () => {
     })()
   }, [t, toast])
 
+  const ListItemRightActions = ({ key }: { key: string }) => (
+    <View style={styles.listItemRightActions}>
+      <Pressable
+        onPress={() => console.log(key + ' to edit')}
+        style={styles.listItemEditAction}
+      >
+        <Text style={styles.listItemActionText}>
+          {t('common.button.edit').toUpperCase()}
+        </Text>
+      </Pressable>
+      <Pressable
+        onPress={() => console.log(key + ' to delete')}
+        style={styles.listItemDeleteAction}
+      >
+        <Text style={styles.listItemActionText}>
+          {t('common.button.delete').toUpperCase()}
+        </Text>
+      </Pressable>
+    </View>
+  )
+
   return !authUser.loaded ? (
     <LoadingView />
   ) : (
@@ -122,16 +144,25 @@ const Addresses: React.FC = () => {
         style={styles.listContainer}
         data={addresses}
         renderItem={({ item }) => (
-          <Pressable
-            onPress={() => setSelectedKey(item.key)}
-            style={
-              item.key === selectedKey
-                ? { ...styles.listItem, ...styles.selectedListItem }
-                : { ...styles.listItem, ...styles.unselectedListItem }
-            }
+          <Swipeable
+            renderRightActions={() => (
+              <ListItemRightActions key={item.value as string} />
+            )}
           >
-            <Text h4>Asddsa</Text>
-          </Pressable>
+            <View>
+              <Pressable
+                onPress={() => setSelectedKey(item.key)}
+                style={
+                  item.key === selectedKey
+                    ? { ...styles.listItem, ...styles.selectedListItem }
+                    : { ...styles.listItem, ...styles.unselectedListItem }
+                }
+              >
+                <Text h4>O</Text>
+              </Pressable>
+              <Text h4>Asddsa</Text>
+            </View>
+          </Swipeable>
         )}
         keyExtractor={(item) => item.key}
         extraData={selectedKey}
@@ -150,6 +181,19 @@ const styles = StyleSheet.create({
   },
   listContainer: { paddingHorizontal: 8 },
   listItem: {},
+  listItemRightActions: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end'
+  },
+  listItemEditAction: {
+    backgroundColor: 'dimgrey'
+  },
+  listItemDeleteAction: {
+    backgroundColor: 'red'
+  },
+  listItemActionText: {
+    color: 'white'
+  },
   selectedListItem: {},
   unselectedListItem: {}
 })

@@ -2,7 +2,9 @@ const englishTranslation = {
   common: {
     button: {
       ok: 'OK',
-      accept: 'Accept'
+      accept: 'Accept',
+      edit: 'Edit',
+      delete: 'Delete'
     },
     message: {
       validation: {
