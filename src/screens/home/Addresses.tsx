@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useState
 } from 'react'
-import { StyleSheet, Pressable, View } from 'react-native'
+import { StyleSheet, Pressable, View, Dimensions } from 'react-native'
 import { Text } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native'
 import { AuthUserContext } from 'contexts/Auth'
@@ -160,7 +160,7 @@ const Addresses: React.FC = () => {
               >
                 <Text h4>O</Text>
               </Pressable>
-              <Text h4>Asddsa</Text>
+              <Text>Asddsajjjjjjjjjjjjjjjjjjjjjjjjjjjjjdasdasdsadasdd</Text>
             </View>
           </Swipeable>
         )}
@@ -186,9 +186,15 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end'
   },
   listItemEditAction: {
+    width: 80,
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: 'dimgrey'
   },
   listItemDeleteAction: {
+    width: 80,
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: 'red'
   },
   listItemActionText: {
