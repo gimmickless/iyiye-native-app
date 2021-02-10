@@ -43,3 +43,7 @@ export const screenBodyTitleColor = 'dimgrey'
 export const screenBodySubtitleColor = 'dimgrey'
 export const pressableTextColor = 'blue'
 export const errorTextColor = 'red'
+export const listItemActionButtonColor = {
+  edit: 'slategrey',
+  delete: 'tomato'
+}

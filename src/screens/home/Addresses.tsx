@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useState
 } from 'react'
-import { StyleSheet, Pressable, View, Dimensions } from 'react-native'
+import { StyleSheet, Pressable, View } from 'react-native'
 import { Text } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native'
 import { AuthUserContext } from 'contexts/Auth'
@@ -17,7 +17,7 @@ import * as Location from 'expo-location'
 import { useToast } from 'react-native-styled-toast'
 import MapView, { LatLng, Marker } from 'react-native-maps'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
-import Swipeable from 'react-native-gesture-handler/Swipeable'
+import SwipeableListItem from 'components/shared/SwipeableListItem'
 
 enum AddressTypes {
   CurrentLocation = 'currentLocation',
@@ -95,26 +95,7 @@ const Addresses: React.FC = () => {
     })()
   }, [t, toast])
 
-  const ListItemRightActions = ({ key }: { key: string }) => (
-    <View style={styles.listItemRightActions}>
-      <Pressable
-        onPress={() => console.log(key + ' to edit')}
-        style={styles.listItemEditAction}
-      >
-        <Text style={styles.listItemActionText}>
-          {t('common.button.edit').toUpperCase()}
-        </Text>
-      </Pressable>
-      <Pressable
-        onPress={() => console.log(key + ' to delete')}
-        style={styles.listItemDeleteAction}
-      >
-        <Text style={styles.listItemActionText}>
-          {t('common.button.delete').toUpperCase()}
-        </Text>
-      </Pressable>
-    </View>
-  )
+  const Separator = () => <View style={styles.listItemSeparator} />
 
   return !authUser.loaded ? (
     <LoadingView />
@@ -144,27 +125,20 @@ const Addresses: React.FC = () => {
         style={styles.listContainer}
         data={addresses}
         renderItem={({ item }) => (
-          <Swipeable
-            renderRightActions={() => (
-              <ListItemRightActions key={item.value as string} />
-            )}
+          <SwipeableListItem
+            editAction={() => console.log(`Edit ${item.key}`)}
+            deleteAction={() => console.log(`Delete ${item.key}`)}
           >
             <View>
-              <Pressable
-                onPress={() => setSelectedKey(item.key)}
-                style={
-                  item.key === selectedKey
-                    ? { ...styles.listItem, ...styles.selectedListItem }
-                    : { ...styles.listItem, ...styles.unselectedListItem }
-                }
-              >
+              <Pressable onPress={() => setSelectedKey(item.key)}>
                 <Text h4>O</Text>
               </Pressable>
               <Text>Asddsajjjjjjjjjjjjjjjjjjjjjjjjjjjjjdasdasdsadasdd</Text>
             </View>
-          </Swipeable>
+          </SwipeableListItem>
         )}
         keyExtractor={(item) => item.key}
+        ItemSeparatorComponent={Separator}
         extraData={selectedKey}
       />
     </SafeAreaView>
@@ -180,28 +154,11 @@ const styles = StyleSheet.create({
     height: 200
   },
   listContainer: { paddingHorizontal: 8 },
-  listItem: {},
-  listItemRightActions: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end'
-  },
-  listItemEditAction: {
-    width: 80,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'dimgrey'
-  },
-  listItemDeleteAction: {
-    width: 80,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'red'
-  },
-  listItemActionText: {
-    color: 'white'
-  },
-  selectedListItem: {},
-  unselectedListItem: {}
+  listItemSeparator: {
+    flex: 1,
+    height: 1,
+    backgroundColor: 'grey'
+  }
 })
 
 export default Addresses
