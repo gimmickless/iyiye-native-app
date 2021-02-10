@@ -18,6 +18,9 @@ import { useToast } from 'react-native-styled-toast'
 import MapView, { LatLng, Marker } from 'react-native-maps'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 import SwipeableListItem from 'components/shared/SwipeableListItem'
+import Checkbox from 'expo-checkbox'
+import { AuthUserAddress } from 'types/context'
+import { AddressTypeEmoji } from 'types/emoji'
 
 enum AddressTypes {
   CurrentLocation = 'currentLocation',
@@ -97,6 +100,23 @@ const Addresses: React.FC = () => {
 
   const Separator = () => <View style={styles.listItemSeparator} />
 
+  const changeSelectedKey = (itemKey: string) => {
+    // TODO: Persist selection to DB
+    setSelectedKey(itemKey)
+  }
+
+  const getAddressTypeEmoji = (addressValueStr: string): string => {
+    const addressObj = JSON.parse(addressValueStr) as AuthUserAddress
+    switch (addressObj.kind) {
+      case 'home':
+        return AddressTypeEmoji.Home
+      case 'office':
+        return AddressTypeEmoji.Office
+      default:
+        return AddressTypeEmoji.Other
+    }
+  }
+
   return !authUser.loaded ? (
     <LoadingView />
   ) : (
@@ -129,11 +149,18 @@ const Addresses: React.FC = () => {
             editAction={() => console.log(`Edit ${item.key}`)}
             deleteAction={() => console.log(`Delete ${item.key}`)}
           >
-            <View>
-              <Pressable onPress={() => setSelectedKey(item.key)}>
-                <Text h4>O</Text>
-              </Pressable>
-              <Text>Asddsajjjjjjjjjjjjjjjjjjjjjjjjjjjjjdasdasdsadasdd</Text>
+            <View style={styles.listItem}>
+              <View style={styles.listItemLeftField}>
+                <Checkbox
+                  value={item.key === selectedKey}
+                  onValueChange={() => changeSelectedKey(item.key)}
+                />
+              </View>
+              <View style={styles.listItemMainField}>
+                <Text h4>{`${() =>
+                  getAddressTypeEmoji(item.value ?? '')}`}</Text>
+                <Text>Asddsajjjjjjjjjjjjjjjjjjjjjjjjjjjjjdasdasdsadasdd</Text>
+              </View>
             </View>
           </SwipeableListItem>
         )}
@@ -158,6 +185,18 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 1,
     backgroundColor: 'grey'
+  },
+  listItem: {
+    flex: 1,
+    flexDirection: 'row'
+  },
+  listItemLeftField: {
+    flex: 1,
+    alignItems: 'center'
+  },
+  listItemMainField: {
+    flex: 5
+    // alignItems: 'center'
   }
 })
 

@@ -42,7 +42,8 @@
     "react-navigation-header-buttons": "^6.2.0",
     "styled-components": "^5.2.1",
     "styled-system": "^5.1.5",
-    "yup": "^0.32.8"
+    "yup": "^0.32.8",
+    "expo-checkbox": "~1.0.0"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",

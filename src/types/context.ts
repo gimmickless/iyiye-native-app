@@ -19,3 +19,15 @@ export type AuthUserState = {
     altAddress5?: string
   }
 }
+
+export type AuthUserAddress = {
+  kind: 'home' | 'office' | 'other'
+  name: string
+  line1: string
+  building: string
+  flat: string
+  country: string
+  state: string
+  cityregion: string
+  zip: string
+}
