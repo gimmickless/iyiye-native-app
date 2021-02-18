@@ -1,5 +1,5 @@
 import React, { useContext, useLayoutEffect, useMemo } from 'react'
-import { View, StyleSheet, Pressable } from 'react-native'
+import { View, StyleSheet, Pressable, Alert } from 'react-native'
 import { Button, Text } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native'
 import { AuthUserContext } from 'contexts/Auth'
@@ -7,67 +7,142 @@ import { homeHeaderHeight, textColor } from 'utils/constants'
 import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
 import { MaterialIcons } from '@expo/vector-icons'
-import { HomeStackScreenNames } from 'types/route'
+import {
+  AuthStackScreenNames,
+  HomeStackScreenNames,
+  TabNames
+} from 'types/route'
 import LoadingView from 'components/shared/LoadingView'
+import { AddressTypeMaterialCommunityIcon } from 'types/visualization'
+import {
+  ActiveOrderListView,
+  CategoryListView,
+  CuratedKitListView,
+  FaveAndRecentKitListView,
+  NewKitListView
+} from 'components/home'
 
 const Default: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
   const { state: authUser } = useContext(AuthUserContext)
+
   const isAuthUser = useMemo(() => authUser.props ?? undefined, [authUser])
+  const username = useMemo(() => authUser.props?.username ?? '', [
+    authUser.props?.username
+  ])
+
+  const headerTitle = useMemo(
+    () => (
+      <View style={styles.headerTitleContainer}>
+        <Text h3 style={styles.headerTitlePrimaryText}>
+          {isAuthUser
+            ? t('screen.home.default.title.auth', {
+                username
+              })
+            : t('screen.home.default.title.unauth')}
+          &nbsp;👋
+        </Text>
+        <Text style={styles.headerTitleSecondaryText}>
+          {isAuthUser
+            ? t('screen.home.default.subtitle.auth')
+            : t('screen.home.default.subtitle.unauth')}
+        </Text>
+      </View>
+    ),
+    [isAuthUser, t, username]
+  )
+
+  const headerRight = useMemo(() => {
+    const onPress = isAuthUser
+      ? () => {
+          navigation.navigate(HomeStackScreenNames.Addresses)
+        }
+      : () => {
+          Alert.alert(
+            t('screen.home.default.alert.loginToAddAddress.title'),
+            t('screen.home.default.alert.loginToAddAddress.message'),
+            [
+              {
+                text: t('common.button.cancel'),
+                onPress: () => {},
+                style: 'cancel'
+              },
+              {
+                text: t(
+                  'screen.home.default.alert.loginToAddAddress.button.ok'
+                ),
+                onPress: () => {
+                  navigation.navigate(TabNames.Auth, {
+                    screen: AuthStackScreenNames.SignIn
+                  })
+                }
+              }
+            ],
+            { cancelable: true }
+          )
+        }
+
+    let buttonMaterialIcon: string
+
+    if (isAuthUser) {
+      switch (authUser.props?.address.kind) {
+        case 'current':
+          buttonMaterialIcon = AddressTypeMaterialCommunityIcon.Current
+          break
+        case 'home':
+          buttonMaterialIcon = AddressTypeMaterialCommunityIcon.Home
+          break
+        case 'office':
+          buttonMaterialIcon = AddressTypeMaterialCommunityIcon.Office
+          break
+        default:
+          buttonMaterialIcon = AddressTypeMaterialCommunityIcon.Other
+          break
+      }
+    } else {
+      buttonMaterialIcon = 'my-location'
+    }
+
+    const bottomText = isAuthUser
+      ? authUser.props?.address.kind
+      : t('screen.home.default.button.location.current')
+
+    return (
+      <Pressable onPress={onPress} style={styles.headerRightAddressButton}>
+        <View style={styles.headerRightAddressButtonInnerContainer}>
+          <Text style={styles.headerRightAddressButtonLabelText}>
+            {t('screen.home.default.button.location.label')}
+          </Text>
+          <MaterialIcons
+            name={buttonMaterialIcon}
+            size={32}
+            color={textColor.header.title}
+          />
+          <Text style={styles.headerRightAddressButtonText}>{bottomText}</Text>
+        </View>
+      </Pressable>
+    )
+  }, [authUser.props?.address.kind, isAuthUser, navigation, t])
+
   // Customize header
   useLayoutEffect(() => {
     navigation.setOptions({
       headerStyle: { height: homeHeaderHeight, elevation: 0, shadowOpacity: 0 },
-      headerTitle: () => {
-        return (
-          <View style={styles.headerTitleContainer}>
-            <Text h3 style={styles.headerTitlePrimaryText}>
-              {isAuthUser
-                ? t('screen.home.default.title.auth', {
-                    username: authUser.props?.username
-                  })
-                : t('screen.home.default.title.unauth')}
-              &nbsp;👋
-            </Text>
-            <Text style={styles.headerTitleSecondaryText}>
-              {isAuthUser
-                ? t('screen.home.default.subtitle.auth')
-                : t('screen.home.default.subtitle.unauth')}
-            </Text>
-          </View>
-        )
-      },
-      headerRight: () => (
-        <Pressable
-          onPress={() => {
-            navigation.navigate(HomeStackScreenNames.Addresses)
-          }}
-          style={styles.headerRightAddressButton}
-        >
-          <View style={styles.headerRightAddressButtonInnerContainer}>
-            <Text style={styles.headerRightAddressButtonLabelText}>
-              {t('screen.home.default.button.location.label')}
-            </Text>
-            <MaterialIcons
-              name="my-location"
-              size={32}
-              color={textColor.header.title}
-            />
-            <Text style={styles.headerRightAddressButtonText}>
-              {t('screen.home.default.button.location.current')}
-            </Text>
-          </View>
-        </Pressable>
-      )
+      headerTitle: () => headerTitle,
+      headerRight: () => headerRight
     })
-  }, [authUser, isAuthUser, navigation, t])
+  }, [headerRight, headerTitle, navigation])
 
   return !authUser.loaded ? (
     <LoadingView />
   ) : (
     <ScrollView style={styles.view}>
-      <Button title="To Login" onPress={() => navigation.navigate('SignIn')} />
+      {isAuthUser && <ActiveOrderListView username={username} />}
+      <CategoryListView username={username} />
+      <CuratedKitListView username={username} />
+      {isAuthUser && <FaveAndRecentKitListView username={username} />}
+      <NewKitListView />
     </ScrollView>
   )
 }
@@ -91,7 +166,6 @@ const styles = StyleSheet.create({
     color: textColor.header.subtitle
   },
   headerRightAddressButtonLabelText: {
-    fontSize: 11,
     color: textColor.header.title
   },
   headerRightAddressButtonText: {

@@ -8,6 +8,7 @@ import { textColor } from 'utils/constants'
 import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
 import { AuthStackParamList } from 'router/stacks/Auth'
+import Auth from '@aws-amplify/auth'
 
 type FormData = {
   verificationCode: string
@@ -22,6 +23,7 @@ const ConfirmAccount: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const route = useRoute<ConfirmAccountScreenRouteProp>()
   const email = useMemo(() => route.params.email, [route])
+  const username = useMemo(() => route.params.username, [route])
 
   const formSchema: Yup.SchemaOf<FormData> = Yup.object().shape({
     verificationCode: Yup.string().required(
@@ -29,15 +31,12 @@ const ConfirmAccount: React.FC = () => {
     )
   })
 
-  const onSubmit = ({ verificationCode }: FormData) => {
-    console.log('pressed')
-    console.log(email)
-    console.log(verificationCode)
-    // TODO: Amplify Sign In + Navigate to Home
+  const onSubmit = async ({ verificationCode }: FormData) => {
+    await Auth.confirmSignUp(username, verificationCode)
   }
 
-  const onResendCode = () => {
-    console.log('Resend code')
+  const onResendCode = async () => {
+    await Auth.resendSignUp(username)
   }
 
   return (

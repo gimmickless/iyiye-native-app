@@ -4,7 +4,7 @@ export type AuthUserState = {
     fullName: string
     username: string
     email: string
-    address: string
+    address: AuthUserAddress
     birthDate: string
     phoneNumber?: string
     picture?: string
@@ -12,16 +12,16 @@ export type AuthUserState = {
     theme?: string
     bio?: string
     contactable?: boolean
-    altAddress1?: string
-    altAddress2?: string
-    altAddress3?: string
-    altAddress4?: string
-    altAddress5?: string
+    altAddress1?: AuthUserAddress
+    altAddress2?: AuthUserAddress
+    altAddress3?: AuthUserAddress
+    altAddress4?: AuthUserAddress
+    altAddress5?: AuthUserAddress
   }
 }
 
 export type AuthUserAddress = {
-  kind: 'home' | 'office' | 'other'
+  kind: 'current' | 'home' | 'office' | 'other'
   name: string
   line1: string
   building: string
@@ -30,4 +30,6 @@ export type AuthUserAddress = {
   state: string
   cityregion: string
   zip: string
+  latitude: string
+  longitude: string
 }

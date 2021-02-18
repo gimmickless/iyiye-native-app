@@ -7,7 +7,6 @@ import { LocalizationContext } from 'contexts/Localization'
 import { listItemActionButtonColor } from 'utils/constants'
 
 interface SwipeableListItemProps {
-  child?: React.ReactNode
   editAction?: () => void
   deleteAction?: () => void
 }

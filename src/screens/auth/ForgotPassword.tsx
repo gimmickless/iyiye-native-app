@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from 'react'
+import React, { RefObject, useContext, useRef, useState } from 'react'
 import {
   StyleSheet,
   Platform,
@@ -9,7 +9,7 @@ import {
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { Input, Button, Text, Divider, Card } from 'react-native-elements'
-import { Formik } from 'formik'
+import { Formik, FormikProps } from 'formik'
 import * as Yup from 'yup'
 import {
   forgotPasswordConfirmationCodeRegex,
@@ -23,6 +23,7 @@ import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
 import { useToast } from 'react-native-styled-toast'
 import { AuthStackScreenNames } from 'types/route'
+import Auth from '@aws-amplify/auth'
 
 type UserInfoFormData = {
   username: string
@@ -46,6 +47,7 @@ const ForgotPasword: React.FC = () => {
   const [emailSent, setEmailSent] = useState(false)
   const { toast } = useToast()
   const navigation = useNavigation()
+  const formRef = useRef<FormikProps<UserInfoFormData>>(null)
   const newPasswordRef = useRef<Input>(null)
   const retypeNewPasswordRef = useRef<Input>(null)
 
@@ -85,12 +87,11 @@ const ForgotPasword: React.FC = () => {
     }
   )
 
-  const onSubmitEmail = ({ username }: UserInfoFormData) => {
+  const onSubmitEmail = async ({ username }: UserInfoFormData) => {
     setSendEmailLoading(true)
     try {
-      console.log('pressed')
-      console.log(username)
-      // TODO: Amplify ForgotPassword
+      await Auth.forgotPassword(username)
+      // console.log(username)
       setEmailSent(true)
       LayoutAnimation.easeInEaseOut()
     } catch (err) {
@@ -100,17 +101,18 @@ const ForgotPasword: React.FC = () => {
     }
   }
 
-  const onSubmitNewPassword = ({
+  const onSubmitNewPassword = async ({
     confirmationCode,
     newPassword
   }: ResetPasswordFormData) => {
     setSendNewPasswordLoading(true)
     try {
-      console.log('pressed')
-      console.log(confirmationCode)
-      console.log(newPassword)
+      await Auth.forgotPasswordSubmit(
+        formRef.current?.values.username ?? '',
+        confirmationCode,
+        newPassword
+      )
       navigation.navigate(AuthStackScreenNames.SignIn)
-      // TODO: Amplify ForgotPasswordSubmit
     } catch (err) {
       toast({ message: err.message ?? err, intent: 'ERROR', duration: 0 })
     } finally {
@@ -134,6 +136,7 @@ const ForgotPasword: React.FC = () => {
           }}
           validationSchema={userInfoSchema}
           onSubmit={onSubmitEmail}
+          innerRef={formRef}
         >
           {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
             <View style={styles.inputAndButtonRow}>

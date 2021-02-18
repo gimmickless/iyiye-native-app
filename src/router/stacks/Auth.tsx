@@ -6,7 +6,7 @@ import { AuthStackScreenNames } from 'types/route'
 export type AuthStackParamList = {
   SignIn: undefined
   SignUp: undefined
-  ConfirmAccount: { email: string }
+  ConfirmAccount: { email: string; username: string }
   ForgotPassword: undefined
 }
 

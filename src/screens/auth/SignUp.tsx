@@ -8,6 +8,7 @@ import {
   View
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
+import * as Localization from 'expo-localization'
 import { Input, Button, Text, CheckBox } from 'react-native-elements'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { Formik } from 'formik'
@@ -29,6 +30,8 @@ import { ScrollView } from 'react-native-gesture-handler'
 import { getMaxDateFor18OrMoreYearsOld } from 'utils/validations'
 import { useToast } from 'react-native-styled-toast'
 import { AuthStackScreenNames } from 'types/route'
+import Auth from '@aws-amplify/auth'
+import { useColorScheme } from 'react-native-appearance'
 
 type FormData = {
   fullName: string
@@ -43,6 +46,7 @@ type FormData = {
 const SignUp: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
+  const colorScheme = useColorScheme()
   const [signUpLoading, setSignUpLoading] = useState(false)
   const { toast } = useToast()
   const [showDatePicker, setShowDatePicker] = useState(false)
@@ -92,18 +96,18 @@ const SignUp: React.FC = () => {
       .required(t('common.message.validation.required'))
       .oneOf(
         [Yup.ref('password'), null],
-        'screen.signUp.message.validation.passwordsNotMatch'
+        t('screen.auth.signUp.message.validation.passwordsNotMatch')
       ),
     birthDate: Yup.date()
       .required(t('common.message.validation.required'))
-      .min(maxBirthDate, t('screen.auth.signUp.message.validation.tooYoung')),
+      .max(maxBirthDate, t('screen.auth.signUp.message.validation.tooYoung')),
     termsAgreed: Yup.boolean().oneOf(
       [true],
       t('common.message.validation.mustCheck')
     )
   })
 
-  const onSubmit = ({
+  const onSubmit = async ({
     fullName,
     username,
     email,
@@ -112,13 +116,18 @@ const SignUp: React.FC = () => {
   }: FormData) => {
     setSignUpLoading(true)
     try {
-      console.log('pressed')
-      console.log(fullName)
-      console.log(username)
-      console.log(email)
-      console.log(password)
-      console.log(birthDate)
-      // TODO: Amplify Sign Up
+      await Auth.signUp({
+        username,
+        password,
+        attributes: {
+          name: fullName,
+          email: email,
+          birthdate: birthDate,
+          locale: Localization.locale,
+          'custom:theme': colorScheme,
+          'custom:contactable': true
+        }
+      })
       navigation.navigate(AuthStackScreenNames.ConfirmAccount, { email })
     } catch (err) {
       toast({ message: err.message ?? err, intent: 'ERROR', duration: 0 })
@@ -332,7 +341,7 @@ const SignUp: React.FC = () => {
         </Formik>
 
         <Text style={styles.centeredText}>{`${t(
-          'screen.signUp.text.alreadyHavingAccount'
+          'screen.auth.signUp.text.alreadyHavingAccount'
         )} `}</Text>
         <Button
           type="clear"

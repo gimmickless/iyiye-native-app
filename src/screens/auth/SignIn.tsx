@@ -131,12 +131,6 @@ const SignIn: React.FC = () => {
                 title={t('screen.auth.signIn.button.done').toLocaleUpperCase()}
                 onPress={handleSubmit as any}
               />
-              {/* TODO: Following added for test. Remove before Prod */}
-              <Button
-                style={styles.formSubmitButton}
-                title="To Home"
-                onPress={() => navigation.navigate(TabNames.Home)}
-              />
             </View>
           )}
         </Formik>

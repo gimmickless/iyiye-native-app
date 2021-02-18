@@ -4,7 +4,8 @@ const englishTranslation = {
       ok: 'OK',
       accept: 'Accept',
       edit: 'Edit',
-      delete: 'Delete'
+      delete: 'Delete',
+      cancel: 'Cancel'
     },
     message: {
       validation: {
@@ -135,6 +136,16 @@ const englishTranslation = {
             label: 'Address',
             current: 'Current'
           }
+        },
+        alert: {
+          loginToAddAddress: {
+            title: 'Login Now',
+            message:
+              'Authentication required for adding addresses and editing them',
+            button: {
+              ok: 'Go to Login'
+            }
+          }
         }
       },
       addresses: {
@@ -149,6 +160,12 @@ const englishTranslation = {
           currentLocation: {
             title: 'Current Location'
           }
+        },
+        kind: {
+          current: 'Current',
+          home: 'Home',
+          office: 'Office',
+          other: 'Other'
         }
       }
     },

@@ -1,6 +1,6 @@
 import React, { useEffect, useReducer } from 'react'
-import Auth, { CognitoUser } from '@aws-amplify/auth'
-import { AuthUserState } from 'types/context'
+import Auth from '@aws-amplify/auth'
+import { AuthUserAddress, AuthUserState } from 'types/context'
 import { cognitoNotAuthenticatedMessageList } from 'utils/constants'
 import { useToast } from 'react-native-styled-toast'
 
@@ -8,7 +8,7 @@ type CreateAuthUserInput = {
   fullName: string
   username: string
   email: string
-  address: string
+  address: AuthUserAddress
   birthDate: string
   phoneNumber?: string
   picture?: string
@@ -16,27 +16,27 @@ type CreateAuthUserInput = {
   theme?: string
   bio?: string
   contactable?: boolean
-  altAddress1?: string
-  altAddress2?: string
-  altAddress3?: string
-  altAddress4?: string
-  altAddress5?: string
+  altAddress1?: AuthUserAddress
+  altAddress2?: AuthUserAddress
+  altAddress3?: AuthUserAddress
+  altAddress4?: AuthUserAddress
+  altAddress5?: AuthUserAddress
 }
 
 type UpdateAuthUserInput = {
   fullName: string
-  address: string
+  address: AuthUserAddress
   phoneNumber?: string
   picture?: string
   locale?: string
   theme?: string
   bio?: string
   contactable?: boolean
-  altAddress1?: string
-  altAddress2?: string
-  altAddress3?: string
-  altAddress4?: string
-  altAddress5?: string
+  altAddress1?: AuthUserAddress
+  altAddress2?: AuthUserAddress
+  altAddress3?: AuthUserAddress
+  altAddress4?: AuthUserAddress
+  altAddress5?: AuthUserAddress
 }
 
 type LoginInput = {
@@ -46,18 +46,18 @@ type LoginInput = {
 
 type UpdateInput = {
   fullName: string
-  address: string
+  address: AuthUserAddress
   phoneNumber?: string
   picture?: string
   locale?: string
   theme?: string
   bio?: string
   contactable?: boolean
-  altAddress1?: string
-  altAddress2?: string
-  altAddress3?: string
-  altAddress4?: string
-  altAddress5?: string
+  altAddress1?: AuthUserAddress
+  altAddress2?: AuthUserAddress
+  altAddress3?: AuthUserAddress
+  altAddress4?: AuthUserAddress
+  altAddress5?: AuthUserAddress
 }
 
 type AuthReducerAction =
@@ -113,8 +113,7 @@ const authReducer = (
       } as AuthUserState
     case 'remove_auth_user':
       return {
-        loaded: true,
-        props: undefined
+        loaded: true
       }
     default:
       return state
@@ -141,7 +140,9 @@ export default ({ children }: any) => {
             username: currentAuthUser.username,
             fullName: currentAuthUserAttributes.name,
             email: currentAuthUserAttributes.email,
-            address: currentAuthUserAttributes.address,
+            address: JSON.parse(
+              currentAuthUserAttributes.address
+            ) as AuthUserAddress,
             birthDate: currentAuthUserAttributes.birthdate,
             phoneNumber: currentAuthUserAttributes.phone_number,
             picture: currentAuthUserAttributes.picture,
@@ -149,11 +150,21 @@ export default ({ children }: any) => {
             theme: currentAuthUserAttributes['custom:theme'],
             bio: currentAuthUserAttributes['custom:bio'],
             contactable: !!currentAuthUserAttributes['custom:contactable'],
-            altAddress1: currentAuthUserAttributes['custom:altAddress1'],
-            altAddress2: currentAuthUserAttributes['custom:altAddress2'],
-            altAddress3: currentAuthUserAttributes['custom:altAddress3'],
-            altAddress4: currentAuthUserAttributes['custom:altAddress4'],
-            altAddress5: currentAuthUserAttributes['custom:altAddress5']
+            altAddress1: JSON.parse(
+              currentAuthUserAttributes['custom:altAddress1']
+            ) as AuthUserAddress,
+            altAddress2: JSON.parse(
+              currentAuthUserAttributes['custom:altAddress2']
+            ) as AuthUserAddress,
+            altAddress3: JSON.parse(
+              currentAuthUserAttributes['custom:altAddress3']
+            ) as AuthUserAddress,
+            altAddress4: JSON.parse(
+              currentAuthUserAttributes['custom:altAddress4']
+            ) as AuthUserAddress,
+            altAddress5: JSON.parse(
+              currentAuthUserAttributes['custom:altAddress5']
+            ) as AuthUserAddress
           }
         })
       } catch (err) {
@@ -181,7 +192,7 @@ export default ({ children }: any) => {
           username,
           fullName: attributes.name,
           email: attributes.email,
-          address: attributes.address,
+          address: JSON.parse(attributes.address) as AuthUserAddress,
           birthDate: attributes.birthdate,
           phoneNumber: attributes.phone_number,
           picture: attributes.picture,
@@ -189,11 +200,21 @@ export default ({ children }: any) => {
           theme: attributes['custom:theme'],
           bio: attributes['custom:bio'],
           contactable: !!attributes['custom:contactable'],
-          altAddress1: attributes['custom:altAddress1'],
-          altAddress2: attributes['custom:altAddress2'],
-          altAddress3: attributes['custom:altAddress3'],
-          altAddress4: attributes['custom:altAddress4'],
-          altAddress5: attributes['custom:altAddress5']
+          altAddress1: JSON.parse(
+            attributes['custom:altAddress1']
+          ) as AuthUserAddress,
+          altAddress2: JSON.parse(
+            attributes['custom:altAddress2']
+          ) as AuthUserAddress,
+          altAddress3: JSON.parse(
+            attributes['custom:altAddress3']
+          ) as AuthUserAddress,
+          altAddress4: JSON.parse(
+            attributes['custom:altAddress4']
+          ) as AuthUserAddress,
+          altAddress5: JSON.parse(
+            attributes['custom:altAddress5']
+          ) as AuthUserAddress
         }
       })
     } catch (err) {
@@ -211,18 +232,18 @@ export default ({ children }: any) => {
 
       await Auth.updateUserAttributes(cognitoUser, {
         name: payload.fullName,
-        address: payload.address,
+        address: JSON.stringify(payload.address),
         phone_number: payload.phoneNumber,
         picture: payload.picture,
         locale: payload.locale,
         'custom:theme': payload.theme,
         'custom:bio': payload.bio,
         'custom:contactable': payload.contactable,
-        'custom:altAddress1': payload.altAddress1,
-        'custom:altAddress2': payload.altAddress2,
-        'custom:altAddress3': payload.altAddress3,
-        'custom:altAddress4': payload.altAddress4,
-        'custom:altAddress5': payload.altAddress5
+        'custom:altAddress1': JSON.stringify(payload.altAddress1),
+        'custom:altAddress2': JSON.stringify(payload.altAddress2),
+        'custom:altAddress3': JSON.stringify(payload.altAddress3),
+        'custom:altAddress4': JSON.stringify(payload.altAddress4),
+        'custom:altAddress5': JSON.stringify(payload.altAddress5)
       })
       dispatch({
         type: 'update_auth_user',

@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useState
 } from 'react'
-import { StyleSheet, Pressable, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { Text } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native'
 import { AuthUserContext } from 'contexts/Auth'
@@ -20,7 +20,7 @@ import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 import SwipeableListItem from 'components/shared/SwipeableListItem'
 import Checkbox from 'expo-checkbox'
 import { AuthUserAddress } from 'types/context'
-import { AddressTypeEmoji } from 'types/emoji'
+import { AddressTypeEmoji } from 'types/visualization'
 
 enum AddressTypes {
   CurrentLocation = 'currentLocation',
@@ -49,18 +49,19 @@ const Addresses: React.FC = () => {
   const [selectedKey, setSelectedKey] = useState('')
 
   const addresses = useMemo(
-    () => [
-      {
-        key: AddressTypes.CurrentLocation,
-        value: t('screen.home.addresses.list.currentLocation. title')
-      },
-      { key: AddressTypes.Default, value: authUser.props?.address },
-      { key: AddressTypes.AltAddress1, value: authUser.props?.altAddress1 },
-      { key: AddressTypes.AltAddress2, value: authUser.props?.altAddress2 },
-      { key: AddressTypes.AltAddress3, value: authUser.props?.altAddress3 },
-      { key: AddressTypes.AltAddress4, value: authUser.props?.altAddress4 },
-      { key: AddressTypes.AltAddress5, value: authUser.props?.altAddress5 }
-    ],
+    () =>
+      [
+        {
+          key: AddressTypes.CurrentLocation,
+          value: t('screen.home.addresses.list.currentLocation.title')
+        },
+        { key: AddressTypes.Default, value: authUser.props?.address },
+        { key: AddressTypes.AltAddress1, value: authUser.props?.altAddress1 },
+        { key: AddressTypes.AltAddress2, value: authUser.props?.altAddress2 },
+        { key: AddressTypes.AltAddress3, value: authUser.props?.altAddress3 },
+        { key: AddressTypes.AltAddress4, value: authUser.props?.altAddress4 },
+        { key: AddressTypes.AltAddress5, value: authUser.props?.altAddress5 }
+      ] as Array<{ key: string; value: AuthUserAddress }>,
     [authUser, t]
   )
 
@@ -105,15 +106,28 @@ const Addresses: React.FC = () => {
     setSelectedKey(itemKey)
   }
 
-  const getAddressTypeEmoji = (addressValueStr: string): string => {
-    const addressObj = JSON.parse(addressValueStr) as AuthUserAddress
-    switch (addressObj.kind) {
+  const getAddressItemHeaderInfo = ({ kind }: AuthUserAddress) => {
+    switch (kind) {
+      case 'current':
+        return {
+          icon: AddressTypeEmoji.Current,
+          title: t('screen.home.addresses.kind.current')
+        }
       case 'home':
-        return AddressTypeEmoji.Home
+        return {
+          icon: AddressTypeEmoji.Home,
+          title: t('screen.home.addresses.kind.home')
+        }
       case 'office':
-        return AddressTypeEmoji.Office
+        return {
+          icon: AddressTypeEmoji.Office,
+          title: t('screen.home.addresses.kind.office')
+        }
       default:
-        return AddressTypeEmoji.Other
+        return {
+          icon: AddressTypeEmoji.Other,
+          title: t('screen.home.addresses.kind.other')
+        }
     }
   }
 
@@ -143,7 +157,7 @@ const Addresses: React.FC = () => {
       </MapView>
       <FlatList
         style={styles.listContainer}
-        data={addresses}
+        data={addresses} // TODO: Filter not-null valued addresses
         renderItem={({ item }) => (
           <SwipeableListItem
             editAction={() => console.log(`Edit ${item.key}`)}
@@ -157,9 +171,15 @@ const Addresses: React.FC = () => {
                 />
               </View>
               <View style={styles.listItemMainField}>
-                <Text h4>{`${() =>
-                  getAddressTypeEmoji(item.value ?? '')}`}</Text>
-                <Text>Asddsajjjjjjjjjjjjjjjjjjjjjjjjjjjjjdasdasdsadasdd</Text>
+                <Text h4>
+                  {getAddressItemHeaderInfo(item.value).icon}
+                  &nbsp;
+                  {getAddressItemHeaderInfo(item.value).title}
+                </Text>
+                <Text>
+                  {item.value.line1}
+                  Asddsajjjjjjjjjjjjjjjjjjjjjjjjjjjjjdasdasdsadasdd
+                </Text>
               </View>
             </View>
           </SwipeableListItem>
