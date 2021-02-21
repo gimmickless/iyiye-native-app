@@ -15,7 +15,9 @@ export enum AuthStackScreenNames {
 
 export enum HomeStackScreenNames {
   Default = 'HomeDefault',
-  Addresses = 'HomeAddresses'
+  AddressList = 'HomeAddressList',
+  AddressLocationSearch = 'HomeAddressLocationSearch',
+  AddressForm = 'HomeAddressForm'
 }
 
 export enum NotificationStackScreenNames {

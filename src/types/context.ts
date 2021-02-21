@@ -1,23 +1,33 @@
+export type AuthUserAddressKey =
+  | 'address1'
+  | 'address2'
+  | 'address3'
+  | 'address4'
+  | 'address5'
+  | undefined
+
 export type AuthUserState = {
   loaded: boolean
-  props?: {
-    fullName: string
-    username: string
-    email: string
-    address: AuthUserAddress
-    birthDate: string
-    phoneNumber?: string
-    picture?: string
-    locale?: string
-    theme?: string
-    bio?: string
-    contactable?: boolean
-    altAddress1?: AuthUserAddress
-    altAddress2?: AuthUserAddress
-    altAddress3?: AuthUserAddress
-    altAddress4?: AuthUserAddress
-    altAddress5?: AuthUserAddress
-  }
+  props:
+    | {
+        fullName: string
+        username: string
+        email: string
+        address: AuthUserAddressKey
+        birthDate: string
+        phoneNumber?: string
+        picture?: string
+        locale?: string
+        theme?: string
+        bio?: string
+        contactable?: boolean
+        address1?: AuthUserAddress
+        address2?: AuthUserAddress
+        address3?: AuthUserAddress
+        address4?: AuthUserAddress
+        address5?: AuthUserAddress
+      }
+    | undefined
 }
 
 export type AuthUserAddress = {

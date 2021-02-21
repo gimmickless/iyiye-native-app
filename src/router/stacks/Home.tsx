@@ -2,14 +2,18 @@ import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import {
   Default as HomeDefault,
-  Addresses as HomeAddresses
+  AddressList as HomeAddressList,
+  AddressLocationSearch as HomeAddressLocationSearch,
+  AddressForm as HomeAddressForm
 } from 'screens/home'
 import { headerLeftContainerPaddingLeft } from 'utils/constants'
 import { HomeStackScreenNames } from 'types/route'
 
 type HomeStackParamList = {
   HomeDefault: undefined
-  HomeAddresses: undefined
+  HomeAddressList: undefined
+  HomeAddressLocationSearch: undefined
+  HomeAddressForm: undefined
   HomeList: { sort: 'latest' | 'top' } | undefined
   HomeItem: { id: string }
   HomeAuthor?: { userId: string }
@@ -35,11 +39,21 @@ const HomeStackScreen = (t: Function) => (
       component={HomeDefault}
     />
     <HomeStack.Screen
-      name={HomeStackScreenNames.Addresses}
-      component={HomeAddresses}
+      name={HomeStackScreenNames.AddressList}
+      component={HomeAddressList}
       options={{
-        title: t('screen.home.addresses.title')
+        title: t('screen.home.addressList.title')
       }}
+    />
+    <HomeStack.Screen
+      name={HomeStackScreenNames.AddressLocationSearch}
+      component={HomeAddressLocationSearch}
+      options={{}}
+    />
+    <HomeStack.Screen
+      name={HomeStackScreenNames.AddressForm}
+      component={HomeAddressForm}
+      options={{}}
     />
   </HomeStack.Navigator>
 )

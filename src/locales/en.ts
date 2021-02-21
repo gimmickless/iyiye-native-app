@@ -148,13 +148,14 @@ const englishTranslation = {
           }
         }
       },
-      addresses: {
+      addressList: {
         title: 'Addresses',
         button: {
           create: 'Add New'
         },
         message: {
-          locationPermissionDenied: 'Permission to access location was denied'
+          locationPermissionDenied: 'Permission to access location was denied',
+          nothingFound: 'No addresses here'
         },
         list: {
           currentLocation: {
@@ -166,6 +167,19 @@ const englishTranslation = {
           home: 'Home',
           office: 'Office',
           other: 'Other'
+        },
+        alert: {
+          maxAddressLimit: {
+            title: 'Max Address Limit Hit',
+            message: 'Please edit one of the addresses or delete to make room'
+          }
+        }
+      },
+      addressLocationSearch: {},
+      addressForm: {
+        title: {
+          new: 'New Address',
+          edit: 'Edit {{addressName}}'
         }
       }
     },

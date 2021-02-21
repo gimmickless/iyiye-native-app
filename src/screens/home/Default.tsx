@@ -1,6 +1,6 @@
 import React, { useContext, useLayoutEffect, useMemo } from 'react'
 import { View, StyleSheet, Pressable, Alert } from 'react-native'
-import { Button, Text } from 'react-native-elements'
+import { Text } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native'
 import { AuthUserContext } from 'contexts/Auth'
 import { homeHeaderHeight, textColor } from 'utils/constants'
@@ -56,7 +56,7 @@ const Default: React.FC = () => {
   const headerRight = useMemo(() => {
     const onPress = isAuthUser
       ? () => {
-          navigation.navigate(HomeStackScreenNames.Addresses)
+          navigation.navigate(HomeStackScreenNames.AddressList)
         }
       : () => {
           Alert.alert(
@@ -84,9 +84,11 @@ const Default: React.FC = () => {
         }
 
     let buttonMaterialIcon: string
+    let bottomText: string
 
-    if (isAuthUser) {
-      switch (authUser.props?.address.kind) {
+    if (isAuthUser && authUser.props?.address) {
+      const defaultAddress = authUser.props[authUser.props?.address]
+      switch (defaultAddress?.kind) {
         case 'current':
           buttonMaterialIcon = AddressTypeMaterialCommunityIcon.Current
           break
@@ -100,13 +102,11 @@ const Default: React.FC = () => {
           buttonMaterialIcon = AddressTypeMaterialCommunityIcon.Other
           break
       }
+      bottomText = defaultAddress?.name ?? ''
     } else {
       buttonMaterialIcon = 'my-location'
+      bottomText = t('screen.home.default.button.location.current')
     }
-
-    const bottomText = isAuthUser
-      ? authUser.props?.address.kind
-      : t('screen.home.default.button.location.current')
 
     return (
       <Pressable onPress={onPress} style={styles.headerRightAddressButton}>
@@ -123,7 +123,7 @@ const Default: React.FC = () => {
         </View>
       </Pressable>
     )
-  }, [authUser.props?.address.kind, isAuthUser, navigation, t])
+  }, [authUser.props, isAuthUser, navigation, t])
 
   // Customize header
   useLayoutEffect(() => {

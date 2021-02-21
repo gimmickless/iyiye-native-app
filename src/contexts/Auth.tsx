@@ -1,6 +1,10 @@
 import React, { useEffect, useReducer } from 'react'
 import Auth from '@aws-amplify/auth'
-import { AuthUserAddress, AuthUserState } from 'types/context'
+import {
+  AuthUserAddressKey,
+  AuthUserAddress,
+  AuthUserState
+} from 'types/context'
 import { cognitoNotAuthenticatedMessageList } from 'utils/constants'
 import { useToast } from 'react-native-styled-toast'
 
@@ -8,7 +12,7 @@ type CreateAuthUserInput = {
   fullName: string
   username: string
   email: string
-  address: AuthUserAddress
+  address: AuthUserAddressKey
   birthDate: string
   phoneNumber?: string
   picture?: string
@@ -16,27 +20,30 @@ type CreateAuthUserInput = {
   theme?: string
   bio?: string
   contactable?: boolean
-  altAddress1?: AuthUserAddress
-  altAddress2?: AuthUserAddress
-  altAddress3?: AuthUserAddress
-  altAddress4?: AuthUserAddress
-  altAddress5?: AuthUserAddress
+  address1?: AuthUserAddress
+  address2?: AuthUserAddress
+  address3?: AuthUserAddress
+  address4?: AuthUserAddress
+  address5?: AuthUserAddress
 }
 
 type UpdateAuthUserInput = {
   fullName: string
-  address: AuthUserAddress
+  address: AuthUserAddressKey
   phoneNumber?: string
   picture?: string
   locale?: string
   theme?: string
   bio?: string
   contactable?: boolean
-  altAddress1?: AuthUserAddress
-  altAddress2?: AuthUserAddress
-  altAddress3?: AuthUserAddress
-  altAddress4?: AuthUserAddress
-  altAddress5?: AuthUserAddress
+}
+
+type UpdateAuthUserAddressesInput = {
+  address1?: AuthUserAddress
+  address2?: AuthUserAddress
+  address3?: AuthUserAddress
+  address4?: AuthUserAddress
+  address5?: AuthUserAddress
 }
 
 type LoginInput = {
@@ -46,18 +53,21 @@ type LoginInput = {
 
 type UpdateInput = {
   fullName: string
-  address: AuthUserAddress
+  address?: AuthUserAddressKey
   phoneNumber?: string
   picture?: string
   locale?: string
   theme?: string
   bio?: string
   contactable?: boolean
-  altAddress1?: AuthUserAddress
-  altAddress2?: AuthUserAddress
-  altAddress3?: AuthUserAddress
-  altAddress4?: AuthUserAddress
-  altAddress5?: AuthUserAddress
+}
+
+type UpdateAddressesInput = {
+  address1?: AuthUserAddress
+  address2?: AuthUserAddress
+  address3?: AuthUserAddress
+  address4?: AuthUserAddress
+  address5?: AuthUserAddress
 }
 
 type AuthReducerAction =
@@ -70,11 +80,16 @@ type AuthReducerAction =
       payload: UpdateAuthUserInput
     }
   | {
+      type: 'update_auth_user_alt_addresses'
+      payload: UpdateAuthUserAddressesInput
+    }
+  | {
       type: 'remove_auth_user'
     }
 
 const initialState = {
-  loaded: false
+  loaded: false,
+  props: undefined
 }
 
 export const AuthUserContext = React.createContext<{
@@ -82,6 +97,7 @@ export const AuthUserContext = React.createContext<{
   action: {
     login: (payload: LoginInput) => Promise<void>
     update: (payload: UpdateInput) => Promise<void>
+    updateAddresses: (payload: UpdateAddressesInput) => Promise<void>
     logout: () => Promise<void>
   }
 }>({
@@ -89,6 +105,7 @@ export const AuthUserContext = React.createContext<{
   action: {
     login: () => Promise.resolve(),
     update: () => Promise.resolve(),
+    updateAddresses: () => Promise.resolve(),
     logout: () => Promise.resolve()
   }
 })
@@ -111,9 +128,18 @@ const authReducer = (
           ...action.payload
         }
       } as AuthUserState
+    case 'update_auth_user_alt_addresses':
+      return {
+        loaded: true,
+        props: {
+          ...state.props,
+          ...action.payload
+        }
+      } as AuthUserState
     case 'remove_auth_user':
       return {
-        loaded: true
+        loaded: true,
+        props: undefined
       }
     default:
       return state
@@ -127,7 +153,10 @@ export default ({ children }: any) => {
   useEffect(() => {
     ;(async () => {
       try {
-        let currentAuthUser = await Auth.currentAuthenticatedUser()
+        let [currentAuthUser] = await Promise.all([
+          Auth.currentAuthenticatedUser(),
+          Auth.currentSession() // this is deliberately called for refreshing tokens: https://docs.amplify.aws/lib/auth/manageusers/q/platform/js#retrieve-current-session
+        ])
         if (!currentAuthUser) {
           dispatch({ type: 'remove_auth_user' })
           return
@@ -140,9 +169,7 @@ export default ({ children }: any) => {
             username: currentAuthUser.username,
             fullName: currentAuthUserAttributes.name,
             email: currentAuthUserAttributes.email,
-            address: JSON.parse(
-              currentAuthUserAttributes.address
-            ) as AuthUserAddress,
+            address: currentAuthUserAttributes.address,
             birthDate: currentAuthUserAttributes.birthdate,
             phoneNumber: currentAuthUserAttributes.phone_number,
             picture: currentAuthUserAttributes.picture,
@@ -150,20 +177,20 @@ export default ({ children }: any) => {
             theme: currentAuthUserAttributes['custom:theme'],
             bio: currentAuthUserAttributes['custom:bio'],
             contactable: !!currentAuthUserAttributes['custom:contactable'],
-            altAddress1: JSON.parse(
-              currentAuthUserAttributes['custom:altAddress1']
+            address1: JSON.parse(
+              currentAuthUserAttributes['custom:address1']
             ) as AuthUserAddress,
-            altAddress2: JSON.parse(
-              currentAuthUserAttributes['custom:altAddress2']
+            address2: JSON.parse(
+              currentAuthUserAttributes['custom:address2']
             ) as AuthUserAddress,
-            altAddress3: JSON.parse(
-              currentAuthUserAttributes['custom:altAddress3']
+            address3: JSON.parse(
+              currentAuthUserAttributes['custom:address3']
             ) as AuthUserAddress,
-            altAddress4: JSON.parse(
-              currentAuthUserAttributes['custom:altAddress4']
+            address4: JSON.parse(
+              currentAuthUserAttributes['custom:address4']
             ) as AuthUserAddress,
-            altAddress5: JSON.parse(
-              currentAuthUserAttributes['custom:altAddress5']
+            address5: JSON.parse(
+              currentAuthUserAttributes['custom:address5']
             ) as AuthUserAddress
           }
         })
@@ -192,7 +219,7 @@ export default ({ children }: any) => {
           username,
           fullName: attributes.name,
           email: attributes.email,
-          address: JSON.parse(attributes.address) as AuthUserAddress,
+          address: attributes.address,
           birthDate: attributes.birthdate,
           phoneNumber: attributes.phone_number,
           picture: attributes.picture,
@@ -200,21 +227,19 @@ export default ({ children }: any) => {
           theme: attributes['custom:theme'],
           bio: attributes['custom:bio'],
           contactable: !!attributes['custom:contactable'],
-          altAddress1: JSON.parse(
-            attributes['custom:altAddress1']
+          address1: JSON.parse(
+            attributes['custom:address1']
           ) as AuthUserAddress,
-          altAddress2: JSON.parse(
-            attributes['custom:altAddress2']
+          address2: JSON.parse(
+            attributes['custom:address2']
           ) as AuthUserAddress,
-          altAddress3: JSON.parse(
-            attributes['custom:altAddress3']
+          address3: JSON.parse(
+            attributes['custom:address3']
           ) as AuthUserAddress,
-          altAddress4: JSON.parse(
-            attributes['custom:altAddress4']
+          address4: JSON.parse(
+            attributes['custom:address4']
           ) as AuthUserAddress,
-          altAddress5: JSON.parse(
-            attributes['custom:altAddress5']
-          ) as AuthUserAddress
+          address5: JSON.parse(attributes['custom:address5']) as AuthUserAddress
         }
       })
     } catch (err) {
@@ -238,12 +263,7 @@ export default ({ children }: any) => {
         locale: payload.locale,
         'custom:theme': payload.theme,
         'custom:bio': payload.bio,
-        'custom:contactable': payload.contactable,
-        'custom:altAddress1': JSON.stringify(payload.altAddress1),
-        'custom:altAddress2': JSON.stringify(payload.altAddress2),
-        'custom:altAddress3': JSON.stringify(payload.altAddress3),
-        'custom:altAddress4': JSON.stringify(payload.altAddress4),
-        'custom:altAddress5': JSON.stringify(payload.altAddress5)
+        'custom:contactable': payload.contactable
       })
       dispatch({
         type: 'update_auth_user',
@@ -254,13 +274,37 @@ export default ({ children }: any) => {
           picture: payload.picture,
           locale: payload.locale,
           theme: payload.theme,
-          bio: payload.bio,
-          contactable: payload.contactable,
-          altAddress1: payload.altAddress1,
-          altAddress2: payload.altAddress2,
-          altAddress3: payload.altAddress3,
-          altAddress4: payload.altAddress4,
-          altAddress5: payload.altAddress5
+          bio: payload.bio
+        }
+      })
+    } catch (err) {
+      toast({
+        message: JSON.stringify(err),
+        intent: 'ERROR',
+        duration: 0
+      })
+    }
+  }
+
+  const updateAddresses = async (payload: UpdateAddressesInput) => {
+    try {
+      let cognitoUser = await Auth.currentAuthenticatedUser()
+
+      await Auth.updateUserAttributes(cognitoUser, {
+        'custom:address1': JSON.stringify(payload.address1),
+        'custom:address2': JSON.stringify(payload.address2),
+        'custom:address3': JSON.stringify(payload.address3),
+        'custom:address4': JSON.stringify(payload.address4),
+        'custom:address5': JSON.stringify(payload.address5)
+      })
+      dispatch({
+        type: 'update_auth_user_alt_addresses',
+        payload: {
+          address1: payload.address1,
+          address2: payload.address2,
+          address3: payload.address3,
+          address4: payload.address4,
+          address5: payload.address5
         }
       })
     } catch (err) {
@@ -287,7 +331,7 @@ export default ({ children }: any) => {
 
   return (
     <AuthUserContext.Provider
-      value={{ state, action: { login, update, logout } }}
+      value={{ state, action: { login, update, updateAddresses, logout } }}
     >
       {children}
     </AuthUserContext.Provider>

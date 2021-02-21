@@ -18,12 +18,17 @@ export const maxNumOfSearchResults = 3
 export const commentMinLength = 3
 export const commentMaxLength = 255
 
+export const maxAddressCount = 5
+
 // AWS, Amplify
 export const cognitoNotAuthenticatedMessageList = [
   'The user is not authenticated',
   'not authenticated'
 ]
 export const cognitoNoCurrentUserMessage = 'No current user'
+
+// Async Storage
+export const globalAsyncStorageKeyPrefix = '@gimmickless:iyiye'
 
 // Styles
 export const homeHeaderHeight = 120
