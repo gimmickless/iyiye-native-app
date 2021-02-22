@@ -23,6 +23,7 @@ REACT_APP_COGNITO_USER_POOL_CLIENT_ID=xxxxxxxxxxxxxxxxxxxxxxxxxx
 REACT_APP_COGNITO_USER_POOL_ID={region}_xxxxxxxxx
 REACT_APP_S3_USER_STORAGE_BUCKET={USER_STORAGE_BUCKET_NAME}
 REACT_APP_S3_SITE_META_BUCKET={SITE_META_BUCKET_NAME}
+REACT_APP_GOOGLE_PLACES_API_KEY={GOOGLE_PLACES_API_KEY}
 ```
 
 ### Github actions secrets
@@ -48,6 +49,7 @@ So, the following should be added to the repo secrets beforehand:
 | REACT_APP_COGNITO_USER_POOL_ID        | `{region}_xxxxxxxxx`                                          |
 | REACT_APP_S3_USER_STORAGE_BUCKET      | `{USER_STORAGE_BUCKET_NAME}`                                  |
 | REACT_APP_S3_SITE_META_BUCKET         | `{SITE_META_BUCKET_NAME}`                                     |
+| REACT_APP_GOOGLE_PLACES_API_KEY       | `{GOOGLE_PLACES_API_KEY}`                                     |
 
 ### expo start
 

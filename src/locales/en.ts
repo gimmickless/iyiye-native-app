@@ -175,7 +175,11 @@ const englishTranslation = {
           }
         }
       },
-      addressLocationSearch: {},
+      addressLocationSearch: {
+        titleSearchTextInput: {
+          placeholder: 'Search for your street address'
+        }
+      },
       addressForm: {
         title: {
           new: 'New Address',

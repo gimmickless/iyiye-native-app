@@ -1,5 +1,11 @@
 import { GRAPHQL_AUTH_MODE } from '@aws-amplify/api'
 
+export const GoogleConfig = {
+  Places: {
+    apiKey: process.env.REACT_APP_GOOGLE_PLACES_API_KEY
+  }
+}
+
 // AWS
 export const AwsConfig = {
   // S3

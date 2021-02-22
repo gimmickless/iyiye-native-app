@@ -1,21 +1,26 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useLayoutEffect, useState } from 'react'
 import * as Location from 'expo-location'
+import * as Cellular from 'expo-cellular'
 import {
   KeyboardAvoidingView,
   Platform,
-  SafeAreaView,
-  StyleSheet
+  StyleSheet,
+  TextInput
 } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useToast } from 'react-native-styled-toast'
 import { LocalizationContext } from 'contexts/Localization'
 import { useNavigation } from '@react-navigation/native'
 import { HomeStackScreenNames } from 'types/route'
-import { globalAsyncStorageKeyPrefix } from 'utils/constants'
+import {
+  globalAsyncStorageKeyPrefix,
+  googlePlacesAutocompleteBaseUrl
+} from 'utils/constants'
 
 const recentLocationSearchesKey = `${globalAsyncStorageKeyPrefix}:recentLocationSearches`
 
 const LocationSearch: React.FC = () => {
+  const [search, setSearch] = useState('')
   const [recentSearches, setRecentSearches] = useState<string[]>([])
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
@@ -35,6 +40,55 @@ const LocationSearch: React.FC = () => {
       }
     })()
   }, [toast])
+
+  useEffect(() => {
+    ;(async () => {
+      try {
+        // TODO: ADD DEBOUNCE
+        let url = googlePlacesAutocompleteBaseUrl
+        // https://developers.google.com/places/web-service/autocomplete
+        url.searchParams.append('input', search)
+        url.searchParams.append('types', 'address')
+        if (Cellular.isoCountryCode) {
+          url.searchParams.append(
+            'components',
+            `country:${Cellular.isoCountryCode}`
+          )
+          url.searchParams.append('strictbounds', 'true')
+        }
+        const response = await fetch(url.toString())
+        const data = await response.json()
+        console.log(data)
+      } catch (err) {
+        toast({
+          message: err,
+          intent: 'ERROR',
+          duration: 0
+        })
+      }
+    })()
+  }, [search, toast])
+
+  // Customize header
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      // headerStyle: { elevation: 0, shadowOpacity: 0 },
+      headerTitle: () => (
+        <TextInput
+          style={styles.headerSearchTextInput}
+          onChangeText={(val) => setSearch(val)}
+          value={search}
+          autoCorrect={false}
+          clearButtonMode="always"
+          placeholder={t(
+            'screen.home.addressLocationSearch.titleSearchTextInput.placeholder'
+          )}
+          returnKeyType="done"
+          textContentType="streetAddressLine1"
+        />
+      )
+    })
+  }, [navigation, search, t])
 
   const addRecentSearch = async (val: string) => {
     try {
@@ -80,6 +134,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center'
+  },
+  headerSearchTextInput: {
+    flex: 1
   }
 })
 

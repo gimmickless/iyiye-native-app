@@ -32,7 +32,7 @@ const Default: React.FC = () => {
     authUser.props?.username
   ])
 
-  const headerTitle = useMemo(
+  const renderHeaderTitle = useMemo(
     () => (
       <View style={styles.headerTitleContainer}>
         <Text h3 style={styles.headerTitlePrimaryText}>
@@ -53,7 +53,7 @@ const Default: React.FC = () => {
     [isAuthUser, t, username]
   )
 
-  const headerRight = useMemo(() => {
+  const renderHeaderRight = useMemo(() => {
     const onPress = isAuthUser
       ? () => {
           navigation.navigate(HomeStackScreenNames.AddressList)
@@ -129,10 +129,10 @@ const Default: React.FC = () => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerStyle: { height: homeHeaderHeight, elevation: 0, shadowOpacity: 0 },
-      headerTitle: () => headerTitle,
-      headerRight: () => headerRight
+      headerTitle: () => renderHeaderTitle,
+      headerRight: () => renderHeaderRight
     })
-  }, [headerRight, headerTitle, navigation])
+  }, [renderHeaderRight, renderHeaderTitle, navigation])
 
   return !authUser.loaded ? (
     <LoadingView />
