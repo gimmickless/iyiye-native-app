@@ -171,7 +171,7 @@ const AddressList: React.FC = () => {
     <LoadingView />
   ) : !addresses ? (
     <View style={styles.nothingFoundContainer}>
-      <Image source={require('assets/notfound.png')} />
+      <Image source={require('visuals/notfound.png')} />
       <Text h4 style={styles.nothingFound}>
         {t('screen.home.addressList.message.nothingFound')}
       </Text>

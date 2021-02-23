@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useLayoutEffect, useState } from 'react'
+import React, {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState
+} from 'react'
 import * as Location from 'expo-location'
 import * as Cellular from 'expo-cellular'
 import {
@@ -7,6 +13,7 @@ import {
   StyleSheet,
   TextInput
 } from 'react-native'
+import { debounce } from 'debounce'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useToast } from 'react-native-styled-toast'
 import { LocalizationContext } from 'contexts/Localization'
@@ -26,6 +33,27 @@ const LocationSearch: React.FC = () => {
   const navigation = useNavigation()
   const { toast } = useToast()
 
+  const delayedFetchAutocomplete = useMemo(
+    () =>
+      debounce(async () => {
+        let url = googlePlacesAutocompleteBaseUrl
+        // https://developers.google.com/places/web-service/autocomplete
+        url.searchParams.append('input', search)
+        url.searchParams.append('types', 'address')
+        if (Cellular.isoCountryCode) {
+          url.searchParams.append(
+            'components',
+            `country:${Cellular.isoCountryCode}`
+          )
+          url.searchParams.append('strictbounds', 'true')
+        }
+        const response = await fetch(url.toString())
+        const data = await response.json()
+        console.log(data)
+      }, 1000),
+    [search]
+  )
+
   useEffect(() => {
     ;(async () => {
       try {
@@ -44,21 +72,7 @@ const LocationSearch: React.FC = () => {
   useEffect(() => {
     ;(async () => {
       try {
-        // TODO: ADD DEBOUNCE
-        let url = googlePlacesAutocompleteBaseUrl
-        // https://developers.google.com/places/web-service/autocomplete
-        url.searchParams.append('input', search)
-        url.searchParams.append('types', 'address')
-        if (Cellular.isoCountryCode) {
-          url.searchParams.append(
-            'components',
-            `country:${Cellular.isoCountryCode}`
-          )
-          url.searchParams.append('strictbounds', 'true')
-        }
-        const response = await fetch(url.toString())
-        const data = await response.json()
-        console.log(data)
+        delayedFetchAutocomplete()
       } catch (err) {
         toast({
           message: err,
@@ -67,7 +81,7 @@ const LocationSearch: React.FC = () => {
         })
       }
     })()
-  }, [search, toast])
+  }, [delayedFetchAutocomplete, search, toast])
 
   // Customize header
   useLayoutEffect(() => {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { View } from 'react-native'
+import { View, Text } from 'react-native'
 
 interface CategoryListViewProps {
   username: string
@@ -7,7 +7,11 @@ interface CategoryListViewProps {
 
 const CategoryListView: React.FC<CategoryListViewProps> = (props) => {
   const { username } = props
-  return <View>{username}</View>
+  return (
+    <View>
+      <Text>{username}</Text>
+    </View>
+  )
 }
 
 export default CategoryListView
