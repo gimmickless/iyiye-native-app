@@ -125,11 +125,12 @@ const SignUp: React.FC = () => {
           birthdate: birthDate,
           locale: Localization.locale,
           'custom:theme': colorScheme,
-          'custom:contactable': true
+          'custom:contactable': '1'
         }
       })
       navigation.navigate(AuthStackScreenNames.ConfirmAccount, { email })
     } catch (err) {
+      console.log(err)
       toast({ message: err.message ?? err, intent: 'ERROR', duration: 0 })
     } finally {
       setSignUpLoading(false)
@@ -227,7 +228,7 @@ const SignUp: React.FC = () => {
                 autoCorrect={false}
                 secureTextEntry
                 textContentType="newPassword"
-                passwordRules="minlength: 20; required: lower; required: upper; required: digit;"
+                passwordRules="minlength: 8; required: lower; required: upper; required: digit;"
                 returnKeyType="next"
                 blurOnSubmit={false}
                 onSubmitEditing={() => retypePasswordRef.current?.focus()}

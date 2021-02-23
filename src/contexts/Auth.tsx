@@ -263,7 +263,7 @@ export default ({ children }: any) => {
         locale: payload.locale,
         'custom:theme': payload.theme,
         'custom:bio': payload.bio,
-        'custom:contactable': payload.contactable
+        'custom:contactable': payload.contactable ? 1 : 0
       })
       dispatch({
         type: 'update_auth_user',
