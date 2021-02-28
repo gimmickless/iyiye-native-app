@@ -15,7 +15,6 @@ import {
 } from 'react-native'
 import { debounce } from 'debounce'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useToast } from 'react-native-styled-toast'
 import { LocalizationContext } from 'contexts/Localization'
 import { useNavigation } from '@react-navigation/native'
 import { HomeStackScreenNames } from 'types/route'
@@ -23,15 +22,16 @@ import {
   globalAsyncStorageKeyPrefix,
   googlePlacesAutocompleteBaseUrl
 } from 'utils/constants'
+import { useToast } from 'react-native-styled-toast'
 
 const recentLocationSearchesKey = `${globalAsyncStorageKeyPrefix}:recentLocationSearches`
 
 const LocationSearch: React.FC = () => {
+  const { toast } = useToast()
   const [search, setSearch] = useState('')
   const [recentSearches, setRecentSearches] = useState<string[]>([])
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
-  const { toast } = useToast()
 
   const delayedFetchAutocomplete = useMemo(
     () =>
@@ -128,7 +128,6 @@ const LocationSearch: React.FC = () => {
         intent: 'ERROR',
         duration: 0
       })
-      return
     }
     let location = await Location.getCurrentPositionAsync({})
     navigation.navigate(HomeStackScreenNames.AddressForm, location)

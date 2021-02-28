@@ -6,13 +6,14 @@ import { AppearanceProvider } from 'react-native-appearance'
 import Amplify from '@aws-amplify/core'
 import API from '@aws-amplify/api'
 import PubSub from '@aws-amplify/pubsub'
-import { ToastProvider } from 'react-native-styled-toast'
 import AuthUserContextProvider from 'contexts/Auth'
 import LocalizationContextProvider from 'contexts/Localization'
 import { OverflowMenuProvider } from 'react-navigation-header-buttons'
 import { en } from 'locales'
 import { RootNavigator } from 'router'
 import { AwsConfig } from 'config'
+import { ToastProvider } from 'react-native-styled-toast'
+import { ThemeProvider } from 'styled-components/native'
 
 // Screen optimization: https://reactnavigation.org/docs/react-native-screens
 enableScreens()
@@ -29,15 +30,17 @@ PubSub.configure(AwsConfig)
 const App: React.FC = () => {
   return (
     <AppearanceProvider>
-      <ToastProvider maxToasts={1} position="BOTTOM">
-        <AuthUserContextProvider>
-          <LocalizationContextProvider>
-            <OverflowMenuProvider>
-              <RootNavigator />
-            </OverflowMenuProvider>
-          </LocalizationContextProvider>
-        </AuthUserContextProvider>
-      </ToastProvider>
+      <ThemeProvider>
+        <ToastProvider>
+          <AuthUserContextProvider>
+            <LocalizationContextProvider>
+              <OverflowMenuProvider>
+                <RootNavigator />
+              </OverflowMenuProvider>
+            </LocalizationContextProvider>
+          </AuthUserContextProvider>
+        </ToastProvider>
+      </ThemeProvider>
     </AppearanceProvider>
   )
 }

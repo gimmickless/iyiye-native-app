@@ -28,10 +28,11 @@ import {
 import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
 import { getMaxDateFor18OrMoreYearsOld } from 'utils/validations'
-import { useToast } from 'react-native-styled-toast'
 import { AuthStackScreenNames } from 'types/route'
 import Auth from '@aws-amplify/auth'
 import { useColorScheme } from 'react-native-appearance'
+import { convertDateToIsoString } from 'utils/conversions'
+import { useToast } from 'react-native-styled-toast'
 
 type FormData = {
   fullName: string
@@ -47,8 +48,8 @@ const SignUp: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
   const colorScheme = useColorScheme()
-  const [signUpLoading, setSignUpLoading] = useState(false)
   const { toast } = useToast()
+  const [signUpLoading, setSignUpLoading] = useState(false)
   const [showDatePicker, setShowDatePicker] = useState(false)
   const [showTermsModal, setShowTermsModal] = useState(false)
   const [showPrivacyModal, setShowPrivacyModal] = useState(false)
@@ -122,16 +123,23 @@ const SignUp: React.FC = () => {
         attributes: {
           name: fullName,
           email: email,
-          birthdate: birthDate,
+          birthdate: convertDateToIsoString(birthDate),
           locale: Localization.locale,
           'custom:theme': colorScheme,
-          'custom:contactable': '1'
+          'custom:contactable': 'true'
         }
       })
-      navigation.navigate(AuthStackScreenNames.ConfirmAccount, { email })
+      navigation.navigate(AuthStackScreenNames.ConfirmAccount, {
+        email,
+        username
+      })
     } catch (err) {
-      console.log(err)
-      toast({ message: err.message ?? err, intent: 'ERROR', duration: 0 })
+      // console.log(err)
+      toast({
+        message: err.message ?? err,
+        intent: 'ERROR',
+        duration: 0
+      })
     } finally {
       setSignUpLoading(false)
     }
@@ -251,11 +259,7 @@ const SignUp: React.FC = () => {
                 <View pointerEvents="none">
                   <Input
                     editable={false}
-                    value={
-                      values.birthDate
-                        ? values.birthDate.toISOString().substring(0, 10)
-                        : ''
-                    }
+                    value={convertDateToIsoString(values.birthDate)}
                     ref={birthDateRef}
                     placeholder={t('screen.auth.signUp.label.birthDate')}
                     onFocus={() => setShowDatePicker(true)}

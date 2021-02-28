@@ -176,7 +176,8 @@ export default ({ children }: any) => {
             locale: currentAuthUserAttributes.locale,
             theme: currentAuthUserAttributes['custom:theme'],
             bio: currentAuthUserAttributes['custom:bio'],
-            contactable: !!currentAuthUserAttributes['custom:contactable'],
+            contactable:
+              currentAuthUserAttributes['custom:contactable'] === 'true',
             address1: JSON.parse(
               currentAuthUserAttributes['custom:address1']
             ) as AuthUserAddress,
@@ -226,7 +227,7 @@ export default ({ children }: any) => {
           locale: attributes.locale,
           theme: attributes['custom:theme'],
           bio: attributes['custom:bio'],
-          contactable: !!attributes['custom:contactable'],
+          contactable: attributes['custom:contactable'] === 'true',
           address1: JSON.parse(
             attributes['custom:address1']
           ) as AuthUserAddress,
@@ -263,7 +264,7 @@ export default ({ children }: any) => {
         locale: payload.locale,
         'custom:theme': payload.theme,
         'custom:bio': payload.bio,
-        'custom:contactable': payload.contactable ? 1 : 0
+        'custom:contactable': payload.contactable ? 'true' : 'false'
       })
       dispatch({
         type: 'update_auth_user',

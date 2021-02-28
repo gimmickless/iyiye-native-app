@@ -21,9 +21,9 @@ import {
 } from 'utils/constants'
 import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
-import { useToast } from 'react-native-styled-toast'
 import { AuthStackScreenNames } from 'types/route'
 import Auth from '@aws-amplify/auth'
+import { useToast } from 'react-native-styled-toast'
 
 type UserInfoFormData = {
   username: string
@@ -42,10 +42,10 @@ UIManager.setLayoutAnimationEnabledExperimental &&
 
 const ForgotPasword: React.FC = () => {
   const { t } = useContext(LocalizationContext)
+  const { toast } = useToast()
   const [sendEmailLoading, setSendEmailLoading] = useState(false)
   const [sendNewPasswordLoading, setSendNewPasswordLoading] = useState(false)
   const [emailSent, setEmailSent] = useState(false)
-  const { toast } = useToast()
   const navigation = useNavigation()
   const formRef = useRef<FormikProps<UserInfoFormData>>(null)
   const newPasswordRef = useRef<Input>(null)
@@ -95,7 +95,11 @@ const ForgotPasword: React.FC = () => {
       setEmailSent(true)
       LayoutAnimation.easeInEaseOut()
     } catch (err) {
-      toast({ message: err.message ?? err, intent: 'ERROR', duration: 0 })
+      toast({
+        message: err.message ?? err,
+        intent: 'ERROR',
+        duration: 0
+      })
     } finally {
       setSendEmailLoading(false)
     }
@@ -114,7 +118,11 @@ const ForgotPasword: React.FC = () => {
       )
       navigation.navigate(AuthStackScreenNames.SignIn)
     } catch (err) {
-      toast({ message: err.message ?? err, intent: 'ERROR', duration: 0 })
+      toast({
+        message: err.message ?? err,
+        intent: 'ERROR',
+        duration: 0
+      })
     } finally {
       setSendNewPasswordLoading(false)
     }

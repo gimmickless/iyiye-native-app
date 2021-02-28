@@ -14,8 +14,8 @@ import { AuthUserAddress, AuthUserAddressKey } from 'types/context'
 import { AddressTypeEmoji } from 'types/visualization'
 import { HomeStackScreenNames } from 'types/route'
 import ListSeparator from 'components/shared/ListSeparator'
-import { useToast } from 'react-native-styled-toast'
 import { maxAddressCount } from 'utils/constants'
+import { useToast } from 'react-native-styled-toast'
 
 type AddressKeyValue = {
   key: string
@@ -156,13 +156,13 @@ const AddressList: React.FC = () => {
 
       await authUserAction.updateAddresses(deletedItemAddressesObj)
       setAddresses(deletedItemAddresses)
-      setOperationInProgress(false)
     } catch (err) {
       toast({
-        message: err,
+        message: err.message ?? err,
         intent: 'ERROR',
         duration: 0
       })
+    } finally {
       setOperationInProgress(false)
     }
   }

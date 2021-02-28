@@ -14,9 +14,9 @@ import {
 } from 'utils/constants'
 import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
-import { useToast } from 'react-native-styled-toast'
 import { AuthUserContext } from 'contexts/Auth'
 import { AuthStackScreenNames, TabNames } from 'types/route'
+import { useToast } from 'react-native-styled-toast'
 
 type FormData = {
   usernameOrEmail: string
@@ -25,9 +25,9 @@ type FormData = {
 
 const SignIn: React.FC = () => {
   const { t } = useContext(LocalizationContext)
+  const { toast } = useToast()
   const { action } = useContext(AuthUserContext)
   const [signInLoading, setSignInLoading] = useState(false)
-  const { toast } = useToast()
   const navigation = useNavigation()
   const passwordRef = useRef<Input>(null)
 
@@ -56,7 +56,11 @@ const SignIn: React.FC = () => {
       await action.login({ usernameOrEmail, password })
       navigation.dispatch(CommonActions.goBack()) // Return to previous screen
     } catch (err) {
-      toast({ message: err.message ?? err, intent: 'ERROR', duration: 0 })
+      toast({
+        message: err.message ?? err,
+        intent: 'ERROR',
+        duration: 0
+      })
     } finally {
       setSignInLoading(false)
     }

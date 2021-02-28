@@ -1,6 +1,6 @@
-import React, { useContext, useMemo } from 'react'
+import React, { useContext, useMemo, useState } from 'react'
 import { StyleSheet, Platform, KeyboardAvoidingView, View } from 'react-native'
-import { RouteProp, useRoute } from '@react-navigation/native'
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { Input, Button, Text } from 'react-native-elements'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
@@ -9,6 +9,8 @@ import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
 import { AuthStackParamList } from 'router/stacks/Auth'
 import Auth from '@aws-amplify/auth'
+import { AuthStackScreenNames } from 'types/route'
+import { useToast } from 'react-native-styled-toast'
 
 type FormData = {
   verificationCode: string
@@ -21,9 +23,12 @@ type ConfirmAccountScreenRouteProp = RouteProp<
 
 const ConfirmAccount: React.FC = () => {
   const { t } = useContext(LocalizationContext)
+  const navigation = useNavigation()
+  const { toast } = useToast()
   const route = useRoute<ConfirmAccountScreenRouteProp>()
   const email = useMemo(() => route.params.email, [route])
   const username = useMemo(() => route.params.username, [route])
+  const [confirmAccountLoading, setConfirmAccountLoading] = useState(false)
 
   const formSchema: Yup.SchemaOf<FormData> = Yup.object().shape({
     verificationCode: Yup.string().required(
@@ -32,11 +37,32 @@ const ConfirmAccount: React.FC = () => {
   })
 
   const onSubmit = async ({ verificationCode }: FormData) => {
-    await Auth.confirmSignUp(username, verificationCode)
+    try {
+      setConfirmAccountLoading(true)
+      await Auth.confirmSignUp(username, verificationCode)
+      navigation.navigate(AuthStackScreenNames.SignIn)
+    } catch (err) {
+      console.log(err)
+      toast({
+        message: err.message ?? err,
+        intent: 'ERROR',
+        duration: 0
+      })
+    } finally {
+      setConfirmAccountLoading(false)
+    }
   }
 
   const onResendCode = async () => {
-    await Auth.resendSignUp(username)
+    try {
+      await Auth.resendSignUp(username)
+    } catch (err) {
+      toast({
+        message: err.message ?? err,
+        intent: 'ERROR',
+        duration: 0
+      })
+    }
   }
 
   return (
@@ -82,14 +108,16 @@ const ConfirmAccount: React.FC = () => {
                   'screen.auth.confirmAccount.button.done'
                 ).toLocaleUpperCase()}
                 onPress={handleSubmit as any}
+                loading={confirmAccountLoading}
+                disabled={confirmAccountLoading}
               />
             </View>
           )}
         </Formik>
 
-        <Text style={styles.centeredText}>{`${t(
-          'screen.auth.confirmAccount.text.notReceivedCode'
-        )} `}</Text>
+        <Text style={styles.centeredText}>
+          {t('screen.auth.confirmAccount.text.notReceivedCode')}
+        </Text>
         <Button
           type="clear"
           style={styles.secondaryButton}
