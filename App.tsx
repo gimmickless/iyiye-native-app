@@ -8,12 +8,12 @@ import API from '@aws-amplify/api'
 import PubSub from '@aws-amplify/pubsub'
 import AuthUserContextProvider from 'contexts/Auth'
 import LocalizationContextProvider from 'contexts/Localization'
+import InAppNotificationContextProvider from 'contexts/InAppNotification'
 import { OverflowMenuProvider } from 'react-navigation-header-buttons'
+import InAppNotificationBox from 'components/shared/InAppNotificationBox'
 import { en } from 'locales'
 import { RootNavigator } from 'router'
 import { AwsConfig } from 'config'
-import { ToastProvider } from 'react-native-styled-toast'
-import { ThemeProvider } from 'styled-components/native'
 
 // Screen optimization: https://reactnavigation.org/docs/react-native-screens
 enableScreens()
@@ -30,17 +30,16 @@ PubSub.configure(AwsConfig)
 const App: React.FC = () => {
   return (
     <AppearanceProvider>
-      <ThemeProvider>
-        <ToastProvider>
-          <AuthUserContextProvider>
-            <LocalizationContextProvider>
-              <OverflowMenuProvider>
-                <RootNavigator />
-              </OverflowMenuProvider>
-            </LocalizationContextProvider>
-          </AuthUserContextProvider>
-        </ToastProvider>
-      </ThemeProvider>
+      <InAppNotificationContextProvider>
+        <AuthUserContextProvider>
+          <LocalizationContextProvider>
+            <OverflowMenuProvider>
+              <RootNavigator />
+            </OverflowMenuProvider>
+          </LocalizationContextProvider>
+        </AuthUserContextProvider>
+        <InAppNotificationBox />
+      </InAppNotificationContextProvider>
     </AppearanceProvider>
   )
 }

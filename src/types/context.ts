@@ -43,3 +43,8 @@ export type AuthUserAddress = {
   latitude: string
   longitude: string
 }
+
+export type InAppNotificationType = {
+  type: 'success' | 'info' | 'warn' | 'error'
+  message: string
+}

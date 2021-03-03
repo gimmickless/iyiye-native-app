@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
 
-const ListSeparator = () => <View style={styles.listItemSeparator} />
+const ListSeparator: React.FC = () => <View style={styles.listItemSeparator} />
 
 const styles = StyleSheet.create({
   listContainer: { paddingHorizontal: 8 },

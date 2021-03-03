@@ -23,7 +23,7 @@ import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
 import { AuthStackScreenNames } from 'types/route'
 import Auth from '@aws-amplify/auth'
-import { useToast } from 'react-native-styled-toast'
+import { useInAppNotification } from 'hooks'
 
 type UserInfoFormData = {
   username: string
@@ -42,7 +42,7 @@ UIManager.setLayoutAnimationEnabledExperimental &&
 
 const ForgotPasword: React.FC = () => {
   const { t } = useContext(LocalizationContext)
-  const { toast } = useToast()
+  const { addNotification } = useInAppNotification()
   const [sendEmailLoading, setSendEmailLoading] = useState(false)
   const [sendNewPasswordLoading, setSendNewPasswordLoading] = useState(false)
   const [emailSent, setEmailSent] = useState(false)
@@ -95,10 +95,9 @@ const ForgotPasword: React.FC = () => {
       setEmailSent(true)
       LayoutAnimation.easeInEaseOut()
     } catch (err) {
-      toast({
+      addNotification({
         message: err.message ?? err,
-        intent: 'ERROR',
-        duration: 0
+        type: 'error'
       })
     } finally {
       setSendEmailLoading(false)
@@ -118,10 +117,9 @@ const ForgotPasword: React.FC = () => {
       )
       navigation.navigate(AuthStackScreenNames.SignIn)
     } catch (err) {
-      toast({
+      addNotification({
         message: err.message ?? err,
-        intent: 'ERROR',
-        duration: 0
+        type: 'error'
       })
     } finally {
       setSendNewPasswordLoading(false)

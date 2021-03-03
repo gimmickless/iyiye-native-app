@@ -6,7 +6,7 @@ import {
   AuthUserState
 } from 'types/context'
 import { cognitoNotAuthenticatedMessageList } from 'utils/constants'
-import { useToast } from 'react-native-styled-toast'
+import { useInAppNotification } from 'hooks'
 
 type CreateAuthUserInput = {
   fullName: string
@@ -148,7 +148,7 @@ const authReducer = (
 
 export default ({ children }: any) => {
   const [state, dispatch] = useReducer(authReducer, initialState)
-  const { toast } = useToast()
+  const { addNotification } = useInAppNotification()
 
   useEffect(() => {
     ;(async () => {
@@ -197,16 +197,15 @@ export default ({ children }: any) => {
         })
       } catch (err) {
         if (!cognitoNotAuthenticatedMessageList.includes(err.toString())) {
-          toast({
+          addNotification({
             message: JSON.stringify(err),
-            intent: 'ERROR',
-            duration: 0
+            type: 'error'
           })
         }
         dispatch({ type: 'remove_auth_user' })
       }
     })()
-  }, [toast])
+  }, [addNotification])
 
   const login = async (payload: LoginInput) => {
     try {
@@ -244,10 +243,9 @@ export default ({ children }: any) => {
         }
       })
     } catch (err) {
-      toast({
+      addNotification({
         message: JSON.stringify(err),
-        intent: 'ERROR',
-        duration: 0
+        type: 'error'
       })
     }
   }
@@ -279,10 +277,9 @@ export default ({ children }: any) => {
         }
       })
     } catch (err) {
-      toast({
+      addNotification({
         message: JSON.stringify(err),
-        intent: 'ERROR',
-        duration: 0
+        type: 'error'
       })
     }
   }
@@ -309,10 +306,9 @@ export default ({ children }: any) => {
         }
       })
     } catch (err) {
-      toast({
+      addNotification({
         message: JSON.stringify(err),
-        intent: 'ERROR',
-        duration: 0
+        type: 'error'
       })
     }
   }
@@ -322,10 +318,9 @@ export default ({ children }: any) => {
       await Auth.signOut()
       dispatch({ type: 'remove_auth_user' })
     } catch (err) {
-      toast({
+      addNotification({
         message: JSON.stringify(err),
-        intent: 'ERROR',
-        duration: 0
+        type: 'error'
       })
     }
   }

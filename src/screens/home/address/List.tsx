@@ -15,7 +15,7 @@ import { AddressTypeEmoji } from 'types/visualization'
 import { HomeStackScreenNames } from 'types/route'
 import ListSeparator from 'components/shared/ListSeparator'
 import { maxAddressCount } from 'utils/constants'
-import { useToast } from 'react-native-styled-toast'
+import { useInAppNotification } from 'hooks'
 
 type AddressKeyValue = {
   key: string
@@ -27,7 +27,7 @@ const addressPrefix = 'address'
 const AddressList: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
-  const { toast } = useToast()
+  const { addNotification } = useInAppNotification()
   const [operationInProgress, setOperationInProgress] = useState(false)
   const { state: authUser, action: authUserAction } = useContext(
     AuthUserContext
@@ -157,10 +157,9 @@ const AddressList: React.FC = () => {
       await authUserAction.updateAddresses(deletedItemAddressesObj)
       setAddresses(deletedItemAddresses)
     } catch (err) {
-      toast({
+      addNotification({
         message: err.message ?? err,
-        intent: 'ERROR',
-        duration: 0
+        type: 'error'
       })
     } finally {
       setOperationInProgress(false)

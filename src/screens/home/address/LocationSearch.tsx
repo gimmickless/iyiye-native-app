@@ -22,12 +22,12 @@ import {
   globalAsyncStorageKeyPrefix,
   googlePlacesAutocompleteBaseUrl
 } from 'utils/constants'
-import { useToast } from 'react-native-styled-toast'
+import { useInAppNotification } from 'hooks'
 
 const recentLocationSearchesKey = `${globalAsyncStorageKeyPrefix}:recentLocationSearches`
 
 const LocationSearch: React.FC = () => {
-  const { toast } = useToast()
+  const { addNotification } = useInAppNotification()
   const [search, setSearch] = useState('')
   const [recentSearches, setRecentSearches] = useState<string[]>([])
   const { t } = useContext(LocalizationContext)
@@ -60,28 +60,26 @@ const LocationSearch: React.FC = () => {
         const jsonValue = await AsyncStorage.getItem(recentLocationSearchesKey)
         setRecentSearches(jsonValue ? JSON.parse(jsonValue) : [])
       } catch (err) {
-        toast({
+        addNotification({
           message: err,
-          intent: 'ERROR',
-          duration: 0
+          type: 'error'
         })
       }
     })()
-  }, [toast])
+  }, [addNotification])
 
   useEffect(() => {
     ;(async () => {
       try {
         delayedFetchAutocomplete()
       } catch (err) {
-        toast({
+        addNotification({
           message: err,
-          intent: 'ERROR',
-          duration: 0
+          type: 'error'
         })
       }
     })()
-  }, [delayedFetchAutocomplete, search, toast])
+  }, [delayedFetchAutocomplete, search, addNotification])
 
   // Customize header
   useLayoutEffect(() => {
@@ -112,10 +110,9 @@ const LocationSearch: React.FC = () => {
         JSON.stringify(recentSearches)
       )
     } catch (err) {
-      toast({
+      addNotification({
         message: err.message ?? err,
-        intent: 'ERROR',
-        duration: 0
+        type: 'error'
       })
     }
   }
@@ -123,10 +120,9 @@ const LocationSearch: React.FC = () => {
   const onUseCurrentLocationPress = async () => {
     let { status } = await Location.requestPermissionsAsync()
     if (status !== 'granted') {
-      toast({
+      addNotification({
         message: t('screen.home.addressList.message.locationPermissionDenied'),
-        intent: 'ERROR',
-        duration: 0
+        type: 'error'
       })
     }
     let location = await Location.getCurrentPositionAsync({})

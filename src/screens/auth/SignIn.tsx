@@ -9,14 +9,13 @@ import {
   emailMinLength,
   textColor,
   usernameMaxLength,
-  usernameMinLength,
-  usernameOrEmailRegex
+  usernameMinLength
 } from 'utils/constants'
 import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
 import { AuthUserContext } from 'contexts/Auth'
 import { AuthStackScreenNames, TabNames } from 'types/route'
-import { useToast } from 'react-native-styled-toast'
+import { useInAppNotification } from 'hooks'
 
 type FormData = {
   usernameOrEmail: string
@@ -25,7 +24,7 @@ type FormData = {
 
 const SignIn: React.FC = () => {
   const { t } = useContext(LocalizationContext)
-  const { toast } = useToast()
+  const { addNotification } = useInAppNotification()
   const { action } = useContext(AuthUserContext)
   const [signInLoading, setSignInLoading] = useState(false)
   const navigation = useNavigation()
@@ -41,10 +40,6 @@ const SignIn: React.FC = () => {
       .max(
         Math.max(emailMaxLength, usernameMaxLength),
         t('common.message.validation.tooLong')
-      )
-      .matches(
-        usernameOrEmailRegex,
-        t('screen.auth.signIn.message.validation.invalidUsernameOrEmail')
       ),
     password: Yup.string().required(t('common.message.validation.required'))
   })
@@ -56,10 +51,9 @@ const SignIn: React.FC = () => {
       await action.login({ usernameOrEmail, password })
       navigation.dispatch(CommonActions.goBack()) // Return to previous screen
     } catch (err) {
-      toast({
+      addNotification({
         message: err.message ?? err,
-        intent: 'ERROR',
-        duration: 0
+        type: 'error'
       })
     } finally {
       setSignInLoading(false)

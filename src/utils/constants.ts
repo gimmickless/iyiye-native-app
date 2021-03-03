@@ -4,9 +4,9 @@ import { GoogleConfig } from 'config'
 export const passwordRegex = /^(?=.*\d)(?=.*[.!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/i
 export const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
 export const usernameRegex = /^[A-Z0-9]+$/i
-export const usernameOrEmailRegex = new RegExp(
-  `(${usernameRegex})|(${emailRegex})`
-)
+// export const usernameOrEmailRegex = new RegExp(
+//   [usernameRegex, emailRegex].map((r) => r.source).join('|')
+// )
 export const forgotPasswordConfirmationCodeRegex = /[\S]/i
 export const usernameMinLength = 3
 export const usernameMaxLength = 32

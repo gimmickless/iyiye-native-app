@@ -32,7 +32,7 @@ import { AuthStackScreenNames } from 'types/route'
 import Auth from '@aws-amplify/auth'
 import { useColorScheme } from 'react-native-appearance'
 import { convertDateToIsoString } from 'utils/conversions'
-import { useToast } from 'react-native-styled-toast'
+import { useInAppNotification } from 'hooks'
 
 type FormData = {
   fullName: string
@@ -48,7 +48,7 @@ const SignUp: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
   const colorScheme = useColorScheme()
-  const { toast } = useToast()
+  const { addNotification } = useInAppNotification()
   const [signUpLoading, setSignUpLoading] = useState(false)
   const [showDatePicker, setShowDatePicker] = useState(false)
   const [showTermsModal, setShowTermsModal] = useState(false)
@@ -135,10 +135,9 @@ const SignUp: React.FC = () => {
       })
     } catch (err) {
       // console.log(err)
-      toast({
+      addNotification({
         message: err.message ?? err,
-        intent: 'ERROR',
-        duration: 0
+        type: 'error'
       })
     } finally {
       setSignUpLoading(false)
