@@ -80,7 +80,8 @@
       "@react-native-community",
       "prettier",
       "plugin:jsx-a11y/strict",
-      "prettier/react"
+      "prettier/react",
+      "plugin:@typescript-eslint/recommended"
     ],
     "parserOptions": {
       "parser": "@typescript-eslint/parser",

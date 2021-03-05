@@ -14,14 +14,16 @@ import {
 } from './stacks'
 import { LocalizationContext } from 'contexts/Localization'
 import { TabNames } from 'types/route'
+import { useAuthUser } from 'hooks'
 
 const Tab = createBottomTabNavigator()
 
 export const RootNavigator = () => {
   const { t } = useContext(LocalizationContext)
   const scheme = useColorScheme()
-  //TODO: Get isSignedIn value from AuthContext
-  const isSignedIn = false
+  const { authUser } = useAuthUser()
+  console.log(JSON.stringify(authUser))
+  const isSignedIn = authUser.loaded ?? authUser.props?.username
 
   return (
     <NavigationContainer theme={scheme === 'dark' ? DarkTheme : DefaultTheme}>

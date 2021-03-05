@@ -36,7 +36,7 @@ const LocationSearch: React.FC = () => {
   const delayedFetchAutocomplete = useMemo(
     () =>
       debounce(async () => {
-        let url = googlePlacesAutocompleteBaseUrl
+        const url = googlePlacesAutocompleteBaseUrl
         // https://developers.google.com/places/web-service/autocomplete
         url.searchParams.append('input', search)
         url.searchParams.append('types', 'address')
@@ -118,14 +118,14 @@ const LocationSearch: React.FC = () => {
   }
 
   const onUseCurrentLocationPress = async () => {
-    let { status } = await Location.requestPermissionsAsync()
+    const { status } = await Location.requestPermissionsAsync()
     if (status !== 'granted') {
       addNotification({
         message: t('screen.home.addressList.message.locationPermissionDenied'),
         type: 'error'
       })
     }
-    let location = await Location.getCurrentPositionAsync({})
+    const location = await Location.getCurrentPositionAsync({})
     navigation.navigate(HomeStackScreenNames.AddressForm, location)
   }
 
@@ -134,7 +134,7 @@ const LocationSearch: React.FC = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
-      asd
+      <Text>asd</Text>
     </KeyboardAvoidingView>
   )
 }

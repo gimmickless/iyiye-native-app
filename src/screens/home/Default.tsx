@@ -65,7 +65,9 @@ const Default: React.FC = () => {
             [
               {
                 text: t('common.button.cancel'),
-                onPress: () => {},
+                onPress: () => {
+                  return
+                },
                 style: 'cancel'
               },
               {

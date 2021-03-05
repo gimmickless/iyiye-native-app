@@ -1,7 +1,7 @@
 import { LocalizationContext } from 'contexts/Localization'
 import { useInAppNotification } from 'hooks'
 import React, { useContext } from 'react'
-import { Alert, Platform, StyleSheet, ToastAndroid, View } from 'react-native'
+import { Alert, Platform, ToastAndroid } from 'react-native'
 import { InAppNotificationType } from 'types/context'
 
 const Toast = ({
@@ -51,23 +51,14 @@ const InAppNotificationBox: React.FC = () => {
   const { notification, removeNotification } = useInAppNotification()
 
   return (
-    <View style={styles.container}>
-      <Toast
-        visible={!!notification}
-        message={notification?.message}
-        type={notification?.type}
-        dismissButtonText={t('common.button.ok')}
-        dismiss={removeNotification}
-      />
-    </View>
+    <Toast
+      visible={!!notification}
+      message={notification?.message}
+      type={notification?.type}
+      dismissButtonText={t('common.button.ok')}
+      dismiss={removeNotification}
+    />
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center'
-  }
-})
 
 export default InAppNotificationBox

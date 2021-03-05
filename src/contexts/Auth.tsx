@@ -153,7 +153,7 @@ export default ({ children }: any) => {
   useEffect(() => {
     ;(async () => {
       try {
-        let [currentAuthUser] = await Promise.all([
+        const [currentAuthUser] = await Promise.all([
           Auth.currentAuthenticatedUser(),
           Auth.currentSession() // this is deliberately called for refreshing tokens: https://docs.amplify.aws/lib/auth/manageusers/q/platform/js#retrieve-current-session
         ])
@@ -178,21 +178,31 @@ export default ({ children }: any) => {
             bio: currentAuthUserAttributes['custom:bio'],
             contactable:
               currentAuthUserAttributes['custom:contactable'] === 'true',
-            address1: JSON.parse(
-              currentAuthUserAttributes['custom:address1']
-            ) as AuthUserAddress,
-            address2: JSON.parse(
-              currentAuthUserAttributes['custom:address2']
-            ) as AuthUserAddress,
-            address3: JSON.parse(
-              currentAuthUserAttributes['custom:address3']
-            ) as AuthUserAddress,
-            address4: JSON.parse(
-              currentAuthUserAttributes['custom:address4']
-            ) as AuthUserAddress,
-            address5: JSON.parse(
-              currentAuthUserAttributes['custom:address5']
-            ) as AuthUserAddress
+            address1: currentAuthUserAttributes['custom:address1']
+              ? (JSON.parse(
+                  currentAuthUserAttributes['custom:address1']
+                ) as AuthUserAddress)
+              : undefined,
+            address2: currentAuthUserAttributes['custom:address2']
+              ? (JSON.parse(
+                  currentAuthUserAttributes['custom:address2']
+                ) as AuthUserAddress)
+              : undefined,
+            address3: currentAuthUserAttributes['custom:address3']
+              ? (JSON.parse(
+                  currentAuthUserAttributes['custom:address3']
+                ) as AuthUserAddress)
+              : undefined,
+            address4: currentAuthUserAttributes['custom:address4']
+              ? (JSON.parse(
+                  currentAuthUserAttributes['custom:address4']
+                ) as AuthUserAddress)
+              : undefined,
+            address5: currentAuthUserAttributes['custom:address5']
+              ? (JSON.parse(
+                  currentAuthUserAttributes['custom:address5']
+                ) as AuthUserAddress)
+              : undefined
           }
         })
       } catch (err) {
@@ -227,19 +237,21 @@ export default ({ children }: any) => {
           theme: attributes['custom:theme'],
           bio: attributes['custom:bio'],
           contactable: attributes['custom:contactable'] === 'true',
-          address1: JSON.parse(
-            attributes['custom:address1']
-          ) as AuthUserAddress,
-          address2: JSON.parse(
-            attributes['custom:address2']
-          ) as AuthUserAddress,
-          address3: JSON.parse(
-            attributes['custom:address3']
-          ) as AuthUserAddress,
-          address4: JSON.parse(
-            attributes['custom:address4']
-          ) as AuthUserAddress,
-          address5: JSON.parse(attributes['custom:address5']) as AuthUserAddress
+          address1: attributes['custom:address1']
+            ? (JSON.parse(attributes['custom:address1']) as AuthUserAddress)
+            : undefined,
+          address2: attributes['custom:address2']
+            ? (JSON.parse(attributes['custom:address2']) as AuthUserAddress)
+            : undefined,
+          address3: attributes['custom:address3']
+            ? (JSON.parse(attributes['custom:address3']) as AuthUserAddress)
+            : undefined,
+          address4: attributes['custom:address4']
+            ? (JSON.parse(attributes['custom:address4']) as AuthUserAddress)
+            : undefined,
+          address5: attributes['custom:address5']
+            ? (JSON.parse(attributes['custom:address5']) as AuthUserAddress)
+            : undefined
         }
       })
     } catch (err) {
@@ -252,7 +264,7 @@ export default ({ children }: any) => {
 
   const update = async (payload: UpdateInput) => {
     try {
-      let cognitoUser = await Auth.currentAuthenticatedUser()
+      const cognitoUser = await Auth.currentAuthenticatedUser()
 
       await Auth.updateUserAttributes(cognitoUser, {
         name: payload.fullName,
@@ -286,7 +298,7 @@ export default ({ children }: any) => {
 
   const updateAddresses = async (payload: UpdateAddressesInput) => {
     try {
-      let cognitoUser = await Auth.currentAuthenticatedUser()
+      const cognitoUser = await Auth.currentAuthenticatedUser()
 
       await Auth.updateUserAttributes(cognitoUser, {
         'custom:address1': JSON.stringify(payload.address1),
