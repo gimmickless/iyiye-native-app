@@ -35,24 +35,10 @@ export const globalAsyncStorageKeyPrefix = '@gimmickless:iyiye'
 // Styles
 export const homeHeaderHeight = 120
 export const headerLeftContainerPaddingLeft = 10
+export const headerRightButtonTextFont = 16
 
-export const textColor = {
-  header: {
-    title: 'dimgrey',
-    subtitle: 'dimgrey'
-  },
-  screenBody: {
-    title: 'dimgrey',
-    subtitle: 'dimgrey'
-  }
-}
-export const screenBodyTitleColor = 'dimgrey'
-export const screenBodySubtitleColor = 'dimgrey'
-export const pressableTextColor = 'blue'
-export const errorTextColor = 'red'
-export const listItemActionButtonColor = {
-  edit: 'slategrey',
-  delete: 'tomato'
+export const getHyperlinkTextColor = (isDark: boolean) => {
+  return isDark ? 'lightblue' : 'blue'
 }
 
 // API

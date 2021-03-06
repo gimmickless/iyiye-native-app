@@ -1,9 +1,9 @@
 import React, { useContext, useLayoutEffect, useMemo } from 'react'
 import { View, StyleSheet, Pressable, Alert } from 'react-native'
-import { Text } from 'react-native-elements'
+import { Text, ThemeContext } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native'
 import { AuthUserContext } from 'contexts/Auth'
-import { homeHeaderHeight, textColor } from 'utils/constants'
+import { homeHeaderHeight } from 'utils/constants'
 import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
 import { MaterialIcons } from '@expo/vector-icons'
@@ -25,6 +25,7 @@ import {
 const Default: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
+  const { theme: rneTheme } = useContext(ThemeContext)
   const { state: authUser } = useContext(AuthUserContext)
 
   const isAuthUser = useMemo(() => authUser.props ?? undefined, [authUser])
@@ -119,13 +120,13 @@ const Default: React.FC = () => {
           <MaterialIcons
             name={buttonMaterialIcon}
             size={32}
-            color={textColor.header.title}
+            color={rneTheme.colors?.grey0}
           />
           <Text style={styles.headerRightAddressButtonText}>{bottomText}</Text>
         </View>
       </Pressable>
     )
-  }, [authUser.props, isAuthUser, navigation, t])
+  }, [authUser.props, isAuthUser, navigation, rneTheme.colors?.grey0, t])
 
   // Customize header
   useLayoutEffect(() => {
@@ -161,21 +162,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   headerTitlePrimaryText: {
-    color: textColor.header.title,
     alignContent: 'center'
   },
-  headerTitleSecondaryText: {
-    color: textColor.header.subtitle
-  },
-  headerRightAddressButtonLabelText: {
-    color: textColor.header.title
-  },
-  headerRightAddressButtonText: {
-    color: textColor.header.title
-  },
+  headerTitleSecondaryText: {},
+  headerRightAddressButtonLabelText: {},
+  headerRightAddressButtonText: {},
   headerRightAddressButton: {
     height: 64,
-    backgroundColor: 'ghostwhite',
     borderWidth: 1,
     borderColor: 'lightgrey',
     borderRadius: 16,

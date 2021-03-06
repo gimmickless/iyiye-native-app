@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from 'react'
+import React, { useContext, useEffect, useReducer } from 'react'
 import Auth from '@aws-amplify/auth'
 import {
   AuthUserAddressKey,
@@ -6,7 +6,7 @@ import {
   AuthUserState
 } from 'types/context'
 import { cognitoNotAuthenticatedMessageList } from 'utils/constants'
-import { useInAppNotification } from 'hooks'
+import { useInAppNotification } from 'contexts/InAppNotification'
 
 type CreateAuthUserInput = {
   fullName: string
@@ -109,6 +109,11 @@ export const AuthUserContext = React.createContext<{
     logout: () => Promise.resolve()
   }
 })
+
+export const useAuthUser = () => {
+  const { state: authUser } = useContext(AuthUserContext)
+  return { authUser }
+}
 
 const authReducer = (
   state: AuthUserState,

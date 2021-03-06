@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { InAppNotificationType } from 'types/context'
 
 export const InAppNotificationContext = React.createContext<{
@@ -9,9 +9,20 @@ export const InAppNotificationContext = React.createContext<{
   removeNotification: () => void
 }>({
   notification: undefined,
-  addNotification: () => {},
-  removeNotification: () => {}
+  addNotification: () => {
+    return
+  },
+  removeNotification: () => {
+    return
+  }
 })
+
+export const useInAppNotification = () => {
+  const { notification, addNotification, removeNotification } = useContext(
+    InAppNotificationContext
+  )
+  return { notification, addNotification, removeNotification }
+}
 
 export default ({ children }: any) => {
   const [notification, setNotification] = useState<

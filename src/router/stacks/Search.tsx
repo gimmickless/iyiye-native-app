@@ -15,7 +15,7 @@ type SearchStackParamList = {
 
 const SearchStack = createStackNavigator<SearchStackParamList>()
 
-const SearchStackScreen = () => (
+const SearchStackScreen = (t: (scope: any, options?: any) => string) => (
   <SearchStack.Navigator
     initialRouteName={SearchStackScreenNames.Default}
     screenOptions={{

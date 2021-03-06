@@ -1,5 +1,4 @@
 import React from 'react'
-import { StyleSheet } from 'react-native'
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder'
 
 const LoadingView: React.FC = () => {
@@ -20,7 +19,5 @@ const LoadingView: React.FC = () => {
     </SkeletonPlaceholder>
   )
 }
-
-const styles = StyleSheet.create({})
 
 export default LoadingView

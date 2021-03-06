@@ -11,7 +11,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
-  TextInput
+  TextInput,
+  Text
 } from 'react-native'
 import { debounce } from 'debounce'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -22,7 +23,7 @@ import {
   globalAsyncStorageKeyPrefix,
   googlePlacesAutocompleteBaseUrl
 } from 'utils/constants'
-import { useInAppNotification } from 'hooks'
+import { useInAppNotification } from 'contexts/InAppNotification'
 
 const recentLocationSearchesKey = `${globalAsyncStorageKeyPrefix}:recentLocationSearches`
 

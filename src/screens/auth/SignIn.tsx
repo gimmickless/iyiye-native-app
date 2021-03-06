@@ -7,15 +7,14 @@ import * as Yup from 'yup'
 import {
   emailMaxLength,
   emailMinLength,
-  textColor,
   usernameMaxLength,
   usernameMinLength
 } from 'utils/constants'
 import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
 import { AuthUserContext } from 'contexts/Auth'
-import { AuthStackScreenNames, TabNames } from 'types/route'
-import { useInAppNotification } from 'hooks'
+import { AuthStackScreenNames } from 'types/route'
+import { useInAppNotification } from 'contexts/InAppNotification'
 
 type FormData = {
   usernameOrEmail: string
@@ -166,8 +165,7 @@ const styles = StyleSheet.create({
   },
   title: {
     paddingVertical: 10,
-    textAlign: 'center',
-    color: textColor.screenBody.title
+    textAlign: 'center'
   },
   formInput: {
     flex: 1

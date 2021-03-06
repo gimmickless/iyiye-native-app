@@ -9,7 +9,13 @@ import {
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import * as Localization from 'expo-localization'
-import { Input, Button, Text, CheckBox } from 'react-native-elements'
+import {
+  Input,
+  Button,
+  Text,
+  CheckBox,
+  ThemeContext
+} from 'react-native-elements'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
@@ -17,10 +23,8 @@ import {
   emailMaxLength,
   emailMinLength,
   emailRegex,
-  errorTextColor,
+  getHyperlinkTextColor,
   passwordRegex,
-  pressableTextColor,
-  screenBodyTitleColor,
   usernameMaxLength,
   usernameMinLength,
   usernameRegex
@@ -32,7 +36,7 @@ import { AuthStackScreenNames } from 'types/route'
 import Auth from '@aws-amplify/auth'
 import { useColorScheme } from 'react-native-appearance'
 import { convertDateToIsoString } from 'utils/conversions'
-import { useInAppNotification } from 'hooks'
+import { useInAppNotification } from 'contexts/InAppNotification'
 
 type FormData = {
   fullName: string
@@ -47,7 +51,8 @@ type FormData = {
 const SignUp: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
-  const colorScheme = useColorScheme()
+  const scheme = useColorScheme()
+  const { theme: rneTheme } = useContext(ThemeContext)
   const { addNotification } = useInAppNotification()
   const [signUpLoading, setSignUpLoading] = useState(false)
   const [showDatePicker, setShowDatePicker] = useState(false)
@@ -125,7 +130,7 @@ const SignUp: React.FC = () => {
           email: email,
           birthdate: convertDateToIsoString(birthDate),
           locale: Localization.locale,
-          'custom:theme': colorScheme,
+          'custom:theme': scheme,
           'custom:contactable': 'true'
         }
       })
@@ -293,7 +298,12 @@ const SignUp: React.FC = () => {
                       {t('screen.auth.signUp.label.termsAgreed.start')}&nbsp;
                     </Text>
                     <Pressable onPress={() => setShowTermsModal(true)}>
-                      <Text style={styles.linkText}>
+                      <Text
+                        style={{
+                          ...styles.linkText,
+                          color: getHyperlinkTextColor(scheme === 'dark')
+                        }}
+                      >
                         {t('screen.auth.signUp.label.termsAgreed.terms')}
                       </Text>
                     </Pressable>
@@ -315,11 +325,16 @@ const SignUp: React.FC = () => {
                   setFieldValue('termsAgreed', !values.termsAgreed)
                 }
                 onBlur={handleBlur('termsAgreed')}
-                uncheckedColor={errorTextColor}
+                uncheckedColor={rneTheme.colors?.error}
                 containerStyle={styles.formCheckbox}
               />
               {errors.termsAgreed && (
-                <Text style={styles.errorMessageText}>
+                <Text
+                  style={{
+                    ...styles.errorMessageText,
+                    color: rneTheme.colors?.error
+                  }}
+                >
                   {errors.termsAgreed}
                 </Text>
               )}
@@ -412,12 +427,10 @@ const styles = StyleSheet.create({
   },
   title: {
     paddingVertical: 10,
-    textAlign: 'center',
-    color: screenBodyTitleColor
+    textAlign: 'center'
   },
   modalTitle: {
-    paddingVertical: 10,
-    color: screenBodyTitleColor
+    paddingVertical: 10
   },
   formInput: {
     flex: 1
@@ -429,9 +442,7 @@ const styles = StyleSheet.create({
   passwordInputView: {
     flex: 1
   },
-  linkText: {
-    color: pressableTextColor
-  },
+  linkText: {},
   checkboxText: {
     flex: 1,
     flexDirection: 'row',
@@ -439,7 +450,6 @@ const styles = StyleSheet.create({
   },
   errorMessageText: {
     fontSize: 12,
-    color: errorTextColor,
     marginLeft: 16
   },
   formSubmitButton: {},

@@ -1,5 +1,12 @@
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react'
-import { Alert, Image, Pressable, StyleSheet, View } from 'react-native'
+import {
+  Alert,
+  Image,
+  Pressable,
+  StyleSheet,
+  useColorScheme,
+  View
+} from 'react-native'
 import { Text } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native'
 import { AuthUserContext } from 'contexts/Auth'
@@ -7,15 +14,19 @@ import { LocalizationContext } from 'contexts/Localization'
 import LoadingView from 'components/shared/LoadingView'
 import { FlatList } from 'react-native-gesture-handler'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 import SwipeableListItem from 'components/shared/SwipeableListItem'
 import Checkbox from 'expo-checkbox'
 import { AuthUserAddress, AuthUserAddressKey } from 'types/context'
 import { AddressTypeEmoji } from 'types/visualization'
 import { HomeStackScreenNames } from 'types/route'
 import ListSeparator from 'components/shared/ListSeparator'
-import { maxAddressCount } from 'utils/constants'
-import { useInAppNotification } from 'hooks'
+import {
+  getHyperlinkTextColor,
+  headerRightButtonTextFont,
+  maxAddressCount
+} from 'utils/constants'
+import { useInAppNotification } from 'contexts/InAppNotification'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 type AddressKeyValue = {
   key: string
@@ -27,6 +38,7 @@ const addressPrefix = 'address'
 const AddressList: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
+  const scheme = useColorScheme()
   const { addNotification } = useInAppNotification()
   const [operationInProgress, setOperationInProgress] = useState(false)
   const { state: authUser, action: authUserAction } = useContext(
@@ -61,32 +73,46 @@ const AddressList: React.FC = () => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <HeaderButtons>
-          <Item
-            onPress={() => {
-              if (addresses.length >= maxAddressCount) {
-                Alert.alert(
-                  t('screen.home.addressList.alert.maxAddressLimit.title'),
-                  t('screen.home.addressList.alert.maxAddressLimit.message'),
-                  [
-                    {
-                      text: t('common.button.ok'),
-                      onPress: () => {},
-                      style: 'cancel'
-                    }
-                  ],
-                  { cancelable: true }
-                )
-                return
-              }
-              navigation.navigate(HomeStackScreenNames.AddressLocationSearch)
-            }}
-            title={t('screen.home.addressList.button.create')}
+        <Pressable
+          style={styles.headerRightButton}
+          onPress={() => {
+            if (addresses.length >= maxAddressCount) {
+              Alert.alert(
+                t('screen.home.addressList.alert.maxAddressLimit.title'),
+                t('screen.home.addressList.alert.maxAddressLimit.message'),
+                [
+                  {
+                    text: t('common.button.ok'),
+                    onPress: () => {
+                      return
+                    },
+                    style: 'cancel'
+                  }
+                ],
+                { cancelable: true }
+              )
+              return
+            }
+            navigation.navigate(HomeStackScreenNames.AddressLocationSearch)
+          }}
+        >
+          <MaterialCommunityIcons
+            name="plus"
+            size={headerRightButtonTextFont}
+            color={getHyperlinkTextColor(scheme === 'dark')}
           />
-        </HeaderButtons>
+          <Text
+            style={{
+              ...styles.headerRightButtonText,
+              color: getHyperlinkTextColor(scheme === 'dark')
+            }}
+          >
+            {t('screen.home.addressList.button.create')}
+          </Text>
+        </Pressable>
       )
     })
-  }, [addresses.length, navigation, t])
+  }, [addresses.length, navigation, scheme, t])
 
   const onClickItemCheckbox = async (itemKey: AuthUserAddressKey) => {
     await authUserAction.update({
@@ -211,6 +237,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center'
+  },
+  headerRightButton: {
+    paddingHorizontal: 14,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  headerRightButtonText: {
+    fontSize: headerRightButtonTextFont
   },
   listContainer: { paddingHorizontal: 8 },
   listItem: {

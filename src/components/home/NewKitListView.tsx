@@ -1,10 +1,14 @@
 import React from 'react'
-import { View } from 'react-native'
+import { Text, View } from 'react-native'
 
 interface NewKitListViewProps {}
 
 const NewKitListViewProps: React.FC<NewKitListViewProps> = (props) => {
-  return <View></View>
+  return (
+    <View>
+      <Text>asd</Text>
+    </View>
+  )
 }
 
 export default NewKitListViewProps

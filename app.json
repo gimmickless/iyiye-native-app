@@ -19,6 +19,9 @@
       "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": ["**/*"],
+    "androidNavigationBar": {
+      "backgroundColor": "#000000"
+    },
     "android": {
       "softwareKeyboardLayoutMode": "resize"
     },

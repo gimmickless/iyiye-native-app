@@ -1,10 +1,9 @@
 import React, { useContext } from 'react'
 import { Animated, StyleSheet, View } from 'react-native'
-import { Text } from 'react-native-elements'
+import { Text, ThemeContext } from 'react-native-elements'
 import { RectButton } from 'react-native-gesture-handler'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
 import { LocalizationContext } from 'contexts/Localization'
-import { listItemActionButtonColor } from 'utils/constants'
 
 interface SwipeableListItemProps {
   editAction?: () => void
@@ -13,6 +12,7 @@ interface SwipeableListItemProps {
 
 const SwipeableListItem: React.FC<SwipeableListItemProps> = (props) => {
   const { t } = useContext(LocalizationContext)
+  const { theme: rneTheme } = useContext(ThemeContext)
   const ListItemRightActions = (
     progress: Animated.AnimatedInterpolation,
     _dragAnimatedValue: Animated.AnimatedInterpolation
@@ -34,7 +34,10 @@ const SwipeableListItem: React.FC<SwipeableListItemProps> = (props) => {
           }}
         >
           <RectButton
-            style={styles.listItemEditAction}
+            style={{
+              ...styles.listItemEditAction,
+              backgroundColor: rneTheme.colors?.success
+            }}
             onPress={props.editAction}
           >
             <Text style={styles.listItemActionText}>
@@ -49,7 +52,10 @@ const SwipeableListItem: React.FC<SwipeableListItemProps> = (props) => {
           }}
         >
           <RectButton
-            style={styles.listItemDeleteAction}
+            style={{
+              ...styles.listItemDeleteAction,
+              backgroundColor: rneTheme.colors?.error
+            }}
             onPress={props.deleteAction}
           >
             <Text style={styles.listItemActionText}>
@@ -85,14 +91,12 @@ const styles = StyleSheet.create({
   listItemEditAction: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: listItemActionButtonColor.edit
+    justifyContent: 'center'
   },
   listItemDeleteAction: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: listItemActionButtonColor.delete
+    justifyContent: 'center'
   },
   listItemActionText: {
     color: 'white',

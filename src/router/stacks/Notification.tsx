@@ -10,7 +10,7 @@ type NotificationStackParamList = {
 
 const NotificationStack = createStackNavigator<NotificationStackParamList>()
 
-const NotificationStackScreen = () => (
+const NotificationStackScreen = (t: (scope: any, options?: any) => string) => (
   <NotificationStack.Navigator
     initialRouteName={NotificationStackScreenNames.Default}
     screenOptions={{

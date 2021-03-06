@@ -12,7 +12,7 @@ export type AuthStackParamList = {
 
 const AuthStack = createStackNavigator<AuthStackParamList>()
 
-const AuthStackScreen = (t: Function) => (
+const AuthStackScreen = (t: (scope: any, options?: any) => string) => (
   <AuthStack.Navigator
     initialRouteName={AuthStackScreenNames.SignIn}
     screenOptions={{

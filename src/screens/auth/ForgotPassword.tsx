@@ -14,7 +14,6 @@ import * as Yup from 'yup'
 import {
   forgotPasswordConfirmationCodeRegex,
   passwordRegex,
-  textColor,
   usernameMaxLength,
   usernameMinLength,
   usernameRegex
@@ -23,7 +22,7 @@ import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
 import { AuthStackScreenNames } from 'types/route'
 import Auth from '@aws-amplify/auth'
-import { useInAppNotification } from 'hooks'
+import { useInAppNotification } from 'contexts/InAppNotification'
 
 type UserInfoFormData = {
   username: string
@@ -278,8 +277,7 @@ const styles = StyleSheet.create({
   },
   title: {
     paddingVertical: 10,
-    textAlign: 'center',
-    color: textColor.screenBody.title
+    textAlign: 'center'
   },
   formInput: {
     flex: 1

@@ -21,7 +21,7 @@ type HomeStackParamList = {
 
 const HomeStack = createStackNavigator<HomeStackParamList>()
 
-const HomeStackScreen = (t: Function) => (
+const HomeStackScreen = (t: (scope: any, options?: any) => string) => (
   <HomeStack.Navigator
     initialRouteName={HomeStackScreenNames.Default}
     screenOptions={{

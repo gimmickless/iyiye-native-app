@@ -1,5 +1,5 @@
+import { useInAppNotification } from 'contexts/InAppNotification'
 import { LocalizationContext } from 'contexts/Localization'
-import { useInAppNotification } from 'hooks'
 import React, { useContext } from 'react'
 import { Alert, Platform, ToastAndroid } from 'react-native'
 import { InAppNotificationType } from 'types/context'

@@ -4,13 +4,12 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { Input, Button, Text } from 'react-native-elements'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
-import { textColor } from 'utils/constants'
 import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
 import { AuthStackParamList } from 'router/stacks/Auth'
 import Auth from '@aws-amplify/auth'
 import { AuthStackScreenNames } from 'types/route'
-import { useInAppNotification } from 'hooks'
+import { useInAppNotification } from 'contexts/InAppNotification'
 
 type FormData = {
   verificationCode: string
@@ -135,13 +134,11 @@ const styles = StyleSheet.create({
   },
   title: {
     paddingVertical: 10,
-    textAlign: 'center',
-    color: textColor.screenBody.title
+    textAlign: 'center'
   },
   description: {
     paddingVertical: 10,
-    textAlign: 'center',
-    color: textColor.screenBody.subtitle
+    textAlign: 'center'
   },
   formInput: {
     flex: 1

@@ -12,7 +12,7 @@ type ProfileStackParamList = {
 
 const ProfileStack = createStackNavigator<ProfileStackParamList>()
 
-const ProfileStackScreen = () => (
+const ProfileStackScreen = (t: (scope: any, options?: any) => string) => (
   <ProfileStack.Navigator
     initialRouteName={ProfileStackScreenNames.Default}
     screenOptions={{
