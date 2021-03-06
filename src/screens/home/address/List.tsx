@@ -7,7 +7,7 @@ import {
   useColorScheme,
   View
 } from 'react-native'
-import { Text } from 'react-native-elements'
+import { Button, Text, ThemeContext } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native'
 import { AuthUserContext } from 'contexts/Auth'
 import { LocalizationContext } from 'contexts/Localization'
@@ -39,6 +39,7 @@ const AddressList: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
   const scheme = useColorScheme()
+  const { theme: rneTheme } = useContext(ThemeContext)
   const { addNotification } = useInAppNotification()
   const [operationInProgress, setOperationInProgress] = useState(false)
   const { state: authUser, action: authUserAction } = useContext(
@@ -57,8 +58,8 @@ const AddressList: React.FC = () => {
       { key: `${addressPrefix}3`, value: authUser.props?.address3 },
       { key: `${addressPrefix}4`, value: authUser.props?.address4 },
       { key: `${addressPrefix}5`, value: authUser.props?.address5 }
-    ].filter((x) => x.value)
-    setAddresses(addressList)
+    ]
+    setAddresses(addressList.filter((x) => x.value))
 
     setDefaultAddressKey(authUser.props?.address)
   }, [
@@ -194,19 +195,23 @@ const AddressList: React.FC = () => {
 
   return !authUser.loaded || operationInProgress ? (
     <LoadingView />
-  ) : !addresses ? (
+  ) : !addresses || !addresses.length ? (
     <View style={styles.nothingFoundContainer}>
       <Image source={require('visuals/notfound.png')} />
-      <Text h4 style={styles.nothingFound}>
+      <Text
+        h4
+        style={{ ...styles.nothingFoundText, color: rneTheme.colors?.grey1 }}
+      >
         {t('screen.home.addressList.message.nothingFound')}
       </Text>
-      <Pressable
+      <Button
+        style={styles.nothingFoundAddNewButton}
+        title={t('screen.home.addressList.button.create').toLocaleUpperCase()}
         onPress={() =>
           navigation.navigate(HomeStackScreenNames.AddressLocationSearch)
         }
-      >
-        {t('screen.home.addressList.button.create')}
-      </Pressable>
+        icon={<MaterialCommunityIcons name="plus" size={15} />}
+      />
     </View>
   ) : (
     <SafeAreaView style={styles.container}>
@@ -264,8 +269,11 @@ const styles = StyleSheet.create({
     flex: 6
     // alignItems: 'center'
   },
-  nothingFound: {
-    color: 'dimgrey'
+  nothingFoundText: {
+    marginBottom: 10
+  },
+  nothingFoundAddNewButton: {
+    flex: 1
   }
 })
 

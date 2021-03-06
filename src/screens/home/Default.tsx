@@ -2,7 +2,7 @@ import React, { useContext, useLayoutEffect, useMemo } from 'react'
 import { View, StyleSheet, Pressable, Alert } from 'react-native'
 import { Text, ThemeContext } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native'
-import { AuthUserContext } from 'contexts/Auth'
+import { AuthUserContext, useAuthUser } from 'contexts/Auth'
 import { homeHeaderHeight } from 'utils/constants'
 import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -26,7 +26,7 @@ const Default: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
   const { theme: rneTheme } = useContext(ThemeContext)
-  const { state: authUser } = useContext(AuthUserContext)
+  const { authUser } = useAuthUser()
 
   const isAuthUser = useMemo(() => authUser.props ?? undefined, [authUser])
   const username = useMemo(() => authUser.props?.username ?? '', [
