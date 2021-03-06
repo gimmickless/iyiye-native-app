@@ -151,7 +151,8 @@ const englishTranslation = {
       addressList: {
         title: 'Addresses',
         button: {
-          create: 'Add New'
+          create: 'Add New',
+          createFirstAddress: "Let's create your first address"
         },
         message: {
           locationPermissionDenied: 'Permission to access location was denied',
@@ -178,6 +179,10 @@ const englishTranslation = {
       addressLocationSearch: {
         titleSearchTextInput: {
           placeholder: 'Search for your street address'
+        },
+        quickAccessSectionList: {
+          currLocationItem: 'Use Current Location',
+          recentsTitle: 'Recent'
         }
       },
       addressForm: {

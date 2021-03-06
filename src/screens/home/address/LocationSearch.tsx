@@ -12,7 +12,12 @@ import {
   Platform,
   StyleSheet,
   TextInput,
-  Text
+  SectionList,
+  View,
+  Text,
+  SectionListData,
+  FlatList,
+  DefaultSectionT
 } from 'react-native'
 import { debounce } from 'debounce'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -24,13 +29,17 @@ import {
   googlePlacesAutocompleteBaseUrl
 } from 'utils/constants'
 import { useInAppNotification } from 'contexts/InAppNotification'
+import { ThemeContext } from 'react-native-elements'
 
 const recentLocationSearchesKey = `${globalAsyncStorageKeyPrefix}:recentLocationSearches`
 
 const LocationSearch: React.FC = () => {
   const { addNotification } = useInAppNotification()
+  const { theme: rneTheme } = useContext(ThemeContext)
   const [search, setSearch] = useState('')
   const [recentSearches, setRecentSearches] = useState<string[]>([])
+  const [quickAccessData, setQuickAccessData] = useState<any[]>([])
+  const [searchResultData, setSearchResultData] = useState<any[]>([])
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
 
@@ -50,6 +59,8 @@ const LocationSearch: React.FC = () => {
         }
         const response = await fetch(url.toString())
         const data = await response.json()
+        // TODO: Populate searchResultData
+        // setSearchResultData([])
         console.log(data)
       }, 1000),
     [search]
@@ -68,6 +79,25 @@ const LocationSearch: React.FC = () => {
       }
     })()
   }, [addNotification])
+
+  useEffect(() => {
+    setQuickAccessData([
+      {
+        title: '',
+        data: [
+          t(
+            'screen.home.addressLocationSearch.quickAccessSectionList.currLocationItem'
+          )
+        ]
+      },
+      {
+        title: t(
+          'screen.home.addressLocationSearch.quickAccessSectionList.recentsTitle'
+        ),
+        data: [recentSearches]
+      }
+    ])
+  }, [recentSearches, t])
 
   useEffect(() => {
     ;(async () => {
@@ -130,12 +160,46 @@ const LocationSearch: React.FC = () => {
     navigation.navigate(HomeStackScreenNames.AddressForm, location)
   }
 
+  const QuickAccessItem = ({ title }: any) => (
+    <View style={styles.quickAccessItem}>
+      <Text style={styles.quickAccessItemText}>{title}</Text>
+    </View>
+  )
+
+  const SearchResultItem = ({ title }: any) => (
+    <View style={styles.searchResultItem}>
+      <Text style={styles.searchResultItemText}>{title}</Text>
+    </View>
+  )
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
-      <Text>asd</Text>
+      {!search ? (
+        <SectionList
+          sections={quickAccessData}
+          renderSectionHeader={({ section: { title } }) => (
+            <Text
+              style={{
+                ...styles.sectionListHeader,
+                color: rneTheme.colors?.grey1
+              }}
+            >
+              {title}
+            </Text>
+          )}
+          renderItem={({ item }) => <QuickAccessItem title={item} />}
+          keyExtractor={(item, index) => item + index}
+        />
+      ) : (
+        <FlatList
+          data={searchResultData}
+          renderItem={({ item }) => <SearchResultItem title={item} />}
+          keyExtractor={(item) => item.id}
+        />
+      )}
     </KeyboardAvoidingView>
   )
 }
@@ -147,7 +211,20 @@ const styles = StyleSheet.create({
   },
   headerSearchTextInput: {
     flex: 1
-  }
+  },
+  sectionListHeader: {
+    fontSize: 22
+  },
+  quickAccessItem: {
+    padding: 20,
+    marginVertical: 8
+  },
+  searchResultItem: {
+    padding: 20,
+    marginVertical: 8
+  },
+  quickAccessItemText: {},
+  searchResultItemText: {}
 })
 
 export default LocationSearch

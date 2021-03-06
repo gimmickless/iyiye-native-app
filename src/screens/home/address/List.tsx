@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useLayoutEffect, useState } from 'react'
 import {
   Alert,
   Image,
+  FlatList,
   Pressable,
   StyleSheet,
   useColorScheme,
@@ -12,7 +13,6 @@ import { useNavigation } from '@react-navigation/native'
 import { AuthUserContext } from 'contexts/Auth'
 import { LocalizationContext } from 'contexts/Localization'
 import LoadingView from 'components/shared/LoadingView'
-import { FlatList } from 'react-native-gesture-handler'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import SwipeableListItem from 'components/shared/SwipeableListItem'
 import Checkbox from 'expo-checkbox'
@@ -206,11 +206,17 @@ const AddressList: React.FC = () => {
       </Text>
       <Button
         style={styles.nothingFoundAddNewButton}
-        title={t('screen.home.addressList.button.create').toLocaleUpperCase()}
+        title={t('screen.home.addressList.button.createFirstAddress')}
         onPress={() =>
           navigation.navigate(HomeStackScreenNames.AddressLocationSearch)
         }
-        icon={<MaterialCommunityIcons name="plus" size={15} />}
+        icon={
+          <MaterialCommunityIcons
+            name="star-four-points"
+            size={15}
+            color="white"
+          />
+        }
       />
     </View>
   ) : (
@@ -236,8 +242,11 @@ const AddressList: React.FC = () => {
 const styles = StyleSheet.create({
   nothingFoundContainer: {
     flex: 1,
+    marginVertical: 192,
+    marginHorizontal: 36,
+    flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'space-around'
   },
   container: {
     flex: 1,
