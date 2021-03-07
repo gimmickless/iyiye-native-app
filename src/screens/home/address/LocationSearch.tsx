@@ -7,26 +7,28 @@ import React, {
 } from 'react'
 import * as Location from 'expo-location'
 import * as Cellular from 'expo-cellular'
+import { MaterialIcons } from '@expo/vector-icons'
 import {
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
   TextInput,
-  SectionList,
   View,
   Text,
-  SectionListData,
   FlatList,
-  DefaultSectionT
+  Pressable,
+  useColorScheme
 } from 'react-native'
 import { debounce } from 'debounce'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { LocalizationContext } from 'contexts/Localization'
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation, useTheme } from '@react-navigation/native'
 import { HomeStackScreenNames } from 'types/route'
 import {
+  getHyperlinkTextColor,
   globalAsyncStorageKeyPrefix,
-  googlePlacesAutocompleteBaseUrl
+  googlePlacesAutocompleteBaseUrl,
+  listItemFontSize
 } from 'utils/constants'
 import { useInAppNotification } from 'contexts/InAppNotification'
 import { ThemeContext } from 'react-native-elements'
@@ -35,10 +37,11 @@ const recentLocationSearchesKey = `${globalAsyncStorageKeyPrefix}:recentLocation
 
 const LocationSearch: React.FC = () => {
   const { addNotification } = useInAppNotification()
+  const { colors } = useTheme()
+  const scheme = useColorScheme()
   const { theme: rneTheme } = useContext(ThemeContext)
   const [search, setSearch] = useState('')
-  const [recentSearches, setRecentSearches] = useState<string[]>([])
-  const [quickAccessData, setQuickAccessData] = useState<any[]>([])
+  const [recentSearchesData, setRecentSearchesData] = useState<any[]>([])
   const [searchResultData, setSearchResultData] = useState<any[]>([])
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
@@ -66,11 +69,26 @@ const LocationSearch: React.FC = () => {
     [search]
   )
 
+  const currentLocationData = useMemo(() => {
+    return [
+      {
+        title: t(
+          'screen.home.addressLocationSearch.quickAccessSectionList.currLocationItem'
+        )
+      }
+    ]
+  }, [t])
+
   useEffect(() => {
     ;(async () => {
       try {
         const jsonValue = await AsyncStorage.getItem(recentLocationSearchesKey)
-        setRecentSearches(jsonValue ? JSON.parse(jsonValue) : [])
+        const storageDataStrArray = jsonValue ? JSON.parse(jsonValue) : []
+        setRecentSearchesData(
+          storageDataStrArray.map((i: string) => ({
+            title: i
+          }))
+        )
       } catch (err) {
         addNotification({
           message: err,
@@ -79,25 +97,6 @@ const LocationSearch: React.FC = () => {
       }
     })()
   }, [addNotification])
-
-  useEffect(() => {
-    setQuickAccessData([
-      {
-        title: '',
-        data: [
-          t(
-            'screen.home.addressLocationSearch.quickAccessSectionList.currLocationItem'
-          )
-        ]
-      },
-      {
-        title: t(
-          'screen.home.addressLocationSearch.quickAccessSectionList.recentsTitle'
-        ),
-        data: [recentSearches]
-      }
-    ])
-  }, [recentSearches, t])
 
   useEffect(() => {
     ;(async () => {
@@ -115,10 +114,12 @@ const LocationSearch: React.FC = () => {
   // Customize header
   useLayoutEffect(() => {
     navigation.setOptions({
-      // headerStyle: { elevation: 0, shadowOpacity: 0 },
       headerTitle: () => (
         <TextInput
-          style={styles.headerSearchTextInput}
+          style={{
+            ...styles.headerSearchTextInput,
+            color: colors.text
+          }}
           onChangeText={(val) => setSearch(val)}
           value={search}
           autoCorrect={false}
@@ -126,6 +127,7 @@ const LocationSearch: React.FC = () => {
           placeholder={t(
             'screen.home.addressLocationSearch.titleSearchTextInput.placeholder'
           )}
+          placeholderTextColor={rneTheme.colors?.grey1}
           returnKeyType="done"
           textContentType="streetAddressLine1"
         />
@@ -135,10 +137,10 @@ const LocationSearch: React.FC = () => {
 
   const addRecentSearch = async (val: string) => {
     try {
-      setRecentSearches((searches) => [...searches, val])
+      setRecentSearchesData((searches) => [...searches, val])
       await AsyncStorage.setItem(
         recentLocationSearchesKey,
-        JSON.stringify(recentSearches)
+        JSON.stringify(recentSearchesData)
       )
     } catch (err) {
       addNotification({
@@ -160,15 +162,72 @@ const LocationSearch: React.FC = () => {
     navigation.navigate(HomeStackScreenNames.AddressForm, location)
   }
 
-  const QuickAccessItem = ({ title }: any) => (
-    <View style={styles.quickAccessItem}>
-      <Text style={styles.quickAccessItemText}>{title}</Text>
+  const onClearSearchHistory = async () => {
+    try {
+      await AsyncStorage.setItem(recentLocationSearchesKey, JSON.stringify([]))
+      setRecentSearchesData([])
+    } catch (err) {
+      addNotification({
+        message: err.message ?? err,
+        type: 'error'
+      })
+    }
+  }
+
+  const CurrentLocationItem = ({ title }: any) => (
+    <View
+      style={{
+        ...styles.listItem,
+        ...styles.currentLocationItem,
+        backgroundColor: rneTheme.colors?.grey5
+      }}
+    >
+      <View style={styles.listItemLeftIconContainer}>
+        <MaterialIcons
+          name="my-location"
+          size={listItemFontSize}
+          color={colors.text}
+        />
+      </View>
+      <View style={styles.listItemMainContainer}>
+        <Text style={{ ...styles.listItemMainText, color: colors.text }}>
+          {title}
+        </Text>
+      </View>
+    </View>
+  )
+
+  const RecentSearchItem = ({ title }: any) => (
+    <View style={[styles.listItem, styles.recentSearchItem]}>
+      <View style={styles.listItemLeftIconContainer}>
+        <MaterialIcons
+          name="history"
+          size={listItemFontSize}
+          color={colors.text}
+        />
+      </View>
+      <View style={styles.listItemMainContainer}>
+        <Text style={{ ...styles.listItemMainText, color: colors.text }}>
+          {title}
+        </Text>
+      </View>
     </View>
   )
 
   const SearchResultItem = ({ title }: any) => (
-    <View style={styles.searchResultItem}>
-      <Text style={styles.searchResultItemText}>{title}</Text>
+    <View style={[styles.listItem, styles.searchResultItem]}>
+      <View style={styles.listItemLeftIconContainer}>
+        <MaterialIcons
+          name="map-search"
+          size={listItemFontSize}
+          color={colors.text}
+        />
+      </View>
+      <View style={styles.listItemMainContainer}>
+        <Text style={{ ...styles.listItemMainText, color: colors.text }}>
+          {title}
+        </Text>
+      </View>
     </View>
   )
 
@@ -178,25 +237,48 @@ const LocationSearch: React.FC = () => {
       style={styles.container}
     >
       {!search ? (
-        <SectionList
-          sections={quickAccessData}
-          renderSectionHeader={({ section: { title } }) => (
+        <React.Fragment>
+          <FlatList
+            data={currentLocationData}
+            renderItem={({ item }) => (
+              <CurrentLocationItem title={item.title} />
+            )}
+            keyExtractor={(_item, index) => `${index}`}
+          />
+          <View style={styles.searchHistoryHeaderLine}>
             <Text
               style={{
-                ...styles.sectionListHeader,
-                color: rneTheme.colors?.grey1
+                ...styles.searchHistoryHeaderText,
+                color: rneTheme.colors?.grey2
               }}
             >
-              {title}
+              {t(
+                'screen.home.addressLocationSearch.quickAccessSectionList.listTitle.recents'
+              )}
             </Text>
-          )}
-          renderItem={({ item }) => <QuickAccessItem title={item} />}
-          keyExtractor={(item, index) => item + index}
-        />
+            <Pressable onPress={onClearSearchHistory}>
+              <Text
+                style={{
+                  ...styles.clearAllButton,
+                  color: getHyperlinkTextColor(scheme === 'dark')
+                }}
+              >
+                {t(
+                  'screen.home.addressLocationSearch.quickAccessSectionList.button.clearHistory'
+                )}
+              </Text>
+            </Pressable>
+          </View>
+          <FlatList
+            data={recentSearchesData}
+            renderItem={({ item }) => <RecentSearchItem title={item.title} />}
+            keyExtractor={(_item, index) => `${index}`}
+          />
+        </React.Fragment>
       ) : (
         <FlatList
           data={searchResultData}
-          renderItem={({ item }) => <SearchResultItem title={item} />}
+          renderItem={({ item }) => <SearchResultItem title={item.title} />}
           keyExtractor={(item) => item.id}
         />
       )}
@@ -207,6 +289,7 @@ const LocationSearch: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: 20,
     justifyContent: 'center'
   },
   headerSearchTextInput: {
@@ -215,16 +298,35 @@ const styles = StyleSheet.create({
   sectionListHeader: {
     fontSize: 22
   },
-  quickAccessItem: {
-    padding: 20,
-    marginVertical: 8
+  listItem: {
+    flex: 1,
+    flexDirection: 'row',
+    marginVertical: 8,
+    paddingVertical: 20,
+    opacity: 0.8
   },
-  searchResultItem: {
-    padding: 20,
-    marginVertical: 8
+  currentLocationItem: {},
+  searchHistoryHeaderLine: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
-  quickAccessItemText: {},
-  searchResultItemText: {}
+  searchHistoryHeaderText: {},
+  clearAllButton: {},
+  recentSearchItem: {},
+  searchResultItem: {},
+  listItemMainText: {
+    fontSize: listItemFontSize
+  },
+  listItemLeftIconContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  listItemMainContainer: {
+    flex: 6,
+    justifyContent: 'center'
+  }
 })
 
 export default LocationSearch

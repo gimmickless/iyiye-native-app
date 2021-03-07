@@ -182,7 +182,12 @@ const englishTranslation = {
         },
         quickAccessSectionList: {
           currLocationItem: 'Use Current Location',
-          recentsTitle: 'Recent'
+          listTitle: {
+            recents: 'Recent'
+          },
+          button: {
+            clearHistory: 'Clear All'
+          }
         }
       },
       addressForm: {

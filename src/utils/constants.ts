@@ -36,6 +36,7 @@ export const globalAsyncStorageKeyPrefix = '@gimmickless:iyiye'
 export const homeHeaderHeight = 120
 export const headerLeftContainerPaddingLeft = 10
 export const headerRightButtonTextFont = 16
+export const listItemFontSize = 22
 
 export const getHyperlinkTextColor = (isDark: boolean) => {
   return isDark ? 'lightblue' : 'blue'
