@@ -178,7 +178,7 @@ const englishTranslation = {
       },
       addressLocationSearch: {
         titleSearchTextInput: {
-          placeholder: 'Search for your street address'
+          placeholder: 'Search...'
         },
         quickAccessSectionList: {
           currLocationItem: 'Use Current Location',

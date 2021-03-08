@@ -12,7 +12,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
-  TextInput,
   View,
   Text,
   FlatList,
@@ -31,7 +30,7 @@ import {
   listItemFontSize
 } from 'utils/constants'
 import { useInAppNotification } from 'contexts/InAppNotification'
-import { ThemeContext } from 'react-native-elements'
+import { SearchBar, ThemeContext } from 'react-native-elements'
 
 const recentLocationSearchesKey = `${globalAsyncStorageKeyPrefix}:recentLocationSearches`
 
@@ -115,25 +114,25 @@ const LocationSearch: React.FC = () => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: () => (
-        <TextInput
-          style={{
-            ...styles.headerSearchTextInput,
-            color: colors.text
-          }}
+        <SearchBar
           onChangeText={(val) => setSearch(val)}
           value={search}
+          containerStyle={styles.searchBarContainerStyle}
+          inputStyle={{
+            ...styles.searchBarInputStyle,
+            color: rneTheme.colors?.black
+          }}
           autoCorrect={false}
-          clearButtonMode="always"
           placeholder={t(
             'screen.home.addressLocationSearch.titleSearchTextInput.placeholder'
           )}
-          placeholderTextColor={rneTheme.colors?.grey1}
           returnKeyType="done"
           textContentType="streetAddressLine1"
+          cancelButtonTitle={t('common.button.cancel')}
         />
       )
     })
-  }, [navigation, search, t])
+  }, [colors.text, navigation, rneTheme.colors?.grey1, search, t])
 
   const addRecentSearch = async (val: string) => {
     try {
@@ -178,8 +177,7 @@ const LocationSearch: React.FC = () => {
     <View
       style={{
         ...styles.listItem,
-        ...styles.currentLocationItem,
-        backgroundColor: rneTheme.colors?.grey5
+        ...styles.currentLocationItem
       }}
     >
       <View style={styles.listItemLeftIconContainer}>
@@ -249,7 +247,7 @@ const LocationSearch: React.FC = () => {
             <Text
               style={{
                 ...styles.searchHistoryHeaderText,
-                color: rneTheme.colors?.grey2
+                color: rneTheme.colors?.grey3
               }}
             >
               {t(
@@ -288,13 +286,12 @@ const LocationSearch: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    paddingHorizontal: 20,
-    justifyContent: 'center'
+    paddingHorizontal: 20
   },
-  headerSearchTextInput: {
-    flex: 1
+  searchBarContainerStyle: {
+    backgroundColor: 'transparent'
   },
+  searchBarInputStyle: {},
   sectionListHeader: {
     fontSize: 22
   },
@@ -302,14 +299,14 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     marginVertical: 8,
-    paddingVertical: 20,
-    opacity: 0.8
+    paddingVertical: 20
   },
   currentLocationItem: {},
   searchHistoryHeaderLine: {
-    flex: 1,
+    paddingVertical: 8,
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
   searchHistoryHeaderText: {},
   clearAllButton: {},
