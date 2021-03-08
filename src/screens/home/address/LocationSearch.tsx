@@ -7,7 +7,7 @@ import React, {
 } from 'react'
 import * as Location from 'expo-location'
 import * as Cellular from 'expo-cellular'
-import { MaterialIcons } from '@expo/vector-icons'
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons'
 import {
   KeyboardAvoidingView,
   Platform,
@@ -18,7 +18,6 @@ import {
   Pressable,
   useColorScheme
 } from 'react-native'
-import { debounce } from 'debounce'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { LocalizationContext } from 'contexts/Localization'
 import { useNavigation, useTheme } from '@react-navigation/native'
@@ -31,42 +30,43 @@ import {
 } from 'utils/constants'
 import { useInAppNotification } from 'contexts/InAppNotification'
 import { SearchBar, ThemeContext } from 'react-native-elements'
+import { GoogleConfig } from 'config'
+import { useDebouncedSearch } from 'hooks'
 
 const recentLocationSearchesKey = `${globalAsyncStorageKeyPrefix}:recentLocationSearches`
+
+const asyncPlaceSearch = async (search: string) => {
+  const url = googlePlacesAutocompleteBaseUrl
+  url.searchParams.append('key', GoogleConfig.Places.apiKey ?? '')
+  url.searchParams.append('types', 'address')
+  if (Cellular.isoCountryCode) {
+    url.searchParams.append('components', `country:${Cellular.isoCountryCode}`)
+  }
+  url.searchParams.append('input', search)
+  // console.log('url: ' + url.toString())
+  const response = await fetch(url.toString())
+  const data = await response.json()
+  console.log(data)
+  return data
+}
+
+const useDebouncedPlaceSearch = () =>
+  useDebouncedSearch((search: string) => asyncPlaceSearch(search))
 
 const LocationSearch: React.FC = () => {
   const { addNotification } = useInAppNotification()
   const { colors } = useTheme()
   const scheme = useColorScheme()
   const { theme: rneTheme } = useContext(ThemeContext)
-  const [search, setSearch] = useState('')
   const [recentSearchesData, setRecentSearchesData] = useState<any[]>([])
   const [searchResultData, setSearchResultData] = useState<any[]>([])
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
-
-  const delayedFetchAutocomplete = useMemo(
-    () =>
-      debounce(async () => {
-        const url = googlePlacesAutocompleteBaseUrl
-        // https://developers.google.com/places/web-service/autocomplete
-        url.searchParams.append('input', search)
-        url.searchParams.append('types', 'address')
-        if (Cellular.isoCountryCode) {
-          url.searchParams.append(
-            'components',
-            `country:${Cellular.isoCountryCode}`
-          )
-          url.searchParams.append('strictbounds', 'true')
-        }
-        const response = await fetch(url.toString())
-        const data = await response.json()
-        // TODO: Populate searchResultData
-        // setSearchResultData([])
-        console.log(data)
-      }, 1000),
-    [search]
-  )
+  const {
+    inputText: search,
+    setInputText: setSearch,
+    searchResults
+  } = useDebouncedPlaceSearch()
 
   const currentLocationData = useMemo(() => {
     return [
@@ -77,6 +77,15 @@ const LocationSearch: React.FC = () => {
       }
     ]
   }, [t])
+
+  useEffect(() => {
+    if (searchResults.loading) return
+    const basicSearchResults = searchResults.result.map((x: any) => ({
+      mainText: x.structured_formatting.main_text,
+      description: x.description
+    }))
+    setSearchResultData(basicSearchResults)
+  }, [searchResults.loading, searchResults.result])
 
   useEffect(() => {
     ;(async () => {
@@ -97,26 +106,13 @@ const LocationSearch: React.FC = () => {
     })()
   }, [addNotification])
 
-  useEffect(() => {
-    ;(async () => {
-      try {
-        delayedFetchAutocomplete()
-      } catch (err) {
-        addNotification({
-          message: err,
-          type: 'error'
-        })
-      }
-    })()
-  }, [delayedFetchAutocomplete, search, addNotification])
-
   // Customize header
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: () => (
         <SearchBar
-          onChangeText={(val) => setSearch(val)}
           value={search}
+          onChangeText={(val) => setSearch(val)}
           containerStyle={styles.searchBarContainerStyle}
           inputStyle={{
             ...styles.searchBarInputStyle,
@@ -132,7 +128,7 @@ const LocationSearch: React.FC = () => {
         />
       )
     })
-  }, [colors.text, navigation, rneTheme.colors?.grey1, search, t])
+  }, [navigation, rneTheme.colors?.black, search, setSearch, t])
 
   const addRecentSearch = async (val: string) => {
     try {
@@ -180,7 +176,7 @@ const LocationSearch: React.FC = () => {
         ...styles.currentLocationItem
       }}
     >
-      <View style={styles.listItemLeftIconContainer}>
+      <View style={styles.listItemIconContainer}>
         <MaterialIcons
           name="my-location"
           size={listItemFontSize}
@@ -192,13 +188,20 @@ const LocationSearch: React.FC = () => {
           {title}
         </Text>
       </View>
+      <View style={styles.listItemIconContainer}>
+        <MaterialCommunityIcons
+          name="arrow-right"
+          size={listItemFontSize}
+          color={colors.text}
+        />
+      </View>
     </View>
   )
 
   const RecentSearchItem = ({ title }: any) => (
     <View style={[styles.listItem, styles.recentSearchItem]}>
-      <View style={styles.listItemLeftIconContainer}>
-        <MaterialIcons
+      <View style={styles.listItemIconContainer}>
+        <MaterialCommunityIcons
           name="history"
           size={listItemFontSize}
           color={colors.text}
@@ -209,13 +212,20 @@ const LocationSearch: React.FC = () => {
           {title}
         </Text>
       </View>
+      <View style={styles.listItemIconContainer}>
+        <MaterialCommunityIcons
+          name="arrow-right"
+          size={listItemFontSize}
+          color={colors.text}
+        />
+      </View>
     </View>
   )
 
   const SearchResultItem = ({ title }: any) => (
     <View style={[styles.listItem, styles.searchResultItem]}>
-      <View style={styles.listItemLeftIconContainer}>
-        <MaterialIcons
+      <View style={styles.listItemIconContainer}>
+        <MaterialCommunityIcons
           name="map-search"
           size={listItemFontSize}
           color={colors.text}
@@ -225,6 +235,13 @@ const LocationSearch: React.FC = () => {
         <Text style={{ ...styles.listItemMainText, color: colors.text }}>
           {title}
         </Text>
+      </View>
+      <View style={styles.listItemIconContainer}>
+        <MaterialCommunityIcons
+          name="arrow-right"
+          size={listItemFontSize}
+          color={colors.text}
+        />
       </View>
     </View>
   )
@@ -315,13 +332,13 @@ const styles = StyleSheet.create({
   listItemMainText: {
     fontSize: listItemFontSize
   },
-  listItemLeftIconContainer: {
+  listItemIconContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
   },
   listItemMainContainer: {
-    flex: 6,
+    flex: 5,
     justifyContent: 'center'
   }
 })

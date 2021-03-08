@@ -1,5 +1,3 @@
-import { GoogleConfig } from 'config'
-
 // Limitations
 export const passwordRegex = /^(?=.*\d)(?=.*[.!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/i
 export const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
@@ -44,5 +42,6 @@ export const getHyperlinkTextColor = (isDark: boolean) => {
 
 // API
 export const googlePlacesAutocompleteBaseUrl = new URL(
-  `https://maps.googleapis.com/maps/api/place/autocomplete/json?key=${GoogleConfig.Places.apiKey}`
+  '/maps/api/place/autocomplete/json',
+  'https://maps.googleapis.com/'
 )
