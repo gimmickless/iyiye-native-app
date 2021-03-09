@@ -35,7 +35,7 @@ import { useDebouncedSearch } from 'hooks'
 
 const recentLocationSearchesKey = `${globalAsyncStorageKeyPrefix}:recentLocationSearches`
 
-const asyncPlaceSearch = async (search: string) => {
+const searchPlaceAsync = async (search: string) => {
   const url = googlePlacesAutocompleteBaseUrl
   url.searchParams.append('key', GoogleConfig.Places.apiKey ?? '')
   url.searchParams.append('types', 'address')
@@ -51,7 +51,7 @@ const asyncPlaceSearch = async (search: string) => {
 }
 
 const useDebouncedPlaceSearch = () =>
-  useDebouncedSearch((search: string) => asyncPlaceSearch(search))
+  useDebouncedSearch((search: string) => searchPlaceAsync(search))
 
 const LocationSearch: React.FC = () => {
   const { addNotification } = useInAppNotification()
@@ -63,8 +63,8 @@ const LocationSearch: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
   const {
-    inputText: search,
-    setInputText: setSearch,
+    inputText: searchText,
+    setInputText: setSearchText,
     searchResults
   } = useDebouncedPlaceSearch()
 
@@ -79,13 +79,26 @@ const LocationSearch: React.FC = () => {
   }, [t])
 
   useEffect(() => {
-    if (searchResults.loading) return
+    console.log('Filter results soon')
+    if (searchResults.error) {
+      addNotification({
+        message: searchResults.error.message,
+        type: 'error'
+      })
+      setSearchResultData([])
+      return
+    }
+    if (searchResults.loading) {
+      setSearchResultData([])
+      return
+    }
+    console.log('Filter results now')
     const basicSearchResults = searchResults.result.map((x: any) => ({
       mainText: x.structured_formatting.main_text,
       description: x.description
     }))
     setSearchResultData(basicSearchResults)
-  }, [searchResults.loading, searchResults.result])
+  }, [addNotification, searchResults])
 
   useEffect(() => {
     ;(async () => {
@@ -111,8 +124,8 @@ const LocationSearch: React.FC = () => {
     navigation.setOptions({
       headerTitle: () => (
         <SearchBar
-          value={search}
-          onChangeText={(val) => setSearch(val)}
+          value={searchText}
+          onChangeText={(val: string) => setSearchText(val)}
           containerStyle={styles.searchBarContainerStyle}
           inputStyle={{
             ...styles.searchBarInputStyle,
@@ -128,7 +141,7 @@ const LocationSearch: React.FC = () => {
         />
       )
     })
-  }, [navigation, rneTheme.colors?.black, search, setSearch, t])
+  }, [navigation, rneTheme.colors?.black, searchText, setSearchText, t])
 
   const addRecentSearch = async (val: string) => {
     try {
@@ -251,7 +264,7 @@ const LocationSearch: React.FC = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
-      {!search ? (
+      {!searchText ? (
         <React.Fragment>
           <FlatList
             data={currentLocationData}

@@ -19,9 +19,5 @@ export const useDebouncedSearch = (searchFunction: any) => {
     }
   }, [debouncedSearchFunction, inputText])
 
-  return {
-    inputText,
-    setInputText,
-    searchResults
-  }
+  return { inputText, setInputText, searchResults }
 }
