@@ -31,27 +31,47 @@ import {
 import { useInAppNotification } from 'contexts/InAppNotification'
 import { SearchBar, ThemeContext } from 'react-native-elements'
 import { GoogleConfig } from 'config'
-import { useDebouncedSearch } from 'hooks'
+import { useDebounce } from 'hooks'
 
 const recentLocationSearchesKey = `${globalAsyncStorageKeyPrefix}:recentLocationSearches`
 
-const searchPlaceAsync = async (search: string) => {
-  const url = googlePlacesAutocompleteBaseUrl
-  url.searchParams.append('key', GoogleConfig.Places.apiKey ?? '')
-  url.searchParams.append('types', 'address')
-  if (Cellular.isoCountryCode) {
-    url.searchParams.append('components', `country:${Cellular.isoCountryCode}`)
-  }
-  url.searchParams.append('input', search)
-  // console.log('url: ' + url.toString())
-  const response = await fetch(url.toString())
-  const data = await response.json()
-  console.log(data)
-  return data
+type PlaceAutocompleteResult = {
+  placeId: string
+  mainText: string
+  secondaryText: string
+  description: string
 }
 
-const useDebouncedPlaceSearch = () =>
-  useDebouncedSearch((search: string) => searchPlaceAsync(search))
+// check for api reference: https://developers.google.com/maps/documentation/places/web-service/autocomplete?hl=id
+const searchPlaceAsync = async (search: string) => {
+  if (!search) return []
+  const baseUrl = googlePlacesAutocompleteBaseUrl
+  const query = new URLSearchParams({
+    key: GoogleConfig.Places.apiKey ?? '',
+    input: search,
+    types: 'address'
+  })
+  if (Cellular.isoCountryCode) {
+    query.append('components', `country:${Cellular.isoCountryCode}`)
+  }
+  const endpoint = `${baseUrl}?${query}`
+  console.log('url: ' + endpoint)
+  const response = await fetch(endpoint)
+  const data = await response.json()
+  if (data.status !== 'OK') {
+    throw new Error(`${data.status} - ${data.error_message ?? 'no_message'}`)
+  }
+  console.log(data)
+  return data.predictions.map(
+    (el: any) =>
+      ({
+        placeId: el.place_id,
+        mainText: el.structured_formatting.main_text,
+        secondaryText: el.structured_formatting.secondary_text,
+        description: el.description
+      } as PlaceAutocompleteResult)
+  )
+}
 
 const LocationSearch: React.FC = () => {
   const { addNotification } = useInAppNotification()
@@ -59,14 +79,13 @@ const LocationSearch: React.FC = () => {
   const scheme = useColorScheme()
   const { theme: rneTheme } = useContext(ThemeContext)
   const [recentSearchesData, setRecentSearchesData] = useState<any[]>([])
-  const [searchResultData, setSearchResultData] = useState<any[]>([])
+  const [searchResultData, setSearchResultData] = useState<
+    PlaceAutocompleteResult[]
+  >([])
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
-  const {
-    inputText: searchText,
-    setInputText: setSearchText,
-    searchResults
-  } = useDebouncedPlaceSearch()
+  const [searchText, setSearchText] = useState('')
+  const debouncedSearchText = useDebounce(searchText, 500)
 
   const currentLocationData = useMemo(() => {
     return [
@@ -79,26 +98,24 @@ const LocationSearch: React.FC = () => {
   }, [t])
 
   useEffect(() => {
-    console.log('Filter results soon')
-    if (searchResults.error) {
-      addNotification({
-        message: searchResults.error.message,
-        type: 'error'
-      })
-      setSearchResultData([])
-      return
-    }
-    if (searchResults.loading) {
-      setSearchResultData([])
-      return
-    }
-    console.log('Filter results now')
-    const basicSearchResults = searchResults.result.map((x: any) => ({
-      mainText: x.structured_formatting.main_text,
-      description: x.description
-    }))
-    setSearchResultData(basicSearchResults)
-  }, [addNotification, searchResults])
+    ;(async () => {
+      try {
+        console.log('Filter results soon')
+        const results = await searchPlaceAsync(debouncedSearchText)
+        console.log('Filter results now')
+        const basicSearchResults = results.map((x: any) => ({
+          mainText: x.structured_formatting.main_text,
+          description: x.description
+        }))
+        setSearchResultData(basicSearchResults)
+      } catch (err) {
+        addNotification({
+          message: err,
+          type: 'error'
+        })
+      }
+    })()
+  }, [addNotification, debouncedSearchText])
 
   useEffect(() => {
     ;(async () => {

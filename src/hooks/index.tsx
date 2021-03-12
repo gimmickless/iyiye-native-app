@@ -1,23 +1,17 @@
-import AwesomeDebouncePromise from 'awesome-debounce-promise'
-import { useState } from 'react'
-import { useAsync } from 'react-async-hook'
-import useConstant from 'use-constant'
+import { useEffect, useState } from 'react'
 
-// Pure imitation of https://stackoverflow.com/a/28046731/4636715
-export const useDebouncedSearch = (searchFunction: any) => {
-  const [inputText, setInputText] = useState('')
+// Pure imitation of https://dev.to/gabe_ragland/debouncing-with-react-hooks-jci
+export const useDebounce = (value: string, delay: number) => {
+  const [debouncedValue, setDebouncedValue] = useState(value)
 
-  const debouncedSearchFunction = useConstant(() =>
-    AwesomeDebouncePromise(searchFunction, 500)
-  )
-
-  const searchResults = useAsync(async () => {
-    if (inputText.length === 0) {
-      return []
-    } else {
-      return debouncedSearchFunction(inputText)
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value)
+    }, delay)
+    return () => {
+      clearTimeout(handler)
     }
-  }, [debouncedSearchFunction, inputText])
+  }, [delay, value])
 
-  return { inputText, setInputText, searchResults }
+  return debouncedValue
 }
