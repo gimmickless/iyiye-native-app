@@ -3,31 +3,45 @@ import { SafeAreaView, StyleSheet } from 'react-native'
 import * as Location from 'expo-location'
 import MapView, { LatLng, Marker } from 'react-native-maps'
 import { AuthUserAddressKey } from 'types/context'
+import { RouteProp, useRoute } from '@react-navigation/native'
+import { HomeStackParamList } from 'router/stacks/Home'
 
-interface FormProps {
-  editAddressKey: AuthUserAddressKey | undefined
-  initialLocation: Location.LocationObject
-}
+export type HomeAddressFormRouteProps = RouteProp<
+  HomeStackParamList,
+  'HomeAddressForm'
+>
 
-const Form: React.FC<FormProps> = (props) => {
-  const { editAddressKey, initialLocation } = props
+const Form: React.FC = () => {
+  const route = useRoute<HomeAddressFormRouteProps>()
+  console.log('Route Params: ' + JSON.stringify(route.params))
+  const initialMarkerPosition = route.params?.initialMarkerPosition
+  const editObject = route.params?.editObject
+  // const { initialMarkerPosition, editObject } = params
   const [
     currentLocation,
     setCurrentLocation
   ] = useState<Location.LocationObject | null>(null)
-  const [markerCoordinate, setMarkerCoordinate] = useState<LatLng>({
+  const [markerCoordinate, setMarkerCoordinate] = useState<LatLng | undefined>({
     latitude: 0,
     longitude: 0
   })
-  const isEdit = !!editAddressKey
+  const isEdit = !!editObject
 
   useEffect(() => {
-    setCurrentLocation(initialLocation)
-    setMarkerCoordinate({
-      latitude: initialLocation.coords.latitude ?? 0,
-      longitude: initialLocation.coords.longitude ?? 0
+    setCurrentLocation({
+      coords: {
+        latitude: initialMarkerPosition?.latitude ?? 0,
+        longitude: initialMarkerPosition?.longitude ?? 0,
+        accuracy: null,
+        altitude: null,
+        altitudeAccuracy: null,
+        heading: null,
+        speed: null
+      },
+      timestamp: 0
     })
-  }, [initialLocation])
+    setMarkerCoordinate(initialMarkerPosition)
+  }, [initialMarkerPosition])
 
   return (
     <SafeAreaView style={styles.container}>

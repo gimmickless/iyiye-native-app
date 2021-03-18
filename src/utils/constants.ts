@@ -34,14 +34,20 @@ export const globalAsyncStorageKeyPrefix = '@gimmickless:iyiye'
 export const homeHeaderHeight = 120
 export const headerLeftContainerPaddingLeft = 10
 export const headerRightButtonTextFont = 16
-export const listItemFontSize = 22
+export const listItemPrimaryFontSize = 22
+export const listItemSecondaryFontSize = 18
 
 export const getHyperlinkTextColor = (isDark: boolean) => {
   return isDark ? 'lightblue' : 'blue'
 }
 
 // API
+const googleMapsEndpoint = 'https://maps.googleapis.com/'
 export const googlePlacesAutocompleteBaseUrl = new URL(
   '/maps/api/place/autocomplete/json',
-  'https://maps.googleapis.com/'
+  googleMapsEndpoint
+)
+export const googlePlaceDetailsBaseUrl = new URL(
+  '/maps/api/place/details/json',
+  googleMapsEndpoint
 )

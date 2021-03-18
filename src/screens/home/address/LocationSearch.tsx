@@ -25,13 +25,17 @@ import { HomeStackScreenNames } from 'types/route'
 import {
   getHyperlinkTextColor,
   globalAsyncStorageKeyPrefix,
+  googlePlaceDetailsBaseUrl,
   googlePlacesAutocompleteBaseUrl,
-  listItemFontSize
+  listItemPrimaryFontSize,
+  listItemSecondaryFontSize
 } from 'utils/constants'
 import { useInAppNotification } from 'contexts/InAppNotification'
 import { SearchBar, ThemeContext } from 'react-native-elements'
 import { GoogleConfig } from 'config'
 import { useDebounce } from 'hooks'
+import { LatLng } from 'react-native-maps'
+import { HomeAddressFormRouteProps } from './Form'
 
 const recentLocationSearchesKey = `${globalAsyncStorageKeyPrefix}:recentLocationSearches`
 
@@ -39,10 +43,14 @@ type PlaceAutocompleteResult = {
   placeId: string
   mainText: string
   secondaryText: string
-  description: string
 }
 
-// check for api reference: https://developers.google.com/maps/documentation/places/web-service/autocomplete?hl=id
+type AsyncStorageSearchItem = {
+  placeId: string
+  mainText: string
+}
+
+// check for api reference: https://developers.google.com/maps/documentation/places/web-service/autocomplete
 const searchPlaceAsync = async (search: string) => {
   if (!search) return []
   const baseUrl = googlePlacesAutocompleteBaseUrl
@@ -55,22 +63,40 @@ const searchPlaceAsync = async (search: string) => {
     query.append('components', `country:${Cellular.isoCountryCode}`)
   }
   const endpoint = `${baseUrl}?${query}`
-  console.log('url: ' + endpoint)
+  const response = await fetch(endpoint)
+  const data = await response.json()
+  if (data.status !== 'OK') {
+    throw new Error(`${data.status} - ${data.error_message ?? 'no_message'}`)
+  }
+  return data.predictions.map(
+    (el: any) =>
+      ({
+        placeId: el.place_id,
+        mainText: el.structured_formatting.main_text,
+        secondaryText: el.structured_formatting.secondary_text
+      } as PlaceAutocompleteResult)
+  )
+}
+
+// check for api reference: https://developers.google.com/maps/documentation/places/web-service/details
+const getPlaceDetailAsync = async (placeId: string) => {
+  if (!placeId) return null
+  const baseUrl = googlePlaceDetailsBaseUrl
+  const query = new URLSearchParams({
+    key: GoogleConfig.Places.apiKey ?? '',
+    place_id: placeId,
+    fields: 'geometry'
+  })
+  const endpoint = `${baseUrl}?${query}`
   const response = await fetch(endpoint)
   const data = await response.json()
   if (data.status !== 'OK') {
     throw new Error(`${data.status} - ${data.error_message ?? 'no_message'}`)
   }
   console.log(data)
-  return data.predictions.map(
-    (el: any) =>
-      ({
-        placeId: el.place_id,
-        mainText: el.structured_formatting.main_text,
-        secondaryText: el.structured_formatting.secondary_text,
-        description: el.description
-      } as PlaceAutocompleteResult)
-  )
+  //TODO: Check here
+  const { lat, lng } = data.result.geometry.location
+  return { latitude: lat, longitude: lng } as LatLng
 }
 
 const LocationSearch: React.FC = () => {
@@ -78,7 +104,9 @@ const LocationSearch: React.FC = () => {
   const { colors } = useTheme()
   const scheme = useColorScheme()
   const { theme: rneTheme } = useContext(ThemeContext)
-  const [recentSearchesData, setRecentSearchesData] = useState<any[]>([])
+  const [recentSearchesData, setRecentSearchesData] = useState<
+    AsyncStorageSearchItem[]
+  >([])
   const [searchResultData, setSearchResultData] = useState<
     PlaceAutocompleteResult[]
   >([])
@@ -100,14 +128,8 @@ const LocationSearch: React.FC = () => {
   useEffect(() => {
     ;(async () => {
       try {
-        console.log('Filter results soon')
         const results = await searchPlaceAsync(debouncedSearchText)
-        console.log('Filter results now')
-        const basicSearchResults = results.map((x: any) => ({
-          mainText: x.structured_formatting.main_text,
-          description: x.description
-        }))
-        setSearchResultData(basicSearchResults)
+        setSearchResultData(results)
       } catch (err) {
         addNotification({
           message: err,
@@ -121,12 +143,8 @@ const LocationSearch: React.FC = () => {
     ;(async () => {
       try {
         const jsonValue = await AsyncStorage.getItem(recentLocationSearchesKey)
-        const storageDataStrArray = jsonValue ? JSON.parse(jsonValue) : []
-        setRecentSearchesData(
-          storageDataStrArray.map((i: string) => ({
-            title: i
-          }))
-        )
+        const storageDataArray = jsonValue ? JSON.parse(jsonValue) : []
+        setRecentSearchesData(storageDataArray)
       } catch (err) {
         addNotification({
           message: err,
@@ -160,9 +178,9 @@ const LocationSearch: React.FC = () => {
     })
   }, [navigation, rneTheme.colors?.black, searchText, setSearchText, t])
 
-  const addRecentSearch = async (val: string) => {
+  const addRecentSearch = async (item: AsyncStorageSearchItem) => {
     try {
-      setRecentSearchesData((searches) => [...searches, val])
+      setRecentSearchesData((searches) => [...searches, item])
       await AsyncStorage.setItem(
         recentLocationSearchesKey,
         JSON.stringify(recentSearchesData)
@@ -175,6 +193,26 @@ const LocationSearch: React.FC = () => {
     }
   }
 
+  const onSearchResultClick = async (title: string, placeId: string) => {
+    await addRecentSearch({
+      placeId: placeId,
+      mainText: title
+    })
+    const latLng = await getPlaceDetailAsync(placeId)
+    navigation.navigate(HomeStackScreenNames.AddressForm, {
+      initialMarkerPosition: latLng,
+      editObject: undefined
+    } as HomeAddressFormRouteProps['params'])
+  }
+
+  const onRecentSearchClick = async (placeId: string) => {
+    const latLng = await getPlaceDetailAsync(placeId)
+    navigation.navigate(HomeStackScreenNames.AddressForm, {
+      initialMarkerPosition: latLng,
+      editObject: undefined
+    } as HomeAddressFormRouteProps['params'])
+  }
+
   const onUseCurrentLocationPress = async () => {
     const { status } = await Location.requestPermissionsAsync()
     if (status !== 'granted') {
@@ -182,9 +220,17 @@ const LocationSearch: React.FC = () => {
         message: t('screen.home.addressList.message.locationPermissionDenied'),
         type: 'error'
       })
+      return
     }
-    const location = await Location.getCurrentPositionAsync({})
-    navigation.navigate(HomeStackScreenNames.AddressForm, location)
+    const { coords } = await Location.getCurrentPositionAsync({})
+    console.log('coords' + JSON.stringify(coords))
+    navigation.navigate(HomeStackScreenNames.AddressForm, {
+      initialMarkerPosition: {
+        latitude: coords.latitude,
+        longitude: coords.longitude
+      },
+      editObject: undefined
+    } as HomeAddressFormRouteProps['params'])
   }
 
   const onClearSearchHistory = async () => {
@@ -200,80 +246,89 @@ const LocationSearch: React.FC = () => {
   }
 
   const CurrentLocationItem = ({ title }: any) => (
-    <View
-      style={{
-        ...styles.listItem,
-        ...styles.currentLocationItem
-      }}
-    >
-      <View style={styles.listItemIconContainer}>
-        <MaterialIcons
-          name="my-location"
-          size={listItemFontSize}
-          color={colors.text}
-        />
+    <Pressable onPress={onUseCurrentLocationPress}>
+      <View
+        style={{
+          ...styles.listItem,
+          ...styles.currentLocationItem
+        }}
+      >
+        <View style={styles.listItemIconContainer}>
+          <MaterialIcons
+            name="my-location"
+            size={listItemPrimaryFontSize}
+            color={colors.text}
+          />
+        </View>
+        <View style={styles.listItemMainContainer}>
+          <Text style={{ ...styles.listItemMainText, color: colors.text }}>
+            {title}
+          </Text>
+        </View>
+        <View style={styles.listItemIconContainer}>
+          <MaterialCommunityIcons
+            name="arrow-right"
+            size={listItemPrimaryFontSize}
+            color={colors.text}
+          />
+        </View>
       </View>
-      <View style={styles.listItemMainContainer}>
-        <Text style={{ ...styles.listItemMainText, color: colors.text }}>
-          {title}
-        </Text>
-      </View>
-      <View style={styles.listItemIconContainer}>
-        <MaterialCommunityIcons
-          name="arrow-right"
-          size={listItemFontSize}
-          color={colors.text}
-        />
-      </View>
-    </View>
+    </Pressable>
   )
 
-  const RecentSearchItem = ({ title }: any) => (
-    <View style={[styles.listItem, styles.recentSearchItem]}>
-      <View style={styles.listItemIconContainer}>
-        <MaterialCommunityIcons
-          name="history"
-          size={listItemFontSize}
-          color={colors.text}
-        />
+  const RecentSearchItem = ({ title, placeId }: any) => (
+    <Pressable onPress={() => onRecentSearchClick(placeId)}>
+      <View style={[styles.listItem, styles.recentSearchItem]}>
+        <View style={styles.listItemIconContainer}>
+          <MaterialCommunityIcons
+            name="history"
+            size={listItemPrimaryFontSize}
+            color={colors.text}
+          />
+        </View>
+        <View style={styles.listItemMainContainer}>
+          <Text style={{ ...styles.listItemMainText, color: colors.text }}>
+            {title}
+          </Text>
+        </View>
+        <View style={styles.listItemIconContainer}>
+          <MaterialCommunityIcons
+            name="arrow-right"
+            size={listItemPrimaryFontSize}
+            color={colors.text}
+          />
+        </View>
       </View>
-      <View style={styles.listItemMainContainer}>
-        <Text style={{ ...styles.listItemMainText, color: colors.text }}>
-          {title}
-        </Text>
-      </View>
-      <View style={styles.listItemIconContainer}>
-        <MaterialCommunityIcons
-          name="arrow-right"
-          size={listItemFontSize}
-          color={colors.text}
-        />
-      </View>
-    </View>
+    </Pressable>
   )
 
-  const SearchResultItem = ({ title }: any) => (
-    <View style={[styles.listItem, styles.searchResultItem]}>
-      <View style={styles.listItemIconContainer}>
-        <MaterialCommunityIcons
-          name="map-search"
-          size={listItemFontSize}
-          color={colors.text}
-        />
+  const SearchResultItem = ({ title, detail, placeId }: any) => (
+    <Pressable onPress={() => onSearchResultClick(title, placeId)}>
+      <View style={[styles.listItem, styles.searchResultItem]}>
+        <View style={styles.listItemIconContainer}>
+          <MaterialCommunityIcons
+            name="map-search"
+            size={listItemPrimaryFontSize}
+            color={colors.text}
+          />
+        </View>
+        <View style={styles.listItemMainContainer}>
+          <Text style={{ ...styles.listItemMainText, color: colors.text }}>
+            {title}
+          </Text>
+          <Text style={{ ...styles.listItemDetailText, color: colors.text }}>
+            {detail}
+          </Text>
+        </View>
+        <View style={styles.listItemIconContainer}>
+          <MaterialCommunityIcons
+            name="arrow-right"
+            size={listItemPrimaryFontSize}
+            color={colors.text}
+          />
+        </View>
       </View>
-      <View style={styles.listItemMainContainer}>
-        <Text style={{ ...styles.listItemMainText, color: colors.text }}>
-          {title}
-        </Text>
-      </View>
-      <View style={styles.listItemIconContainer}>
-        <MaterialCommunityIcons
-          name="arrow-right"
-          size={listItemFontSize}
-          color={colors.text}
-        />
-      </View>
-    </View>
+    </Pressable>
   )
 
   return (
@@ -316,15 +371,23 @@ const LocationSearch: React.FC = () => {
           </View>
           <FlatList
             data={recentSearchesData}
-            renderItem={({ item }) => <RecentSearchItem title={item.title} />}
+            renderItem={({ item }) => (
+              <RecentSearchItem title={item.mainText} placeId={item.placeId} />
+            )}
             keyExtractor={(_item, index) => `${index}`}
           />
         </React.Fragment>
       ) : (
         <FlatList
           data={searchResultData}
-          renderItem={({ item }) => <SearchResultItem title={item.title} />}
-          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <SearchResultItem
+              title={item.mainText}
+              detail={item.secondaryText}
+              placeId={item.placeId}
+            />
+          )}
+          keyExtractor={(item) => item.placeId}
         />
       )}
     </KeyboardAvoidingView>
@@ -360,7 +423,10 @@ const styles = StyleSheet.create({
   recentSearchItem: {},
   searchResultItem: {},
   listItemMainText: {
-    fontSize: listItemFontSize
+    fontSize: listItemPrimaryFontSize
+  },
+  listItemDetailText: {
+    fontSize: listItemSecondaryFontSize
   },
   listItemIconContainer: {
     flex: 1,
