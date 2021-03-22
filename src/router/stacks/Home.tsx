@@ -8,15 +8,13 @@ import {
 } from 'screens/home'
 import { headerLeftContainerPaddingLeft } from 'utils/constants'
 import { HomeStackScreenNames } from 'types/route'
-import { LatLng } from 'react-native-maps'
+import { Region } from 'react-native-maps'
 
 export type HomeStackParamList = {
   HomeDefault: undefined
   HomeAddressList: undefined
   HomeAddressLocationSearch: undefined
-  HomeAddressForm:
-    | { initialMarkerPosition: LatLng; editObject: any }
-    | undefined
+  HomeAddressForm: { initialRegion: Region; editObject: any } | undefined
   HomeList: { sort: 'latest' | 'top' } | undefined
   HomeItem: { id: string }
   HomeAuthor?: { userId: string }

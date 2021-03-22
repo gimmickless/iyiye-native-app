@@ -54,3 +54,7 @@ So, the following should be added to the repo secrets beforehand:
 ### expo start
 
 `expo start` (or `npm start`) starts the app locally.
+
+## See also
+
+- Some of the icons downloaded from [Icons8](https://icons8.com)

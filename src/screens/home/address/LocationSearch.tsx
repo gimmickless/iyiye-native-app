@@ -34,7 +34,7 @@ import { useInAppNotification } from 'contexts/InAppNotification'
 import { SearchBar, ThemeContext } from 'react-native-elements'
 import { GoogleConfig } from 'config'
 import { useDebounce } from 'hooks'
-import { LatLng } from 'react-native-maps'
+import { Region } from 'react-native-maps'
 import { HomeAddressFormRouteProps } from './Form'
 
 const recentLocationSearchesKey = `${globalAsyncStorageKeyPrefix}:recentLocationSearches`
@@ -49,6 +49,8 @@ type AsyncStorageSearchItem = {
   placeId: string
   mainText: string
 }
+
+const locationDelta = 0.025
 
 // check for api reference: https://developers.google.com/maps/documentation/places/web-service/autocomplete
 const searchPlaceAsync = async (search: string) => {
@@ -93,10 +95,14 @@ const getPlaceDetailAsync = async (placeId: string) => {
   if (data.status !== 'OK') {
     throw new Error(`${data.status} - ${data.error_message ?? 'no_message'}`)
   }
-  console.log(data)
   //TODO: Check here
   const { lat, lng } = data.result.geometry.location
-  return { latitude: lat, longitude: lng } as LatLng
+  return {
+    latitude: lat,
+    longitude: lng,
+    latitudeDelta: locationDelta,
+    longitudeDelta: locationDelta
+  } as Region
 }
 
 const LocationSearch: React.FC = () => {
@@ -198,17 +204,17 @@ const LocationSearch: React.FC = () => {
       placeId: placeId,
       mainText: title
     })
-    const latLng = await getPlaceDetailAsync(placeId)
+    const r = await getPlaceDetailAsync(placeId)
     navigation.navigate(HomeStackScreenNames.AddressForm, {
-      initialMarkerPosition: latLng,
+      initialRegion: r,
       editObject: undefined
     } as HomeAddressFormRouteProps['params'])
   }
 
   const onRecentSearchClick = async (placeId: string) => {
-    const latLng = await getPlaceDetailAsync(placeId)
+    const r = await getPlaceDetailAsync(placeId)
     navigation.navigate(HomeStackScreenNames.AddressForm, {
-      initialMarkerPosition: latLng,
+      initialRegion: r,
       editObject: undefined
     } as HomeAddressFormRouteProps['params'])
   }
@@ -223,11 +229,12 @@ const LocationSearch: React.FC = () => {
       return
     }
     const { coords } = await Location.getCurrentPositionAsync({})
-    console.log('coords' + JSON.stringify(coords))
     navigation.navigate(HomeStackScreenNames.AddressForm, {
-      initialMarkerPosition: {
+      initialRegion: {
         latitude: coords.latitude,
-        longitude: coords.longitude
+        longitude: coords.longitude,
+        latitudeDelta: locationDelta,
+        longitudeDelta: locationDelta
       },
       editObject: undefined
     } as HomeAddressFormRouteProps['params'])
@@ -246,7 +253,10 @@ const LocationSearch: React.FC = () => {
   }
 
   const CurrentLocationItem = ({ title }: any) => (
-    <Pressable onPress={onUseCurrentLocationPress}>
+    <Pressable
+      android_ripple={{ color: 'grey' }}
+      onPress={onUseCurrentLocationPress}
+    >
       <View
         style={{
           ...styles.listItem,
@@ -277,7 +287,10 @@ const LocationSearch: React.FC = () => {
   )
 
   const RecentSearchItem = ({ title, placeId }: any) => (
-    <Pressable onPress={() => onRecentSearchClick(placeId)}>
+    <Pressable
+      android_ripple={{ color: 'grey' }}
+      onPress={() => onRecentSearchClick(placeId)}
+    >
       <View style={[styles.listItem, styles.recentSearchItem]}>
         <View style={styles.listItemIconContainer}>
           <MaterialCommunityIcons
@@ -303,7 +316,10 @@ const LocationSearch: React.FC = () => {
   )
 
   const SearchResultItem = ({ title, detail, placeId }: any) => (
-    <Pressable onPress={() => onSearchResultClick(title, placeId)}>
+    <Pressable
+      android_ripple={{ color: 'grey' }}
+      onPress={() => onSearchResultClick(title, placeId)}
+    >
       <View style={[styles.listItem, styles.searchResultItem]}>
         <View style={styles.listItemIconContainer}>
           <MaterialCommunityIcons

@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react'
-import { SafeAreaView, StyleSheet } from 'react-native'
+import React, { useContext, useState } from 'react'
+import { SafeAreaView, StyleSheet, View, Image } from 'react-native'
 import * as Location from 'expo-location'
-import MapView, { LatLng, Marker } from 'react-native-maps'
-import { AuthUserAddressKey } from 'types/context'
+import MapView, { Region } from 'react-native-maps'
 import { RouteProp, useRoute } from '@react-navigation/native'
 import { HomeStackParamList } from 'router/stacks/Home'
+import { Button } from 'react-native-elements'
+import { LocalizationContext } from 'contexts/Localization'
+import { useInAppNotification } from 'contexts/InAppNotification'
 
 export type HomeAddressFormRouteProps = RouteProp<
   HomeStackParamList,
@@ -12,70 +14,81 @@ export type HomeAddressFormRouteProps = RouteProp<
 >
 
 const Form: React.FC = () => {
+  const { t } = useContext(LocalizationContext)
+  const { addNotification } = useInAppNotification()
   const route = useRoute<HomeAddressFormRouteProps>()
   console.log('Route Params: ' + JSON.stringify(route.params))
-  const initialMarkerPosition = route.params?.initialMarkerPosition
+  const initialRegion = route.params?.initialRegion
   const editObject = route.params?.editObject
-  // const { initialMarkerPosition, editObject } = params
-  const [
-    currentLocation,
-    setCurrentLocation
-  ] = useState<Location.LocationObject | null>(null)
-  const [markerCoordinate, setMarkerCoordinate] = useState<LatLng | undefined>({
-    latitude: 0,
-    longitude: 0
-  })
+
+  const [hasRegionChanged, setHasRegionChanged] = useState<boolean>(false)
+  const [region, setRegion] = useState<Region | undefined>(initialRegion)
+
   const isEdit = !!editObject
 
-  useEffect(() => {
-    setCurrentLocation({
-      coords: {
-        latitude: initialMarkerPosition?.latitude ?? 0,
-        longitude: initialMarkerPosition?.longitude ?? 0,
-        accuracy: null,
-        altitude: null,
-        altitudeAccuracy: null,
-        heading: null,
-        speed: null
-      },
-      timestamp: 0
-    })
-    setMarkerCoordinate(initialMarkerPosition)
-  }, [initialMarkerPosition])
+  const onRegionChangeComplete = (r: Region) => {
+    setHasRegionChanged(true)
+    setRegion(r)
+  }
+
+  const onUseCurrentRegionClick = () => {
+    try {
+      // TODO: Fetch details of region from Google Geocode
+    } catch (err) {
+      addNotification({
+        message: err,
+        type: 'error'
+      })
+    } finally {
+      setHasRegionChanged(false)
+    }
+  }
 
   return (
     <SafeAreaView style={styles.container}>
       <MapView
         style={styles.map}
-        initialRegion={{
-          latitude: currentLocation?.coords.latitude ?? 0,
-          longitude: currentLocation?.coords.longitude ?? 0,
-          latitudeDelta: 0,
-          longitudeDelta: 0
-        }}
-        region={{
-          latitude: currentLocation?.coords.latitude ?? 0,
-          longitude: currentLocation?.coords.longitude ?? 0,
-          latitudeDelta: 0,
-          longitudeDelta: 0
-        }}
+        region={region}
+        onRegionChangeComplete={(r) => onRegionChangeComplete(r)}
       >
-        <Marker
-          coordinate={markerCoordinate as LatLng}
-          onDragEnd={(e) => setMarkerCoordinate(e.nativeEvent.coordinate)}
-        />
+        <View style={styles.markerFixed}>
+          <Image
+            style={styles.marker}
+            source={require('../../../../assets/map-marker.png')}
+          />
+        </View>
       </MapView>
+      <Button
+        style={styles.blockButton}
+        onPress={onUseCurrentRegionClick}
+        title={t('screen.home.addressForm.button.useLocation')}
+        disabled={!hasRegionChanged}
+      />
     </SafeAreaView>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center'
+    flex: 1
   },
   map: {
     height: 200
+  },
+
+  markerFixed: {
+    left: '50%',
+    marginLeft: -24,
+    marginTop: -48,
+    position: 'absolute',
+    top: '50%'
+  },
+  marker: {
+    height: 48,
+    width: 48
+  },
+  blockButton: {
+    marginVertical: 8
   }
 })
 
