@@ -1,25 +1,63 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { SafeAreaView, StyleSheet, View, Image } from 'react-native'
 import * as Location from 'expo-location'
-import MapView, { Region } from 'react-native-maps'
+import MapView, { LatLng, Region } from 'react-native-maps'
 import { RouteProp, useRoute } from '@react-navigation/native'
 import { HomeStackParamList } from 'router/stacks/Home'
-import { Button } from 'react-native-elements'
+import { Button, Input } from 'react-native-elements'
 import { LocalizationContext } from 'contexts/Localization'
 import { useInAppNotification } from 'contexts/InAppNotification'
+import { GoogleConfig } from 'config'
+import { googlePlaceGeocodingBaseUrl } from 'utils/constants'
 
 export type HomeAddressFormRouteProps = RouteProp<
   HomeStackParamList,
   'HomeAddressForm'
 >
 
+type PlaceReverseGeocodingResult = {
+  placeId: string
+  addressLine: string
+}
+
 const mapHeight = 250
+
+// check for api reference: https://developers.google.com/maps/documentation/geocoding/overview#ReverseGeocoding
+const getReverseGeocodingAsync = async (latLng: LatLng) => {
+  if (!latLng) return undefined
+  const baseUrl = googlePlaceGeocodingBaseUrl
+  const query = new URLSearchParams({
+    key: GoogleConfig.Places.apiKey ?? '',
+    latlng: `${latLng.latitude},${latLng.longitude}`,
+    result_type: 'street_address',
+    location_type: 'ROOFTOP'
+  })
+  const endpoint = `${baseUrl}?${query}`
+  const response = await fetch(endpoint)
+  const data = await response.json()
+  console.log('reverse geocode result: ' + data)
+  if (data.status !== 'OK') {
+    throw new Error(`${data.status} - ${data.error_message ?? 'no_message'}`)
+  }
+  if (!data.results || !data.results.length) {
+    throw new Error(
+      `no reverse geocoding results found for ${latLng.latitude},${latLng.longitude}`
+    )
+  }
+
+  return data.results[0].map(
+    (el: any) =>
+      ({
+        placeId: el.place_id,
+        addressLine: el.formatted_address
+      } as PlaceReverseGeocodingResult)
+  )
+}
 
 const Form: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const { addNotification } = useInAppNotification()
   const route = useRoute<HomeAddressFormRouteProps>()
-  console.log('Route Params: ' + JSON.stringify(route.params))
   const initialRegion = route.params?.initialRegion
   const editObject = route.params?.editObject
 
@@ -28,8 +66,31 @@ const Form: React.FC = () => {
   )
   const [hasRegionChanged, setHasRegionChanged] = useState<boolean>(false)
   const [region, setRegion] = useState<Region | undefined>(initialRegion)
+  const [
+    mapComputedAddress,
+    setMapComputedAddress
+  ] = useState<PlaceReverseGeocodingResult>()
 
   const isEdit = !!editObject
+
+  useEffect(() => {
+    ;(async () => {
+      try {
+        const reverseGeocodingResult = await getReverseGeocodingAsync({
+          latitude: region?.latitude ?? 0,
+          longitude: region?.longitude ?? 0
+        })
+        setMapComputedAddress(reverseGeocodingResult)
+      } catch (err) {
+        addNotification({
+          message: err,
+          type: 'error'
+        })
+      }
+    })()
+    // No Deps to ensure it is performed only once
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const onRegionChangeComplete = (r: Region) => {
     setRegionChangeInProgress(false)
@@ -37,9 +98,13 @@ const Form: React.FC = () => {
     setRegion(r)
   }
 
-  const onUseCurrentRegionClick = () => {
+  const calculateAddressLine = async () => {
     try {
-      // TODO: Fetch details of region from Google Geocode
+      const reverseGeocodingResult = await getReverseGeocodingAsync({
+        latitude: region?.latitude ?? 0,
+        longitude: region?.longitude ?? 0
+      })
+      setMapComputedAddress(reverseGeocodingResult)
     } catch (err) {
       addNotification({
         message: err,
@@ -70,9 +135,14 @@ const Form: React.FC = () => {
       </View>
       <Button
         style={styles.blockButton}
-        onPress={onUseCurrentRegionClick}
+        onPress={calculateAddressLine}
         title={t('screen.home.addressForm.button.useLocation')}
         disabled={!hasRegionChanged}
+      />
+      <Input
+        disabled
+        placeholder={t('screen.home.addressForm.label.addressLine')}
+        value={mapComputedAddress?.addressLine}
       />
     </SafeAreaView>
   )
@@ -99,7 +169,7 @@ const styles = StyleSheet.create({
     width: 48
   },
   blockButton: {
-    marginBottom: 12
+    marginHorizontal: 12
   }
 })
 

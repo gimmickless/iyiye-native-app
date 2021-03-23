@@ -195,6 +195,9 @@ const englishTranslation = {
           new: 'New Address',
           edit: 'Edit {{addressName}}'
         },
+        label: {
+          addressLine: 'Address'
+        },
         button: {
           useLocation: 'Use This Location'
         }

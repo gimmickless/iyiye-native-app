@@ -51,3 +51,7 @@ export const googlePlaceDetailsBaseUrl = new URL(
   '/maps/api/place/details/json',
   googleMapsEndpoint
 )
+export const googlePlaceGeocodingBaseUrl = new URL(
+  '/maps/api/place/geocode/json',
+  googleMapsEndpoint
+)
