@@ -50,7 +50,7 @@ type AsyncStorageSearchItem = {
   mainText: string
 }
 
-const locationDelta = 0.025
+const locationDelta = 0.0025
 
 // check for api reference: https://developers.google.com/maps/documentation/places/web-service/autocomplete
 const searchPlaceAsync = async (search: string) => {

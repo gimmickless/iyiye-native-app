@@ -13,6 +13,8 @@ export type HomeAddressFormRouteProps = RouteProp<
   'HomeAddressForm'
 >
 
+const mapHeight = 250
+
 const Form: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const { addNotification } = useInAppNotification()
@@ -21,12 +23,16 @@ const Form: React.FC = () => {
   const initialRegion = route.params?.initialRegion
   const editObject = route.params?.editObject
 
+  const [regionChangeInProgress, setRegionChangeInProgress] = useState<boolean>(
+    false
+  )
   const [hasRegionChanged, setHasRegionChanged] = useState<boolean>(false)
   const [region, setRegion] = useState<Region | undefined>(initialRegion)
 
   const isEdit = !!editObject
 
   const onRegionChangeComplete = (r: Region) => {
+    setRegionChangeInProgress(false)
     setHasRegionChanged(true)
     setRegion(r)
   }
@@ -49,15 +55,19 @@ const Form: React.FC = () => {
       <MapView
         style={styles.map}
         region={region}
+        onRegionChange={() => setRegionChangeInProgress(true)}
         onRegionChangeComplete={(r) => onRegionChangeComplete(r)}
-      >
-        <View style={styles.markerFixed}>
-          <Image
-            style={styles.marker}
-            source={require('../../../../assets/map-marker.png')}
-          />
-        </View>
-      </MapView>
+      />
+      <View style={styles.markerFixed}>
+        <Image
+          style={styles.marker}
+          source={
+            !regionChangeInProgress
+              ? require('visuals/map-marker.png')
+              : require('visuals/map-marker-animated.gif')
+          }
+        />
+      </View>
       <Button
         style={styles.blockButton}
         onPress={onUseCurrentRegionClick}
@@ -73,7 +83,8 @@ const styles = StyleSheet.create({
     flex: 1
   },
   map: {
-    height: 200
+    height: mapHeight,
+    marginBottom: 12
   },
 
   markerFixed: {
@@ -81,14 +92,14 @@ const styles = StyleSheet.create({
     marginLeft: -24,
     marginTop: -48,
     position: 'absolute',
-    top: '50%'
+    top: mapHeight / 2
   },
   marker: {
     height: 48,
     width: 48
   },
   blockButton: {
-    marginVertical: 8
+    marginBottom: 12
   }
 })
 
