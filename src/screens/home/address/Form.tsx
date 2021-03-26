@@ -35,7 +35,7 @@ const getReverseGeocodingAsync = async (latLng: LatLng) => {
   const endpoint = `${baseUrl}?${query}`
   const response = await fetch(endpoint)
   const data = await response.json()
-  console.log('reverse geocode result: ' + data)
+
   if (data.status !== 'OK') {
     throw new Error(`${data.status} - ${data.error_message ?? 'no_message'}`)
   }
@@ -44,14 +44,13 @@ const getReverseGeocodingAsync = async (latLng: LatLng) => {
       `no reverse geocoding results found for ${latLng.latitude},${latLng.longitude}`
     )
   }
+  const firstResult = data.results[0]
+  console.log('first result: ' + JSON.stringify(firstResult))
 
-  return data.results[0].map(
-    (el: any) =>
-      ({
-        placeId: el.place_id,
-        addressLine: el.formatted_address
-      } as PlaceReverseGeocodingResult)
-  )
+  return {
+    placeId: firstResult.place_id,
+    addressLine: firstResult.formatted_address
+  } as PlaceReverseGeocodingResult
 }
 
 const Form: React.FC = () => {
@@ -140,9 +139,11 @@ const Form: React.FC = () => {
         disabled={!hasRegionChanged}
       />
       <Input
-        disabled
-        placeholder={t('screen.home.addressForm.label.addressLine')}
+        label={t('screen.home.addressForm.label.addressLine')}
         value={mapComputedAddress?.addressLine}
+        containerStyle={styles.addressBoxContainer}
+        disabled
+        multiline
       />
     </SafeAreaView>
   )
@@ -170,6 +171,9 @@ const styles = StyleSheet.create({
   },
   blockButton: {
     marginHorizontal: 12
+  },
+  addressBoxContainer: {
+    marginTop: 12
   }
 })
 
