@@ -32,16 +32,22 @@ export type AuthUserState = {
 
 export type AuthUserAddress = {
   kind: 'current' | 'home' | 'office' | 'other'
-  name: string
-  line1: string
-  building: string
-  flat: string
-  country: string
-  state: string
-  cityregion: string
-  zip: string
-  latitude: string
-  longitude: string
+  isDefault?: boolean
+  latitude: number
+  longitude: number
+  directions: string
+  streetAddress: string
+  streetNumber: string
+  flatNumber: number
+  floor: number
+}
+
+export type UpdateAddressesInput = {
+  address1?: AuthUserAddress
+  address2?: AuthUserAddress
+  address3?: AuthUserAddress
+  address4?: AuthUserAddress
+  address5?: AuthUserAddress
 }
 
 export type InAppNotificationType = {

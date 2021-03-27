@@ -3,7 +3,8 @@ import Auth from '@aws-amplify/auth'
 import {
   AuthUserAddressKey,
   AuthUserAddress,
-  AuthUserState
+  AuthUserState,
+  UpdateAddressesInput
 } from 'types/context'
 import { cognitoNotAuthenticatedMessageList } from 'utils/constants'
 import { useInAppNotification } from 'contexts/InAppNotification'
@@ -60,14 +61,6 @@ type UpdateInput = {
   theme?: string
   bio?: string
   contactable?: boolean
-}
-
-type UpdateAddressesInput = {
-  address1?: AuthUserAddress
-  address2?: AuthUserAddress
-  address3?: AuthUserAddress
-  address4?: AuthUserAddress
-  address5?: AuthUserAddress
 }
 
 type AuthReducerAction =

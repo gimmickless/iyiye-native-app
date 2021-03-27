@@ -33,7 +33,7 @@ type AddressKeyValue = {
   value?: AuthUserAddress
 }
 
-const addressPrefix = 'address'
+const addressKeyPrefix = 'address'
 
 const AddressList: React.FC = () => {
   const { t } = useContext(LocalizationContext)
@@ -53,11 +53,11 @@ const AddressList: React.FC = () => {
 
   useEffect(() => {
     const addressList = [
-      { key: `${addressPrefix}1`, value: authUser.props?.address1 },
-      { key: `${addressPrefix}2`, value: authUser.props?.address2 },
-      { key: `${addressPrefix}3`, value: authUser.props?.address3 },
-      { key: `${addressPrefix}4`, value: authUser.props?.address4 },
-      { key: `${addressPrefix}5`, value: authUser.props?.address5 }
+      { key: `${addressKeyPrefix}1`, value: authUser.props?.address1 },
+      { key: `${addressKeyPrefix}2`, value: authUser.props?.address2 },
+      { key: `${addressKeyPrefix}3`, value: authUser.props?.address3 },
+      { key: `${addressKeyPrefix}4`, value: authUser.props?.address4 },
+      { key: `${addressKeyPrefix}5`, value: authUser.props?.address5 }
     ]
     setAddresses(addressList.filter((x) => x.value))
 
@@ -165,7 +165,9 @@ const AddressList: React.FC = () => {
 
   const editAction = (itemKey: AuthUserAddressKey) => {
     navigation.navigate(HomeStackScreenNames.AddressForm, {
-      editAddressKey: itemKey
+      editObject: {
+        key: itemKey
+      }
     })
   }
 
@@ -174,7 +176,7 @@ const AddressList: React.FC = () => {
     try {
       const deletedItemAddresses = addresses.filter((x) => x.key !== itemKey)
       deletedItemAddresses.forEach((el, i) => {
-        el.key = `${addressPrefix}${i + 1}`
+        el.key = `${addressKeyPrefix}${i + 1}`
       })
       const deletedItemAddressesObj = deletedItemAddresses.reduce(
         (obj, item) => Object.assign(obj, { [item.key]: item.value }),

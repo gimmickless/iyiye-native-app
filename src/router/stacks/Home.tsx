@@ -9,12 +9,15 @@ import {
 import { headerLeftContainerPaddingLeft } from 'utils/constants'
 import { HomeStackScreenNames } from 'types/route'
 import { Region } from 'react-native-maps'
+import { AuthUserAddressKey } from 'types/context'
 
 export type HomeStackParamList = {
   HomeDefault: undefined
   HomeAddressList: undefined
   HomeAddressLocationSearch: undefined
-  HomeAddressForm: { initialRegion: Region; editObject: any } | undefined
+  HomeAddressForm:
+    | { initialRegion: Region; editObject?: { key: AuthUserAddressKey } }
+    | undefined
   HomeList: { sort: 'latest' | 'top' } | undefined
   HomeItem: { id: string }
   HomeAuthor?: { userId: string }

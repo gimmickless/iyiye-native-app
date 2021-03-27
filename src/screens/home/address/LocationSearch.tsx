@@ -36,6 +36,7 @@ import { GoogleConfig } from 'config'
 import { useDebounce } from 'hooks'
 import { Region } from 'react-native-maps'
 import { HomeAddressFormRouteProps } from './Form'
+import OverlayLoader from 'components/shared/OverlayLoader'
 
 const recentLocationSearchesKey = `${globalAsyncStorageKeyPrefix}:recentLocationSearches`
 
@@ -116,6 +117,7 @@ const LocationSearch: React.FC = () => {
   const [searchResultData, setSearchResultData] = useState<
     PlaceAutocompleteResult[]
   >([])
+  const [isBlockingLoading, setIsBlockingLoading] = useState(false)
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
   const [searchText, setSearchText] = useState('')
@@ -200,6 +202,7 @@ const LocationSearch: React.FC = () => {
   }
 
   const onSearchResultClick = async (title: string, placeId: string) => {
+    setIsBlockingLoading(true)
     await addRecentSearch({
       placeId: placeId,
       mainText: title
@@ -209,17 +212,21 @@ const LocationSearch: React.FC = () => {
       initialRegion: r,
       editObject: undefined
     } as HomeAddressFormRouteProps['params'])
+    setIsBlockingLoading(false)
   }
 
   const onRecentSearchClick = async (placeId: string) => {
+    setIsBlockingLoading(true)
     const r = await getPlaceDetailAsync(placeId)
     navigation.navigate(HomeStackScreenNames.AddressForm, {
       initialRegion: r,
       editObject: undefined
     } as HomeAddressFormRouteProps['params'])
+    setIsBlockingLoading(false)
   }
 
   const onUseCurrentLocationPress = async () => {
+    setIsBlockingLoading(true)
     const { status } = await Location.requestPermissionsAsync()
     if (status !== 'granted') {
       addNotification({
@@ -238,6 +245,7 @@ const LocationSearch: React.FC = () => {
       },
       editObject: undefined
     } as HomeAddressFormRouteProps['params'])
+    setIsBlockingLoading(false)
   }
 
   const onClearSearchHistory = async () => {
@@ -352,6 +360,7 @@ const LocationSearch: React.FC = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
+      <OverlayLoader loading={isBlockingLoading} type="location" />
       {!searchText ? (
         <React.Fragment>
           <FlatList

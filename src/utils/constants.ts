@@ -42,6 +42,7 @@ export const getHyperlinkTextColor = (isDark: boolean) => {
 }
 
 // API
+export const googleMapsAddressComponentStreetNumberType = 'street_number'
 const googleMapsEndpoint = 'https://maps.googleapis.com/'
 export const googlePlacesAutocompleteBaseUrl = new URL(
   '/maps/api/place/autocomplete/json',

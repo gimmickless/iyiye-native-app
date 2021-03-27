@@ -59,11 +59,11 @@ const SignUp: React.FC = () => {
   const [showTermsModal, setShowTermsModal] = useState(false)
   const [showPrivacyModal, setShowPrivacyModal] = useState(false)
 
-  const usernameRef = useRef<Input>(null)
-  const emailRef = useRef<Input>(null)
-  const passwordRef = useRef<Input>(null)
-  const retypePasswordRef = useRef<Input>(null)
-  const birthDateRef = useRef<Input>(null)
+  const usernameRef = useRef<typeof Input>(null)
+  const emailRef = useRef<typeof Input>(null)
+  const passwordRef = useRef<typeof Input>(null)
+  const retypePasswordRef = useRef<typeof Input>(null)
+  const birthDateRef = useRef<typeof Input>(null)
 
   const maxBirthDate = getMaxDateFor18OrMoreYearsOld()
 

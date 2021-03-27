@@ -5,7 +5,8 @@ const englishTranslation = {
       accept: 'Accept',
       edit: 'Edit',
       delete: 'Delete',
-      cancel: 'Cancel'
+      cancel: 'Cancel',
+      save: 'Save'
     },
     message: {
       validation: {
@@ -193,13 +194,39 @@ const englishTranslation = {
       addressForm: {
         title: {
           new: 'New Address',
-          edit: 'Edit {{addressName}}'
+          edit: 'Edit {{addressKey}}',
+          section: {
+            fineTuning: 'Fine Tuning'
+          }
         },
         label: {
-          addressLine: 'Address'
+          addressLine: 'Address',
+          fineTuning: {
+            streetNumber: 'Street Num',
+            flatNumber: 'Flat Num',
+            floor: 'Floor'
+          },
+          addressDirections: 'Directions'
+        },
+        segmentedControl: {
+          addressType: {
+            home: 'Home',
+            office: 'Office',
+            other: 'Other'
+          }
         },
         button: {
           useLocation: 'Use This Location'
+        },
+        alert: {
+          addressSlotFull: {
+            title: 'Address Slot Full',
+            message:
+              'Cannot add more than {{maxAddressCount}} addresses. Please delete a record from list, or edit an existing one',
+            button: {
+              backToList: 'Back to List'
+            }
+          }
         }
       }
     },

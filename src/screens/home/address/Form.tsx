@@ -1,14 +1,33 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { SafeAreaView, StyleSheet, View, Image } from 'react-native'
-import * as Location from 'expo-location'
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState
+} from 'react'
+import { SafeAreaView, StyleSheet, View, Image, Alert } from 'react-native'
 import MapView, { LatLng, Region } from 'react-native-maps'
-import { RouteProp, useRoute } from '@react-navigation/native'
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { HomeStackParamList } from 'router/stacks/Home'
-import { Button, Input } from 'react-native-elements'
+import { Text, Button, Input } from 'react-native-elements'
+import SegmentedControl from '@react-native-community/segmented-control'
 import { LocalizationContext } from 'contexts/Localization'
 import { useInAppNotification } from 'contexts/InAppNotification'
 import { GoogleConfig } from 'config'
-import { googlePlaceGeocodingBaseUrl } from 'utils/constants'
+import {
+  googleMapsAddressComponentStreetNumberType,
+  googlePlaceGeocodingBaseUrl
+} from 'utils/constants'
+import { HomeStackScreenNames } from 'types/route'
+import { AuthUserContext } from 'contexts/Auth'
+import {
+  AuthUserAddress,
+  AuthUserAddressKey,
+  AuthUserState,
+  UpdateAddressesInput
+} from 'types/context'
+import { AddressSlotFullError } from 'types/customError'
 
 export type HomeAddressFormRouteProps = RouteProp<
   HomeStackParamList,
@@ -18,6 +37,12 @@ export type HomeAddressFormRouteProps = RouteProp<
 type PlaceReverseGeocodingResult = {
   placeId: string
   addressLine: string
+  addressComponents: {
+    short_name: string
+    long_name: string
+    postcode_localities: string[]
+    types: string[]
+  }[]
 }
 
 const mapHeight = 250
@@ -49,37 +74,170 @@ const getReverseGeocodingAsync = async (latLng: LatLng) => {
 
   return {
     placeId: firstResult.place_id,
-    addressLine: firstResult.formatted_address
+    addressLine: firstResult.formatted_address,
+    addressComponents: firstResult.address_components
   } as PlaceReverseGeocodingResult
+}
+
+const getNewAddressContextInput = (
+  authUserProps: AuthUserState['props'],
+  newAddress: AuthUserAddress
+) => {
+  if (authUserProps?.address5) {
+    throw new AddressSlotFullError()
+  }
+  if (authUserProps?.address4) {
+    return {
+      address1: authUserProps.address1,
+      address2: authUserProps.address2,
+      address3: authUserProps.address3,
+      address4: authUserProps.address4,
+      address5: newAddress
+    } as UpdateAddressesInput
+  }
+  if (authUserProps?.address3) {
+    return {
+      address1: authUserProps.address1,
+      address2: authUserProps.address2,
+      address3: authUserProps.address3,
+      address4: newAddress
+    } as UpdateAddressesInput
+  }
+  if (authUserProps?.address2) {
+    return {
+      address1: authUserProps.address1,
+      address2: authUserProps.address2,
+      address3: newAddress
+    } as UpdateAddressesInput
+  }
+  if (authUserProps?.address1) {
+    return {
+      address1: authUserProps.address1,
+      address2: newAddress
+    } as UpdateAddressesInput
+  }
+  return {
+    address1: newAddress
+  } as UpdateAddressesInput
+}
+
+const getAddressObject = (
+  authUserProps: AuthUserState['props'],
+  key: AuthUserAddressKey
+) => {
+  if (key === 'address1') {
+    return authUserProps?.address1
+  }
+  if (key === 'address2') {
+    return authUserProps?.address2
+  }
+  if (key === 'address3') {
+    return authUserProps?.address3
+  }
+  if (key === 'address4') {
+    return authUserProps?.address4
+  }
+  if (key === 'address5') {
+    return authUserProps?.address5
+  }
+  return undefined
 }
 
 const Form: React.FC = () => {
   const { t } = useContext(LocalizationContext)
+  const { state: authUser, action: authUserAction } = useContext(
+    AuthUserContext
+  )
   const { addNotification } = useInAppNotification()
+  const navigation = useNavigation()
   const route = useRoute<HomeAddressFormRouteProps>()
   const initialRegion = route.params?.initialRegion
   const editObject = route.params?.editObject
 
-  const [regionChangeInProgress, setRegionChangeInProgress] = useState<boolean>(
-    false
-  )
-  const [hasRegionChanged, setHasRegionChanged] = useState<boolean>(false)
+  const [saveLoading, setSaveLoading] = useState(false)
+  const [regionChangeInProgress, setRegionChangeInProgress] = useState(false)
+  const [hasRegionChanged, setHasRegionChanged] = useState(false)
   const [region, setRegion] = useState<Region | undefined>(initialRegion)
+  const [selectedAddressKindIndex, setSelectedAddressKindIndex] = useState<
+    number | undefined
+  >(undefined)
   const [
     mapComputedAddress,
     setMapComputedAddress
   ] = useState<PlaceReverseGeocodingResult>()
+
+  const [fineTuningStreetNumber, setFineTuningStreetNumber] = useState<
+    string | undefined
+  >(undefined)
+
+  const [fineTuningFlatNumber, setFineTuningFlatNumber] = useState<
+    number | undefined
+  >(undefined)
+
+  const [fineTuningFloor, setFineTuningFloor] = useState<number | undefined>(
+    undefined
+  )
+
+  const [addressDirections, setAddressDirections] = useState('')
+
+  const addressKindList: Array<{
+    value: AuthUserAddress['kind']
+    text: string
+  }> = useMemo(
+    () => [
+      {
+        value: 'home',
+        text: t('screen.home.addressForm.segmentedControl.addressType.home')
+      },
+      {
+        value: 'office',
+        text: t('screen.home.addressForm.segmentedControl.addressType.office')
+      },
+      {
+        value: 'other',
+        text: t('screen.home.addressForm.segmentedControl.addressType.other')
+      }
+    ],
+    [t]
+  )
 
   const isEdit = !!editObject
 
   useEffect(() => {
     ;(async () => {
       try {
-        const reverseGeocodingResult = await getReverseGeocodingAsync({
-          latitude: region?.latitude ?? 0,
-          longitude: region?.longitude ?? 0
-        })
+        let initialLatLng: LatLng
+        if (isEdit) {
+          const editAddressObj = getAddressObject(
+            authUser.props,
+            editObject?.key
+          )
+          initialLatLng = {
+            latitude: editAddressObj?.latitude ?? 0,
+            longitude: editAddressObj?.longitude ?? 0
+          }
+          setFineTuningStreetNumber(editAddressObj?.streetNumber)
+          setFineTuningFlatNumber(editAddressObj?.flatNumber)
+          setFineTuningFloor(editAddressObj?.floor)
+          setSelectedAddressKindIndex(
+            addressKindList.findIndex(
+              (el) => el.value === (editAddressObj?.kind ?? 'other')
+            )
+          )
+        } else {
+          initialLatLng = {
+            latitude: region?.latitude ?? 0,
+            longitude: region?.longitude ?? 0
+          }
+        }
+        const reverseGeocodingResult = await getReverseGeocodingAsync(
+          initialLatLng
+        )
         setMapComputedAddress(reverseGeocodingResult)
+        const computedStreetNumber = reverseGeocodingResult?.addressComponents.find(
+          (x) => x.types.includes(googleMapsAddressComponentStreetNumberType)
+        )?.short_name
+        setFineTuningStreetNumber(computedStreetNumber)
       } catch (err) {
         addNotification({
           message: err,
@@ -90,6 +248,99 @@ const Form: React.FC = () => {
     // No Deps to ensure it is performed only once
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const onSave = useCallback(async () => {
+    setSaveLoading(true)
+    try {
+      //TODO: Implement Save
+      const input = getNewAddressContextInput(authUser.props, {
+        kind: selectedAddressKindIndex
+          ? addressKindList[selectedAddressKindIndex].value
+          : 'other',
+        latitude: region?.latitude ?? 0,
+        longitude: region?.longitude ?? 0,
+        streetAddress: mapComputedAddress?.addressLine ?? '',
+        streetNumber: fineTuningStreetNumber ?? '',
+        flatNumber: fineTuningFlatNumber ?? 0,
+        floor: fineTuningFloor ?? 0,
+        directions: addressDirections
+      })
+      await authUserAction.updateAddresses(input)
+      navigation.navigate(HomeStackScreenNames.AddressList)
+    } catch (err) {
+      if (err instanceof AddressSlotFullError) {
+        Alert.alert(
+          t('screen.home.addressForm.alert.addressSlotFull.title'),
+          t('screen.home.addressForm.alert.addressSlotFull.message', {
+            maxAddressCount: 5
+          }),
+          [
+            {
+              text: t('common.button.cancel'),
+              onPress: () => {
+                return
+              },
+              style: 'cancel'
+            },
+            {
+              text: t(
+                'screen.home.addressForm.alert.addressSlotFull.button.backToList'
+              ),
+              onPress: () => {
+                navigation.navigate(HomeStackScreenNames.AddressList)
+              },
+              style: 'cancel'
+            }
+          ],
+          {
+            cancelable: true
+          }
+        )
+        return
+      }
+      addNotification({
+        message: err,
+        type: 'error'
+      })
+    } finally {
+      setSaveLoading(false)
+    }
+  }, [
+    addNotification,
+    addressDirections,
+    addressKindList,
+    authUser.props,
+    authUserAction,
+    fineTuningFlatNumber,
+    fineTuningFloor,
+    fineTuningStreetNumber,
+    mapComputedAddress?.addressLine,
+    navigation,
+    region?.latitude,
+    region?.longitude,
+    selectedAddressKindIndex,
+    t
+  ])
+
+  // Customize header
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      title: isEdit
+        ? t('screen.home.addressForm.title.new')
+        : t('screen.home.addressForm.title.edit', {
+            addressKey: editObject?.key
+          }),
+      headerRight: () => (
+        <Button
+          type="clear"
+          title={t('common.button.save')}
+          onPress={onSave}
+          loading={saveLoading}
+          disabled={saveLoading}
+        />
+      )
+    })
+  }, [editObject?.key, isEdit, navigation, onSave, saveLoading, t])
 
   const onRegionChangeComplete = (r: Region) => {
     setRegionChangeInProgress(false)
@@ -104,6 +355,10 @@ const Form: React.FC = () => {
         longitude: region?.longitude ?? 0
       })
       setMapComputedAddress(reverseGeocodingResult)
+      const computedStreetNumber = reverseGeocodingResult?.addressComponents.find(
+        (x) => x.types.includes(googleMapsAddressComponentStreetNumberType)
+      )?.short_name
+      setFineTuningStreetNumber(computedStreetNumber)
     } catch (err) {
       addNotification({
         message: err,
@@ -116,6 +371,13 @@ const Form: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <SegmentedControl
+        values={addressKindList.map((x) => x.text)}
+        selectedIndex={selectedAddressKindIndex}
+        onChange={(event: any) => {
+          setSelectedAddressKindIndex(event.nativeEvent.selectedSegmentIndex)
+        }}
+      />
       <MapView
         style={styles.map}
         region={region}
@@ -142,8 +404,50 @@ const Form: React.FC = () => {
         label={t('screen.home.addressForm.label.addressLine')}
         value={mapComputedAddress?.addressLine}
         containerStyle={styles.addressBoxContainer}
-        disabled
+        textContentType="fullStreetAddress"
+        editable={false}
         multiline
+      />
+
+      <Text h4>{t('screen.home.addressForm.title.section.fineTuning')}</Text>
+      <View style={styles.fineTuningInputFormContainer}>
+        <Input
+          label={t('screen.home.addressForm.label.fineTuning.streetNumber')}
+          containerStyle={styles.fineTuningInputContainer}
+          value={fineTuningStreetNumber}
+          onChangeText={(val) => setFineTuningStreetNumber(val)}
+          autoCompleteType="off"
+          autoCorrect={false}
+          keyboardType="default"
+        />
+        <Input
+          label={t('screen.home.addressForm.label.fineTuning.flatNumber')}
+          containerStyle={styles.fineTuningInputContainer}
+          value={`${fineTuningFlatNumber}`}
+          onChangeText={(val) => setFineTuningFlatNumber(parseInt(val))}
+          autoCompleteType="off"
+          autoCorrect={false}
+          keyboardType="number-pad"
+        />
+        <Input
+          label={t('screen.home.addressForm.label.fineTuning.floor')}
+          containerStyle={styles.fineTuningInputContainer}
+          value={`${fineTuningFloor}`}
+          onChangeText={(val) => setFineTuningFloor(parseInt(val))}
+          autoCompleteType="off"
+          autoCorrect={false}
+          keyboardType="number-pad"
+        />
+      </View>
+
+      <Input
+        label={t('screen.home.addressForm.label.addressDirections')}
+        value={addressDirections}
+        onChangeText={(val) => setAddressDirections(val)}
+        inputStyle={styles.addressDirectionsInput}
+        textContentType="none"
+        multiline
+        numberOfLines={2}
       />
     </SafeAreaView>
   )
@@ -153,6 +457,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1
   },
+  headerRightButtonText: {},
   map: {
     height: mapHeight,
     marginBottom: 12
@@ -174,7 +479,15 @@ const styles = StyleSheet.create({
   },
   addressBoxContainer: {
     marginTop: 12
-  }
+  },
+  fineTuningInputFormContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap'
+  },
+  fineTuningInputContainer: {
+    flex: 1
+  },
+  addressDirectionsInput: {}
 })
 
 export default Form
