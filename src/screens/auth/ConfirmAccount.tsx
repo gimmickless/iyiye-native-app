@@ -41,7 +41,6 @@ const ConfirmAccount: React.FC = () => {
       await Auth.confirmSignUp(username, verificationCode)
       navigation.navigate(AuthStackScreenNames.SignIn)
     } catch (err) {
-      console.log(err)
       addNotification({
         message: err.message ?? err,
         type: 'error'

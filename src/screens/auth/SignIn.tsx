@@ -27,7 +27,7 @@ const SignIn: React.FC = () => {
   const { action } = useContext(AuthUserContext)
   const [signInLoading, setSignInLoading] = useState(false)
   const navigation = useNavigation()
-  const passwordRef = useRef<Input>(null)
+  const passwordRef = useRef<typeof Input | null>(null)
 
   const formSchema: Yup.SchemaOf<FormData> = Yup.object().shape({
     usernameOrEmail: Yup.string()
@@ -46,7 +46,6 @@ const SignIn: React.FC = () => {
   const onSubmit = async ({ usernameOrEmail, password }: FormData) => {
     setSignInLoading(true)
     try {
-      console.log('pressed')
       await action.login({ usernameOrEmail, password })
       navigation.dispatch(CommonActions.goBack()) // Return to previous screen
     } catch (err) {

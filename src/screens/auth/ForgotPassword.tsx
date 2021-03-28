@@ -47,8 +47,8 @@ const ForgotPasword: React.FC = () => {
   const [emailSent, setEmailSent] = useState(false)
   const navigation = useNavigation()
   const formRef = useRef<FormikProps<UserInfoFormData>>(null)
-  const newPasswordRef = useRef<Input>(null)
-  const retypeNewPasswordRef = useRef<Input>(null)
+  const newPasswordRef = useRef<typeof Input | null>(null)
+  const retypeNewPasswordRef = useRef<typeof Input | null>(null)
 
   const userInfoSchema: Yup.SchemaOf<UserInfoFormData> = Yup.object().shape({
     username: Yup.string()
@@ -90,7 +90,6 @@ const ForgotPasword: React.FC = () => {
     setSendEmailLoading(true)
     try {
       await Auth.forgotPassword(username)
-      // console.log(username)
       setEmailSent(true)
       LayoutAnimation.easeInEaseOut()
     } catch (err) {

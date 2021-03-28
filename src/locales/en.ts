@@ -216,7 +216,7 @@ const englishTranslation = {
           }
         },
         button: {
-          useLocation: 'Use This Location'
+          updateWithThisLocation: 'Update Address with Pinned Location'
         },
         alert: {
           addressSlotFull: {

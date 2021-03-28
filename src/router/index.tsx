@@ -18,7 +18,7 @@ import {
   IyiyeNavigationLightTheme,
   IyiyeNavigationDarkTheme
 } from 'utils/theme'
-import { ThemeProvider as ReactNativeEleementsThemeProvider } from 'react-native-elements'
+import { ThemeProvider as ReactNativeElementsThemeProvider } from 'react-native-elements'
 
 const Tab = createBottomTabNavigator()
 
@@ -33,7 +33,7 @@ export const RootNavigator = () => {
     <NavigationContainer
       theme={isDarkMode ? IyiyeNavigationDarkTheme : IyiyeNavigationLightTheme}
     >
-      <ReactNativeEleementsThemeProvider useDark={isDarkMode}>
+      <ReactNativeElementsThemeProvider useDark={isDarkMode}>
         <Tab.Navigator
           initialRouteName={TabNames.Home}
           screenOptions={({ route }) => ({
@@ -90,7 +90,7 @@ export const RootNavigator = () => {
             </Tab.Screen>
           )}
         </Tab.Navigator>
-      </ReactNativeEleementsThemeProvider>
+      </ReactNativeElementsThemeProvider>
     </NavigationContainer>
   )
 }

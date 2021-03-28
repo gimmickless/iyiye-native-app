@@ -7,23 +7,26 @@ import React, {
   useState
 } from 'react'
 import {
-  SafeAreaView,
   StyleSheet,
   View,
   Image,
   Alert,
-  NativeSyntheticEvent
+  NativeSyntheticEvent,
+  KeyboardAvoidingView,
+  ScrollView
 } from 'react-native'
+import { GoogleConfig } from 'config'
 import MapView, { LatLng, Region } from 'react-native-maps'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { HomeStackParamList } from 'router/stacks/Home'
-import { Text, Button, Input } from 'react-native-elements'
+import { Button, Input, ThemeContext, Card } from 'react-native-elements'
 import SegmentedControl, {
   NativeSegmentedControlIOSChangeEvent
 } from '@react-native-community/segmented-control'
 import { LocalizationContext } from 'contexts/Localization'
 import { useInAppNotification } from 'contexts/InAppNotification'
-import { GoogleConfig } from 'config'
+
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 import {
   googleMapsAddressComponentStreetNumberType,
   googlePlaceGeocodingBaseUrl
@@ -81,7 +84,6 @@ const getReverseGeocodingAsync = async (latLng: LatLng) => {
     )
   }
   const firstResult = data.results[0]
-  console.log('first result: ' + JSON.stringify(firstResult))
 
   return {
     placeId: firstResult.place_id,
@@ -165,6 +167,7 @@ const Form: React.FC = () => {
   const initialRegion = route.params?.initialRegion
   const editObject = route.params?.editObject
 
+  const { theme: rneTheme } = useContext(ThemeContext)
   const [saveLoading, setSaveLoading] = useState(false)
   const [regionChangeInProgress, setRegionChangeInProgress] = useState(false)
   const [hasRegionChanged, setHasRegionChanged] = useState(false)
@@ -232,7 +235,9 @@ const Form: React.FC = () => {
           setFineTuningFloor(editAddressObj?.floor)
           setSelectedAddressKindIndex(
             addressKindList.findIndex(
-              (el) => el.value === (editAddressObj?.kind ?? defaultAddressKind)
+              (el) =>
+                el.value ===
+                (isEdit ? editAddressObj?.kind : defaultAddressKind)
             )
           )
         } else {
@@ -336,7 +341,7 @@ const Form: React.FC = () => {
   // Customize header
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: isEdit
+      title: !isEdit
         ? t('screen.home.addressForm.title.new')
         : t('screen.home.addressForm.title.edit', {
             addressKey: editObject?.key
@@ -344,6 +349,13 @@ const Form: React.FC = () => {
       headerRight: () => (
         <Button
           type="clear"
+          icon={
+            <MaterialCommunityIcons
+              name="checkbox-marked-circle"
+              size={15}
+              color={rneTheme.colors?.primary}
+            />
+          }
           title={t('common.button.save')}
           onPress={onSave}
           loading={saveLoading}
@@ -351,7 +363,15 @@ const Form: React.FC = () => {
         />
       )
     })
-  }, [editObject?.key, isEdit, navigation, onSave, saveLoading, t])
+  }, [
+    editObject?.key,
+    isEdit,
+    navigation,
+    onSave,
+    rneTheme.colors?.primary,
+    saveLoading,
+    t
+  ])
 
   const onRegionChangeComplete = (r: Region) => {
     setRegionChangeInProgress(false)
@@ -381,101 +401,121 @@ const Form: React.FC = () => {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <SegmentedControl
-        values={addressKindList.map((x) => x.text)}
-        selectedIndex={selectedAddressKindIndex}
-        onChange={(
-          event: NativeSyntheticEvent<NativeSegmentedControlIOSChangeEvent>
-        ) => {
-          setSelectedAddressKindIndex(event.nativeEvent.selectedSegmentIndex)
-        }}
-      />
-      <MapView
-        style={styles.map}
-        region={region}
-        onRegionChange={() => setRegionChangeInProgress(true)}
-        onRegionChangeComplete={(r) => onRegionChangeComplete(r)}
-      />
-      <View style={styles.markerFixed}>
-        <Image
-          style={styles.marker}
-          source={
-            !regionChangeInProgress
-              ? require('visuals/map-marker.png')
-              : require('visuals/map-marker-animated.gif')
-          }
+    <KeyboardAvoidingView behavior="position" style={styles.container}>
+      <ScrollView keyboardShouldPersistTaps="handled">
+        <MapView
+          style={styles.map}
+          region={region}
+          onRegionChange={() => setRegionChangeInProgress(true)}
+          onRegionChangeComplete={(r) => onRegionChangeComplete(r)}
         />
-      </View>
-      <Button
-        style={styles.blockButton}
-        onPress={calculateAddressLine}
-        title={t('screen.home.addressForm.button.useLocation')}
-        disabled={!hasRegionChanged}
-      />
-      <Input
-        label={t('screen.home.addressForm.label.addressLine')}
-        value={mapComputedAddress?.addressLine}
-        containerStyle={styles.addressBoxContainer}
-        textContentType="fullStreetAddress"
-        editable={false}
-        multiline
-      />
+        <View style={styles.markerFixed}>
+          <Image
+            style={styles.marker}
+            source={
+              !regionChangeInProgress
+                ? require('visuals/map-marker.png')
+                : require('visuals/map-marker-animated.gif')
+            }
+          />
+        </View>
+        <View style={styles.horizontalMarginContainerView}>
+          <Button
+            style={styles.blockButton}
+            onPress={calculateAddressLine}
+            title={t('screen.home.addressForm.button.updateWithThisLocation')}
+            disabled={!hasRegionChanged}
+          />
+        </View>
 
-      <Text h4>{t('screen.home.addressForm.title.section.fineTuning')}</Text>
-      <View style={styles.fineTuningInputFormContainer}>
         <Input
-          label={t('screen.home.addressForm.label.fineTuning.streetNumber')}
-          containerStyle={styles.fineTuningInputContainer}
-          value={fineTuningStreetNumber}
-          onChangeText={(val) => setFineTuningStreetNumber(val)}
-          autoCompleteType="off"
-          autoCorrect={false}
-          keyboardType="default"
+          label={t('screen.home.addressForm.label.addressLine')}
+          value={mapComputedAddress?.addressLine}
+          containerStyle={styles.addressBoxContainer}
+          textContentType="fullStreetAddress"
+          editable={false}
+          multiline
         />
-        <Input
-          label={t('screen.home.addressForm.label.fineTuning.flatNumber')}
-          containerStyle={styles.fineTuningInputContainer}
-          value={`${fineTuningFlatNumber}`}
-          onChangeText={(val) => setFineTuningFlatNumber(parseInt(val, 10))}
-          autoCompleteType="off"
-          autoCorrect={false}
-          keyboardType="number-pad"
-        />
-        <Input
-          label={t('screen.home.addressForm.label.fineTuning.floor')}
-          containerStyle={styles.fineTuningInputContainer}
-          value={`${fineTuningFloor}`}
-          onChangeText={(val) => setFineTuningFloor(parseInt(val, 10))}
-          autoCompleteType="off"
-          autoCorrect={false}
-          keyboardType="number-pad"
-        />
-      </View>
+        <View style={styles.horizontalMarginContainerView}>
+          <SegmentedControl
+            values={addressKindList.map((x) => x.text)}
+            selectedIndex={selectedAddressKindIndex}
+            onChange={(
+              event: NativeSyntheticEvent<NativeSegmentedControlIOSChangeEvent>
+            ) => {
+              setSelectedAddressKindIndex(
+                event.nativeEvent.selectedSegmentIndex
+              )
+            }}
+          />
+        </View>
 
-      <Input
-        label={t('screen.home.addressForm.label.addressDirections')}
-        value={addressDirections}
-        onChangeText={(val) => setAddressDirections(val)}
-        inputStyle={styles.addressDirectionsInput}
-        textContentType="none"
-        multiline
-        numberOfLines={2}
-      />
-    </SafeAreaView>
+        <Card containerStyle={styles.fineTuningCard}>
+          <Card.Title h4Style={{ color: rneTheme.colors?.grey1 }}>
+            {t(
+              'screen.home.addressForm.title.section.fineTuning'
+            ).toLocaleUpperCase()}
+          </Card.Title>
+          <Card.Divider />
+          <View style={styles.fineTuningInputFormContainer}>
+            <Input
+              label={t('screen.home.addressForm.label.fineTuning.streetNumber')}
+              containerStyle={styles.fineTuningInputContainer}
+              value={fineTuningStreetNumber}
+              onChangeText={(val) => setFineTuningStreetNumber(val)}
+              autoCompleteType="off"
+              autoCorrect={false}
+              keyboardType="default"
+            />
+            <Input
+              label={t('screen.home.addressForm.label.fineTuning.flatNumber')}
+              containerStyle={styles.fineTuningInputContainer}
+              value={fineTuningFlatNumber ? `${fineTuningFlatNumber}` : ''}
+              onChangeText={(val) => setFineTuningFlatNumber(parseInt(val, 10))}
+              autoCompleteType="off"
+              autoCorrect={false}
+              keyboardType="number-pad"
+            />
+            <Input
+              label={t('screen.home.addressForm.label.fineTuning.floor')}
+              containerStyle={styles.fineTuningInputContainer}
+              value={fineTuningFloor ? `${fineTuningFloor}` : ''}
+              onChangeText={(val) => setFineTuningFloor(parseInt(val, 10))}
+              autoCompleteType="off"
+              autoCorrect={false}
+              keyboardType="number-pad"
+            />
+            <Input
+              label={t('screen.home.addressForm.label.addressDirections')}
+              value={addressDirections}
+              onChangeText={(val) => setAddressDirections(val)}
+              inputStyle={styles.addressDirectionsInput}
+              textContentType="none"
+              multiline
+              numberOfLines={2}
+            />
+          </View>
+        </Card>
+      </ScrollView>
+    </KeyboardAvoidingView>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
+  container: {},
   headerRightButtonText: {},
+  fineTuningCard: {
+    marginHorizontal: 0,
+    borderWidth: 0,
+    elevation: 0
+  },
   map: {
     height: mapHeight,
     marginBottom: 12
   },
-
+  horizontalMarginContainerView: {
+    marginHorizontal: 12
+  },
   markerFixed: {
     left: '50%',
     marginLeft: -24,
@@ -487,11 +527,12 @@ const styles = StyleSheet.create({
     height: 48,
     width: 48
   },
-  blockButton: {
-    marginHorizontal: 12
-  },
+  blockButton: {},
   addressBoxContainer: {
     marginTop: 12
+  },
+  fineTuningSectionHeader: {
+    fontSize: 12
   },
   fineTuningInputFormContainer: {
     flexDirection: 'row',

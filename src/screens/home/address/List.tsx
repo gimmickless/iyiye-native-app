@@ -1,13 +1,5 @@
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react'
-import {
-  Alert,
-  Image,
-  FlatList,
-  Pressable,
-  StyleSheet,
-  useColorScheme,
-  View
-} from 'react-native'
+import { Alert, Image, FlatList, StyleSheet, View } from 'react-native'
 import { Button, Text, ThemeContext } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native'
 import { AuthUserContext } from 'contexts/Auth'
@@ -20,11 +12,7 @@ import { AuthUserAddress, AuthUserAddressKey } from 'types/context'
 import { AddressTypeEmoji } from 'types/visualization'
 import { HomeStackScreenNames } from 'types/route'
 import ListSeparator from 'components/shared/ListSeparator'
-import {
-  getHyperlinkTextColor,
-  headerRightButtonTextFont,
-  maxAddressCount
-} from 'utils/constants'
+import { headerRightButtonTextFont, maxAddressCount } from 'utils/constants'
 import { useInAppNotification } from 'contexts/InAppNotification'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 
@@ -38,7 +26,6 @@ const addressKeyPrefix = 'address'
 const AddressList: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
-  const scheme = useColorScheme()
   const { theme: rneTheme } = useContext(ThemeContext)
   const { addNotification } = useInAppNotification()
   const [operationInProgress, setOperationInProgress] = useState(false)
@@ -74,8 +61,16 @@ const AddressList: React.FC = () => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <Pressable
-          style={styles.headerRightButton}
+        <Button
+          type="clear"
+          icon={
+            <MaterialCommunityIcons
+              name="plus"
+              size={15}
+              color={rneTheme.colors?.primary}
+            />
+          }
+          title={t('screen.home.addressList.button.create')}
           onPress={() => {
             if (addresses.length >= maxAddressCount) {
               Alert.alert(
@@ -96,24 +91,10 @@ const AddressList: React.FC = () => {
             }
             navigation.navigate(HomeStackScreenNames.AddressLocationSearch)
           }}
-        >
-          <MaterialCommunityIcons
-            name="plus"
-            size={headerRightButtonTextFont}
-            color={getHyperlinkTextColor(scheme === 'dark')}
-          />
-          <Text
-            style={{
-              ...styles.headerRightButtonText,
-              color: getHyperlinkTextColor(scheme === 'dark')
-            }}
-          >
-            {t('screen.home.addressList.button.create')}
-          </Text>
-        </Pressable>
+        />
       )
     })
-  }, [addresses.length, navigation, scheme, t])
+  }, [addresses.length, navigation, rneTheme.colors?.primary, t])
 
   const onClickItemCheckbox = async (itemKey: AuthUserAddressKey) => {
     await authUserAction.update({

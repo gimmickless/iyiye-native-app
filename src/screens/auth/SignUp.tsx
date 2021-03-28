@@ -59,11 +59,11 @@ const SignUp: React.FC = () => {
   const [showTermsModal, setShowTermsModal] = useState(false)
   const [showPrivacyModal, setShowPrivacyModal] = useState(false)
 
-  const usernameRef = useRef<typeof Input>(null)
-  const emailRef = useRef<typeof Input>(null)
-  const passwordRef = useRef<typeof Input>(null)
-  const retypePasswordRef = useRef<typeof Input>(null)
-  const birthDateRef = useRef<typeof Input>(null)
+  const usernameRef = useRef<typeof Input | null>(null)
+  const emailRef = useRef<typeof Input | null>(null)
+  const passwordRef = useRef<typeof Input | null>(null)
+  const retypePasswordRef = useRef<typeof Input | null>(null)
+  const birthDateRef = useRef<typeof Input | null>(null)
 
   const maxBirthDate = getMaxDateFor18OrMoreYearsOld()
 
@@ -139,7 +139,6 @@ const SignUp: React.FC = () => {
         username
       })
     } catch (err) {
-      // console.log(err)
       addNotification({
         message: err.message ?? err,
         type: 'error'
@@ -344,16 +343,6 @@ const SignUp: React.FC = () => {
                 loading={signUpLoading}
                 disabled={signUpLoading}
                 onPress={handleSubmit as any}
-              />
-              {/* TODO: Following added for test. Remove before Prod */}
-              <Button
-                style={styles.modalBottomButton}
-                title="To Confirm Account"
-                onPress={() =>
-                  navigation.navigate(AuthStackScreenNames.ConfirmAccount, {
-                    email: values.email
-                  })
-                }
               />
             </View>
           )}
