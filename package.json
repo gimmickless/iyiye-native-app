@@ -95,6 +95,7 @@
       "@typescript-eslint/no-unused-vars": [
         "warn"
       ]
+      
     }
   },
   "husky": {

@@ -149,7 +149,7 @@ export default ({ children }: any) => {
   const { addNotification } = useInAppNotification()
 
   useEffect(() => {
-    ;(async () => {
+    !(async () => {
       try {
         const [currentAuthUser] = await Promise.all([
           Auth.currentAuthenticatedUser(),

@@ -6,12 +6,21 @@ import React, {
   useMemo,
   useState
 } from 'react'
-import { SafeAreaView, StyleSheet, View, Image, Alert } from 'react-native'
+import {
+  SafeAreaView,
+  StyleSheet,
+  View,
+  Image,
+  Alert,
+  NativeSyntheticEvent
+} from 'react-native'
 import MapView, { LatLng, Region } from 'react-native-maps'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { HomeStackParamList } from 'router/stacks/Home'
 import { Text, Button, Input } from 'react-native-elements'
-import SegmentedControl from '@react-native-community/segmented-control'
+import SegmentedControl, {
+  NativeSegmentedControlIOSChangeEvent
+} from '@react-native-community/segmented-control'
 import { LocalizationContext } from 'contexts/Localization'
 import { useInAppNotification } from 'contexts/InAppNotification'
 import { GoogleConfig } from 'config'
@@ -46,6 +55,8 @@ type PlaceReverseGeocodingResult = {
 }
 
 const mapHeight = 250
+
+const defaultAddressKind: AuthUserAddress['kind'] = 'other'
 
 // check for api reference: https://developers.google.com/maps/documentation/geocoding/overview#ReverseGeocoding
 const getReverseGeocodingAsync = async (latLng: LatLng) => {
@@ -204,7 +215,7 @@ const Form: React.FC = () => {
   const isEdit = !!editObject
 
   useEffect(() => {
-    ;(async () => {
+    !(async () => {
       try {
         let initialLatLng: LatLng
         if (isEdit) {
@@ -221,7 +232,7 @@ const Form: React.FC = () => {
           setFineTuningFloor(editAddressObj?.floor)
           setSelectedAddressKindIndex(
             addressKindList.findIndex(
-              (el) => el.value === (editAddressObj?.kind ?? 'other')
+              (el) => el.value === (editAddressObj?.kind ?? defaultAddressKind)
             )
           )
         } else {
@@ -374,7 +385,9 @@ const Form: React.FC = () => {
       <SegmentedControl
         values={addressKindList.map((x) => x.text)}
         selectedIndex={selectedAddressKindIndex}
-        onChange={(event: any) => {
+        onChange={(
+          event: NativeSyntheticEvent<NativeSegmentedControlIOSChangeEvent>
+        ) => {
           setSelectedAddressKindIndex(event.nativeEvent.selectedSegmentIndex)
         }}
       />
@@ -424,7 +437,7 @@ const Form: React.FC = () => {
           label={t('screen.home.addressForm.label.fineTuning.flatNumber')}
           containerStyle={styles.fineTuningInputContainer}
           value={`${fineTuningFlatNumber}`}
-          onChangeText={(val) => setFineTuningFlatNumber(parseInt(val))}
+          onChangeText={(val) => setFineTuningFlatNumber(parseInt(val, 10))}
           autoCompleteType="off"
           autoCorrect={false}
           keyboardType="number-pad"
@@ -433,7 +446,7 @@ const Form: React.FC = () => {
           label={t('screen.home.addressForm.label.fineTuning.floor')}
           containerStyle={styles.fineTuningInputContainer}
           value={`${fineTuningFloor}`}
-          onChangeText={(val) => setFineTuningFloor(parseInt(val))}
+          onChangeText={(val) => setFineTuningFloor(parseInt(val, 10))}
           autoCompleteType="off"
           autoCorrect={false}
           keyboardType="number-pad"

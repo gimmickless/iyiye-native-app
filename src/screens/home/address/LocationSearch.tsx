@@ -134,7 +134,7 @@ const LocationSearch: React.FC = () => {
   }, [t])
 
   useEffect(() => {
-    ;(async () => {
+    !(async () => {
       try {
         const results = await searchPlaceAsync(debouncedSearchText)
         setSearchResultData(results)
@@ -148,7 +148,7 @@ const LocationSearch: React.FC = () => {
   }, [addNotification, debouncedSearchText])
 
   useEffect(() => {
-    ;(async () => {
+    !(async () => {
       try {
         const jsonValue = await AsyncStorage.getItem(recentLocationSearchesKey)
         const storageDataArray = jsonValue ? JSON.parse(jsonValue) : []

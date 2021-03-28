@@ -153,9 +153,9 @@ const AddressList: React.FC = () => {
           {getAddressItemIcon(item.value)}
         </View>
         <View style={styles.listItemMainField}>
-          <Text h4>{item.value?.name}</Text>
+          <Text h4>{item.value?.kind}</Text>
           <Text>
-            {item.value?.line1}
+            {item.value?.streetAddress}
             Asddsajjjjjjjjjjjjjjjjjjjjjjjjjjjjjdasdasdsadasdd
           </Text>
         </View>
