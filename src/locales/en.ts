@@ -218,6 +218,9 @@ const englishTranslation = {
         button: {
           updateWithThisLocation: 'Update Address with Pinned Location'
         },
+        message: {
+          streetNumberCannotBeEmpty: 'Street number cannot be empty'
+        },
         alert: {
           addressSlotFull: {
             title: 'Address Slot Full',

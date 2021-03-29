@@ -73,14 +73,8 @@ const AddressList: React.FC = () => {
     setAddresses(addressList.filter((x) => x.value))
 
     setDefaultAddressKey(authUser.props?.address)
-  }, [
-    authUser.props?.address,
-    authUser.props?.address1,
-    authUser.props?.address2,
-    authUser.props?.address3,
-    authUser.props?.address4,
-    authUser.props?.address5
-  ])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     Animated.timing(changedListItemBorderOpacity, {
@@ -241,10 +235,11 @@ const AddressList: React.FC = () => {
         style={styles.listContainer}
         data={addresses}
         renderItem={({ item }) => {
-          const borderColor =
-            changedAddressKey === item.key
-              ? `rgba(0, 255, 255, ${changedListItemBorderOpacity})`
-              : 'transparent'
+          const borderColor = 'transparent'
+          // const borderColor =
+          //   changedAddressKey === item.key
+          //     ? `rgba(0, 255, 255, ${changedListItemBorderOpacity})`
+          //     : 'transparent'
           return (
             <Animated.View
               style={[

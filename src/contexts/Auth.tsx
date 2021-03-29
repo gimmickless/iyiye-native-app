@@ -299,11 +299,21 @@ export default ({ children }: any) => {
       const cognitoUser = await Auth.currentAuthenticatedUser()
 
       await Auth.updateUserAttributes(cognitoUser, {
-        'custom:address1': JSON.stringify(payload.address1),
-        'custom:address2': JSON.stringify(payload.address2),
-        'custom:address3': JSON.stringify(payload.address3),
-        'custom:address4': JSON.stringify(payload.address4),
-        'custom:address5': JSON.stringify(payload.address5)
+        'custom:address1': payload.address1
+          ? JSON.stringify(payload.address1)
+          : '',
+        'custom:address2': payload.address2
+          ? JSON.stringify(payload.address2)
+          : '',
+        'custom:address3': payload.address3
+          ? JSON.stringify(payload.address3)
+          : '',
+        'custom:address4': payload.address4
+          ? JSON.stringify(payload.address4)
+          : '',
+        'custom:address5': payload.address5
+          ? JSON.stringify(payload.address5)
+          : ''
       })
       dispatch({
         type: 'update_auth_user_alt_addresses',
@@ -316,6 +326,7 @@ export default ({ children }: any) => {
         }
       })
     } catch (err) {
+      console.log(err)
       addNotification({
         message: JSON.stringify(err),
         type: 'error'

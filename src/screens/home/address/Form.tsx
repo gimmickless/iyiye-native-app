@@ -234,17 +234,16 @@ const Form: React.FC = () => {
           setFineTuningFlatNumber(editAddressObj?.flatNumber)
           setFineTuningFloor(editAddressObj?.floor)
           setSelectedAddressKindIndex(
-            addressKindList.findIndex(
-              (el) =>
-                el.value ===
-                (isEdit ? editAddressObj?.kind : defaultAddressKind)
-            )
+            addressKindList.findIndex((el) => el.value === editAddressObj?.kind)
           )
         } else {
           initialLatLng = {
             latitude: region?.latitude ?? 0,
             longitude: region?.longitude ?? 0
           }
+          setSelectedAddressKindIndex(
+            addressKindList.findIndex((el) => el.value === defaultAddressKind)
+          )
         }
         const reverseGeocodingResult = await getReverseGeocodingAsync(
           initialLatLng
@@ -266,6 +265,13 @@ const Form: React.FC = () => {
   }, [])
 
   const onSave = useCallback(async () => {
+    if (!fineTuningStreetNumber) {
+      addNotification({
+        message: t('screen.home.addressForm.message.streetNumberCannotBeEmpty'),
+        type: 'error'
+      })
+      return
+    }
     setSaveLoading(true)
     try {
       //TODO: Implement Save
@@ -441,6 +447,7 @@ const Form: React.FC = () => {
         />
         <View style={styles.horizontalMarginContainerView}>
           <SegmentedControl
+            tintColor={rneTheme.colors?.primary}
             values={addressKindList.map((x) => x.text)}
             selectedIndex={selectedAddressKindIndex}
             onChange={(
