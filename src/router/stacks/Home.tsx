@@ -13,10 +13,10 @@ import { AuthUserAddressKey } from 'types/context'
 
 export type HomeStackParamList = {
   HomeDefault: undefined
-  HomeAddressList: undefined
+  HomeAddressList: { changedAddressKey?: AuthUserAddressKey } | undefined
   HomeAddressLocationSearch: undefined
   HomeAddressForm:
-    | { initialRegion: Region; editObject?: { key: AuthUserAddressKey } }
+    | { initialRegion: Region; edit?: { key: AuthUserAddressKey } }
     | undefined
   HomeList: { sort: 'latest' | 'top' } | undefined
   HomeItem: { id: string }

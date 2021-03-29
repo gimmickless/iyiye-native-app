@@ -165,7 +165,7 @@ const Form: React.FC = () => {
   const navigation = useNavigation()
   const route = useRoute<HomeAddressFormRouteProps>()
   const initialRegion = route.params?.initialRegion
-  const editObject = route.params?.editObject
+  const editObject = route.params?.edit
 
   const { theme: rneTheme } = useContext(ThemeContext)
   const [saveLoading, setSaveLoading] = useState(false)
@@ -282,7 +282,9 @@ const Form: React.FC = () => {
         directions: addressDirections
       })
       await authUserAction.updateAddresses(input)
-      navigation.navigate(HomeStackScreenNames.AddressList)
+      navigation.navigate(HomeStackScreenNames.AddressList, {
+        changedAddressKey: editObject?.key
+      })
     } catch (err) {
       if (err instanceof AddressSlotFullError) {
         Alert.alert(
@@ -327,6 +329,7 @@ const Form: React.FC = () => {
     addressKindList,
     authUser.props,
     authUserAction,
+    editObject?.key,
     fineTuningFlatNumber,
     fineTuningFloor,
     fineTuningStreetNumber,

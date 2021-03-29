@@ -1,7 +1,20 @@
-import React, { useContext, useEffect, useLayoutEffect, useState } from 'react'
-import { Alert, Image, FlatList, StyleSheet, View } from 'react-native'
+import React, {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState
+} from 'react'
+import {
+  Alert,
+  Image,
+  FlatList,
+  StyleSheet,
+  View,
+  Animated
+} from 'react-native'
 import { Button, Text, ThemeContext } from 'react-native-elements'
-import { useNavigation } from '@react-navigation/native'
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { AuthUserContext } from 'contexts/Auth'
 import { LocalizationContext } from 'contexts/Localization'
 import LoadingView from 'components/shared/LoadingView'
@@ -15,6 +28,12 @@ import ListSeparator from 'components/shared/ListSeparator'
 import { headerRightButtonTextFont, maxAddressCount } from 'utils/constants'
 import { useInAppNotification } from 'contexts/InAppNotification'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { HomeStackParamList } from 'router/stacks/Home'
+
+export type HomeAddressListRouteProps = RouteProp<
+  HomeStackParamList,
+  'HomeAddressList'
+>
 
 type AddressKeyValue = {
   key: string
@@ -27,6 +46,7 @@ const AddressList: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
   const { theme: rneTheme } = useContext(ThemeContext)
+  const route = useRoute<HomeAddressListRouteProps>()
   const { addNotification } = useInAppNotification()
   const [operationInProgress, setOperationInProgress] = useState(false)
   const { state: authUser, action: authUserAction } = useContext(
@@ -37,6 +57,10 @@ const AddressList: React.FC = () => {
     setDefaultAddressKey
   ] = useState<AuthUserAddressKey>()
   const [addresses, setAddresses] = useState<Array<AddressKeyValue>>([])
+
+  const changedAddressKey = route.params?.changedAddressKey
+
+  const changedListItemBorderOpacity = useRef(new Animated.Value(1)).current
 
   useEffect(() => {
     const addressList = [
@@ -57,6 +81,15 @@ const AddressList: React.FC = () => {
     authUser.props?.address4,
     authUser.props?.address5
   ])
+
+  useEffect(() => {
+    Animated.timing(changedListItemBorderOpacity, {
+      useNativeDriver: true,
+      toValue: 0,
+      duration: 2000
+    }).start()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -146,7 +179,7 @@ const AddressList: React.FC = () => {
 
   const editAction = (itemKey: AuthUserAddressKey) => {
     navigation.navigate(HomeStackScreenNames.AddressForm, {
-      editObject: {
+      edit: {
         key: itemKey
       }
     })
@@ -207,14 +240,31 @@ const AddressList: React.FC = () => {
       <FlatList
         style={styles.listContainer}
         data={addresses}
-        renderItem={({ item }) => (
-          <SwipeableListItem
-            editAction={() => editAction(item.key as AuthUserAddressKey)}
-            deleteAction={() => deleteAction(item.key as AuthUserAddressKey)}
-          >
-            {() => renderListItem(item)}
-          </SwipeableListItem>
-        )}
+        renderItem={({ item }) => {
+          const borderColor =
+            changedAddressKey === item.key
+              ? `rgba(0, 255, 255, ${changedListItemBorderOpacity})`
+              : 'transparent'
+          return (
+            <Animated.View
+              style={[
+                styles.listOuterView,
+                {
+                  borderColor: borderColor
+                }
+              ]}
+            >
+              <SwipeableListItem
+                editAction={() => editAction(item.key as AuthUserAddressKey)}
+                deleteAction={() =>
+                  deleteAction(item.key as AuthUserAddressKey)
+                }
+              >
+                {() => renderListItem(item)}
+              </SwipeableListItem>
+            </Animated.View>
+          )
+        }}
         keyExtractor={(item) => item.key}
         ItemSeparatorComponent={ListSeparator}
       />
@@ -234,6 +284,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center'
+  },
+  listOuterView: {
+    borderWidth: 1
   },
   headerRightButton: {
     paddingHorizontal: 14,

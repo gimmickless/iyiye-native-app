@@ -210,7 +210,7 @@ const LocationSearch: React.FC = () => {
     const r = await getPlaceDetailAsync(placeId)
     navigation.navigate(HomeStackScreenNames.AddressForm, {
       initialRegion: r,
-      editObject: undefined
+      edit: undefined
     } as HomeAddressFormRouteProps['params'])
     setIsBlockingLoading(false)
   }
@@ -219,8 +219,7 @@ const LocationSearch: React.FC = () => {
     setIsBlockingLoading(true)
     const r = await getPlaceDetailAsync(placeId)
     navigation.navigate(HomeStackScreenNames.AddressForm, {
-      initialRegion: r,
-      editObject: undefined
+      initialRegion: r
     } as HomeAddressFormRouteProps['params'])
     setIsBlockingLoading(false)
   }
@@ -242,8 +241,7 @@ const LocationSearch: React.FC = () => {
         longitude: coords.longitude,
         latitudeDelta: locationDelta,
         longitudeDelta: locationDelta
-      },
-      editObject: undefined
+      }
     } as HomeAddressFormRouteProps['params'])
     setIsBlockingLoading(false)
   }
