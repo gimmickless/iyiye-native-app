@@ -8,6 +8,7 @@ import {
 } from 'types/context'
 import { cognitoNotAuthenticatedMessageList } from 'utils/constants'
 import { useInAppNotification } from 'contexts/InAppNotification'
+import { useColorScheme } from 'react-native-appearance'
 
 type CreateAuthUserInput = {
   fullName: string
@@ -147,6 +148,7 @@ const authReducer = (
 export default ({ children }: any) => {
   const [state, dispatch] = useReducer(authReducer, initialState)
   const { addNotification } = useInAppNotification()
+  const scheme = useColorScheme()
 
   useEffect(() => {
     !(async () => {
@@ -270,8 +272,8 @@ export default ({ children }: any) => {
         phone_number: payload.phoneNumber,
         picture: payload.picture,
         locale: payload.locale,
-        'custom:theme': payload.theme,
-        'custom:bio': payload.bio,
+        'custom:theme': payload.theme ?? scheme,
+        'custom:bio': payload.bio ?? '',
         'custom:contactable': payload.contactable ? 'true' : 'false'
       })
       dispatch({

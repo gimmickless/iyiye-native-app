@@ -1,10 +1,4 @@
-import React, {
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState
-} from 'react'
+import React, { useContext, useEffect, useLayoutEffect, useState } from 'react'
 import {
   Alert,
   Image,
@@ -20,7 +14,7 @@ import { LocalizationContext } from 'contexts/Localization'
 import LoadingView from 'components/shared/LoadingView'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import SwipeableListItem from 'components/shared/SwipeableListItem'
-import Checkbox from 'expo-checkbox'
+import Checkbox from 'react-native-bouncy-checkbox'
 import { AuthUserAddress, AuthUserAddressKey } from 'types/context'
 import { AddressTypeEmoji } from 'types/visualization'
 import { HomeStackScreenNames } from 'types/route'
@@ -41,6 +35,21 @@ type AddressKeyValue = {
 }
 
 const addressKeyPrefix = 'address'
+const changedListItemBorderInitialOpacity = 2
+
+const getAddressItemIcon = (address?: AuthUserAddress) => {
+  if (!address) return
+  switch (address.kind) {
+    case 'current':
+      return AddressTypeEmoji.Current
+    case 'home':
+      return AddressTypeEmoji.Home
+    case 'office':
+      return AddressTypeEmoji.Office
+    default:
+      return AddressTypeEmoji.Other
+  }
+}
 
 const AddressList: React.FC = () => {
   const { t } = useContext(LocalizationContext)
@@ -60,7 +69,13 @@ const AddressList: React.FC = () => {
 
   const changedAddressKey = route.params?.changedAddressKey
 
-  const changedListItemBorderOpacity = useRef(new Animated.Value(1)).current
+  const changedListItemBorderOpacity = new Animated.Value(
+    changedListItemBorderInitialOpacity
+  )
+  const [
+    changedListItemActualBorderOpacity,
+    setChangedListItemActualBorderOpacity
+  ] = useState(changedListItemBorderInitialOpacity)
 
   useEffect(() => {
     const addressList = [
@@ -77,11 +92,20 @@ const AddressList: React.FC = () => {
   }, [])
 
   useEffect(() => {
+    const opacityListenerId = changedListItemBorderOpacity.addListener(
+      (progress) => {
+        if (Math.round(progress.value) === changedListItemActualBorderOpacity) {
+          return
+        }
+        setChangedListItemActualBorderOpacity(progress.value)
+      }
+    )
     Animated.timing(changedListItemBorderOpacity, {
       useNativeDriver: true,
       toValue: 0,
-      duration: 2000
+      duration: 1500
     }).start()
+    return () => changedListItemBorderOpacity.removeListener(opacityListenerId)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -130,45 +154,6 @@ const AddressList: React.FC = () => {
       address: itemKey
     })
     setDefaultAddressKey(itemKey)
-  }
-
-  const getAddressItemIcon = (address: AuthUserAddress | undefined) => {
-    if (!address) return
-    switch (address.kind) {
-      case 'current':
-        return AddressTypeEmoji.Current
-      case 'home':
-        return AddressTypeEmoji.Home
-      case 'office':
-        return AddressTypeEmoji.Office
-      default:
-        return AddressTypeEmoji.Other
-    }
-  }
-
-  const renderListItem = (item: AddressKeyValue) => {
-    return (
-      <View style={styles.listItem}>
-        <View style={styles.listItemCheckboxField}>
-          <Checkbox
-            value={item.key === defaultAddressKey}
-            onValueChange={() =>
-              onClickItemCheckbox(item.key as AuthUserAddressKey)
-            }
-          />
-        </View>
-        <View style={styles.listItemIconField}>
-          {getAddressItemIcon(item.value)}
-        </View>
-        <View style={styles.listItemMainField}>
-          <Text h4>{item.value?.kind}</Text>
-          <Text>
-            {item.value?.streetAddress}
-            Asddsajjjjjjjjjjjjjjjjjjjjjjjjjjjjjdasdasdsadasdd
-          </Text>
-        </View>
-      </View>
-    )
   }
 
   const editAction = (itemKey: AuthUserAddressKey) => {
@@ -235,11 +220,10 @@ const AddressList: React.FC = () => {
         style={styles.listContainer}
         data={addresses}
         renderItem={({ item }) => {
-          const borderColor = 'transparent'
-          // const borderColor =
-          //   changedAddressKey === item.key
-          //     ? `rgba(0, 255, 255, ${changedListItemBorderOpacity})`
-          //     : 'transparent'
+          const borderColor =
+            changedAddressKey === item.key
+              ? `rgba(0, 255, 255, ${changedListItemActualBorderOpacity})`
+              : 'transparent'
           return (
             <Animated.View
               style={[
@@ -255,7 +239,29 @@ const AddressList: React.FC = () => {
                   deleteAction(item.key as AuthUserAddressKey)
                 }
               >
-                {() => renderListItem(item)}
+                <View style={styles.listItem}>
+                  <View style={styles.listItemCheckboxField}>
+                    <Checkbox
+                      size={25}
+                      fillColor={rneTheme.colors?.primary}
+                      unfillColor="transparent"
+                      iconStyle={{
+                        borderColor: rneTheme.colors?.primary
+                      }}
+                      disableText
+                      isChecked={item.key === defaultAddressKey}
+                      onPress={() =>
+                        onClickItemCheckbox(item.key as AuthUserAddressKey)
+                      }
+                    />
+                  </View>
+                  <View style={styles.listItemMainField}>
+                    <Text>
+                      {getAddressItemIcon(item.value)}&nbsp;{item.value?.kind}
+                    </Text>
+                    <Text>{item.value?.streetAddress}</Text>
+                  </View>
+                </View>
               </SwipeableListItem>
             </Animated.View>
           )
@@ -281,7 +287,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   listOuterView: {
-    borderWidth: 1
+    borderWidth: 1.5,
+    borderRadius: 12
   },
   headerRightButton: {
     paddingHorizontal: 14,
@@ -298,16 +305,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   listItemCheckboxField: {
-    flex: 1,
-    alignItems: 'center'
-  },
-  listItemIconField: {
-    flex: 1,
-    alignItems: 'center'
+    paddingHorizontal: 8,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   listItemMainField: {
     flex: 6
-    // alignItems: 'center'
   },
   nothingFoundText: {
     marginBottom: 10
