@@ -267,11 +267,11 @@ export default ({ children }: any) => {
       const cognitoUser = await Auth.currentAuthenticatedUser()
 
       await Auth.updateUserAttributes(cognitoUser, {
-        name: payload.fullName,
-        address: JSON.stringify(payload.address),
-        phone_number: payload.phoneNumber,
-        picture: payload.picture,
-        locale: payload.locale,
+        name: payload.fullName ?? '',
+        address: payload.address ?? '',
+        phone_number: payload.phoneNumber ?? '',
+        picture: payload.picture ?? '',
+        locale: payload.locale ?? '',
         'custom:theme': payload.theme ?? scheme,
         'custom:bio': payload.bio ?? '',
         'custom:contactable': payload.contactable ? 'true' : 'false'

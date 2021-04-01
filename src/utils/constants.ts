@@ -41,6 +41,9 @@ export const getHyperlinkTextColor = (isDark: boolean) => {
   return isDark ? 'lightblue' : 'blue'
 }
 
+// Place
+export const locationDelta = 0.0025
+
 // API
 export const googleMapsAddressComponentStreetNumberType = 'street_number'
 const googleMapsEndpoint = 'https://maps.googleapis.com/'

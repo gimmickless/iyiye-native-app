@@ -27,10 +27,7 @@ import { LocalizationContext } from 'contexts/Localization'
 import { useInAppNotification } from 'contexts/InAppNotification'
 
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-import {
-  googleMapsAddressComponentStreetNumberType,
-  googlePlaceGeocodingBaseUrl
-} from 'utils/constants'
+import { googlePlaceGeocodingBaseUrl } from 'utils/constants'
 import { HomeStackScreenNames } from 'types/route'
 import { AuthUserContext } from 'contexts/Auth'
 import {
@@ -48,13 +45,8 @@ export type HomeAddressFormRouteProps = RouteProp<
 
 type PlaceReverseGeocodingResult = {
   placeId: string
-  addressLine: string
-  addressComponents: {
-    short_name: string
-    long_name: string
-    postcode_localities: string[]
-    types: string[]
-  }[]
+  routeAddressLine: string
+  streetNumber: string
 }
 
 const mapHeight = 250
@@ -68,7 +60,7 @@ const getReverseGeocodingAsync = async (latLng: LatLng) => {
   const query = new URLSearchParams({
     key: GoogleConfig.Places.apiKey ?? '',
     latlng: `${latLng.latitude},${latLng.longitude}`,
-    result_type: 'street_address',
+    result_type: 'street_address|route',
     location_type: 'ROOFTOP'
   })
   const endpoint = `${baseUrl}?${query}`
@@ -83,12 +75,19 @@ const getReverseGeocodingAsync = async (latLng: LatLng) => {
       `no reverse geocoding results found for ${latLng.latitude},${latLng.longitude}`
     )
   }
-  const firstResult = data.results[0]
+  const firstStreetAddressLevelResult = data.results.find((x: any) =>
+    x.types.includes('street_address')
+  )
+  const firstRouteLevelResult = data.results.find((x: any) =>
+    x.types.includes('route')
+  )
 
   return {
-    placeId: firstResult.place_id,
-    addressLine: firstResult.formatted_address,
-    addressComponents: firstResult.address_components
+    placeId: firstStreetAddressLevelResult.place_id,
+    routeAddressLine: firstRouteLevelResult.formatted_address,
+    streetNumber: firstStreetAddressLevelResult.address_components.find(
+      (x: any) => x.types.includes('street_number')
+    ).long_name
   } as PlaceReverseGeocodingResult
 }
 
@@ -249,10 +248,7 @@ const Form: React.FC = () => {
           initialLatLng
         )
         setMapComputedAddress(reverseGeocodingResult)
-        const computedStreetNumber = reverseGeocodingResult?.addressComponents.find(
-          (x) => x.types.includes(googleMapsAddressComponentStreetNumberType)
-        )?.short_name
-        setFineTuningStreetNumber(computedStreetNumber)
+        setFineTuningStreetNumber(reverseGeocodingResult?.streetNumber)
       } catch (err) {
         addNotification({
           message: err,
@@ -274,14 +270,13 @@ const Form: React.FC = () => {
     }
     setSaveLoading(true)
     try {
-      //TODO: Implement Save
       const input = getNewAddressContextInput(authUser.props, {
         kind: selectedAddressKindIndex
           ? addressKindList[selectedAddressKindIndex].value
           : 'other',
         latitude: region?.latitude ?? 0,
         longitude: region?.longitude ?? 0,
-        streetAddress: mapComputedAddress?.addressLine ?? '',
+        routeAddress: mapComputedAddress?.routeAddressLine ?? '',
         streetNumber: fineTuningStreetNumber ?? '',
         flatNumber: fineTuningFlatNumber ?? 0,
         floor: fineTuningFloor ?? 0,
@@ -339,7 +334,7 @@ const Form: React.FC = () => {
     fineTuningFlatNumber,
     fineTuningFloor,
     fineTuningStreetNumber,
-    mapComputedAddress?.addressLine,
+    mapComputedAddress?.routeAddressLine,
     navigation,
     region?.latitude,
     region?.longitude,
@@ -353,7 +348,9 @@ const Form: React.FC = () => {
       title: !isEdit
         ? t('screen.home.addressForm.title.new')
         : t('screen.home.addressForm.title.edit', {
-            addressKey: editObject?.key
+            addressKey: t(
+              `screen.home.addressForm.title.addressKeys.${editObject?.key}`
+            )
           }),
       headerRight: () => (
         <Button
@@ -395,10 +392,7 @@ const Form: React.FC = () => {
         longitude: region?.longitude ?? 0
       })
       setMapComputedAddress(reverseGeocodingResult)
-      const computedStreetNumber = reverseGeocodingResult?.addressComponents.find(
-        (x) => x.types.includes(googleMapsAddressComponentStreetNumberType)
-      )?.short_name
-      setFineTuningStreetNumber(computedStreetNumber)
+      setFineTuningStreetNumber(reverseGeocodingResult?.streetNumber)
     } catch (err) {
       addNotification({
         message: err,
@@ -439,7 +433,7 @@ const Form: React.FC = () => {
 
         <Input
           label={t('screen.home.addressForm.label.addressLine')}
-          value={mapComputedAddress?.addressLine}
+          value={mapComputedAddress?.routeAddressLine}
           containerStyle={styles.addressBoxContainer}
           textContentType="fullStreetAddress"
           editable={false}

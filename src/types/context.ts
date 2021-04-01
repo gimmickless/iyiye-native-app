@@ -31,12 +31,12 @@ export type AuthUserState = {
 }
 
 export type AuthUserAddress = {
-  kind: 'current' | 'home' | 'office' | 'other'
+  kind: 'home' | 'office' | 'other'
   isDefault?: boolean
   latitude: number
   longitude: number
   directions: string
-  streetAddress: string
+  routeAddress: string
   streetNumber: string
   flatNumber: number
   floor: number

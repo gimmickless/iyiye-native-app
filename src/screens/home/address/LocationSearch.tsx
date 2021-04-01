@@ -28,7 +28,8 @@ import {
   googlePlaceDetailsBaseUrl,
   googlePlacesAutocompleteBaseUrl,
   listItemPrimaryFontSize,
-  listItemSecondaryFontSize
+  listItemSecondaryFontSize,
+  locationDelta
 } from 'utils/constants'
 import { useInAppNotification } from 'contexts/InAppNotification'
 import { SearchBar, ThemeContext } from 'react-native-elements'
@@ -50,8 +51,6 @@ type AsyncStorageSearchItem = {
   placeId: string
   mainText: string
 }
-
-const locationDelta = 0.0025
 
 // check for api reference: https://developers.google.com/maps/documentation/places/web-service/autocomplete
 const searchPlaceAsync = async (search: string) => {

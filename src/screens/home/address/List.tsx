@@ -16,13 +16,17 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import SwipeableListItem from 'components/shared/SwipeableListItem'
 import Checkbox from 'react-native-bouncy-checkbox'
 import { AuthUserAddress, AuthUserAddressKey } from 'types/context'
-import { AddressTypeEmoji } from 'types/visualization'
 import { HomeStackScreenNames } from 'types/route'
 import ListSeparator from 'components/shared/ListSeparator'
-import { headerRightButtonTextFont, maxAddressCount } from 'utils/constants'
+import {
+  headerRightButtonTextFont,
+  locationDelta,
+  maxAddressCount
+} from 'utils/constants'
 import { useInAppNotification } from 'contexts/InAppNotification'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { HomeStackParamList } from 'router/stacks/Home'
+import { HomeAddressFormRouteProps } from './Form'
 
 export type HomeAddressListRouteProps = RouteProp<
   HomeStackParamList,
@@ -37,17 +41,15 @@ type AddressKeyValue = {
 const addressKeyPrefix = 'address'
 const changedListItemBorderInitialOpacity = 2
 
-const getAddressItemIcon = (address?: AuthUserAddress) => {
-  if (!address) return
-  switch (address.kind) {
-    case 'current':
-      return AddressTypeEmoji.Current
+const getAddressItemIconName = (address?: string) => {
+  if (!address) return 'map-marker-question'
+  switch (address) {
     case 'home':
-      return AddressTypeEmoji.Home
+      return 'home'
     case 'office':
-      return AddressTypeEmoji.Office
+      return 'office-building'
     default:
-      return AddressTypeEmoji.Other
+      return 'alien'
   }
 }
 
@@ -156,12 +158,24 @@ const AddressList: React.FC = () => {
     setDefaultAddressKey(itemKey)
   }
 
-  const editAction = (itemKey: AuthUserAddressKey) => {
+  const editAction = (input: {
+    itemKey: AuthUserAddressKey
+    latLng: {
+      latitude: number | undefined
+      longitude: number | undefined
+    }
+  }) => {
     navigation.navigate(HomeStackScreenNames.AddressForm, {
       edit: {
-        key: itemKey
+        key: input.itemKey
+      },
+      initialRegion: {
+        latitude: input.latLng.latitude,
+        longitude: input.latLng.longitude,
+        latitudeDelta: locationDelta,
+        longitudeDelta: locationDelta
       }
-    })
+    } as HomeAddressFormRouteProps['params'])
   }
 
   const deleteAction = async (itemKey: AuthUserAddressKey) => {
@@ -234,7 +248,15 @@ const AddressList: React.FC = () => {
               ]}
             >
               <SwipeableListItem
-                editAction={() => editAction(item.key as AuthUserAddressKey)}
+                editAction={() =>
+                  editAction({
+                    itemKey: item.key as AuthUserAddressKey,
+                    latLng: {
+                      latitude: item.value?.latitude,
+                      longitude: item.value?.longitude
+                    }
+                  })
+                }
                 deleteAction={() =>
                   deleteAction(item.key as AuthUserAddressKey)
                 }
@@ -255,11 +277,61 @@ const AddressList: React.FC = () => {
                       }
                     />
                   </View>
+                  <View style={styles.listItemTypeIconField}>
+                    <MaterialCommunityIcons
+                      name={getAddressItemIconName(item.value?.kind)}
+                      size={25}
+                      color={rneTheme.colors?.grey2}
+                    />
+                  </View>
                   <View style={styles.listItemMainField}>
-                    <Text>
-                      {getAddressItemIcon(item.value)}&nbsp;{item.value?.kind}
-                    </Text>
-                    <Text>{item.value?.streetAddress}</Text>
+                    <Text>{item.value?.routeAddress}</Text>
+                    <View style={styles.listItemMainFieldSubtitleContainer}>
+                      <View style={styles.listItemMainFieldSubtitleItem}>
+                        <Text
+                          style={[
+                            styles.listItemMainFieldSubtitleKey,
+                            { color: rneTheme.colors?.grey2 }
+                          ]}
+                        >
+                          {t(
+                            'screen.home.addressList.list.subtitle.streetNumber'
+                          )}
+                          :&nbsp;
+                        </Text>
+                        <Text
+                          style={[
+                            styles.listItemMainFieldSubtitle,
+                            { color: rneTheme.colors?.grey2 }
+                          ]}
+                        >
+                          {item.value?.flatNumber
+                            ? `${item.value?.streetNumber} / ${item.value?.flatNumber}`
+                            : item.value?.streetNumber}
+                        </Text>
+                      </View>
+                      {item.value?.floor && (
+                        <View style={styles.listItemMainFieldSubtitleItem}>
+                          <Text
+                            style={[
+                              styles.listItemMainFieldSubtitleKey,
+                              { color: rneTheme.colors?.grey2 }
+                            ]}
+                          >
+                            {t('screen.home.addressList.list.subtitle.floor')}
+                            :&nbsp;
+                          </Text>
+                          <Text
+                            style={[
+                              styles.listItemMainFieldSubtitle,
+                              { color: rneTheme.colors?.grey2 }
+                            ]}
+                          >
+                            {item.value?.floor}
+                          </Text>
+                        </View>
+                      )}
+                    </View>
                   </View>
                 </View>
               </SwipeableListItem>
@@ -309,9 +381,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
+  listItemTypeIconField: {
+    paddingHorizontal: 8,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
   listItemMainField: {
     flex: 6
   },
+  listItemMainFieldSubtitleContainer: {
+    flexDirection: 'row'
+  },
+  listItemMainFieldSubtitleItem: {
+    flex: 1
+  },
+  listItemMainFieldSubtitle: {
+    fontStyle: 'italic'
+  },
+  listItemMainFieldSubtitleKey: {},
   nothingFoundText: {
     marginBottom: 10
   },

@@ -162,6 +162,10 @@ const englishTranslation = {
         list: {
           currentLocation: {
             title: 'Current Location'
+          },
+          subtitle: {
+            streetNumber: 'StreetNumber',
+            floor: 'Floor'
           }
         },
         kind: {
@@ -195,6 +199,13 @@ const englishTranslation = {
         title: {
           new: 'New Address',
           edit: 'Edit {{addressKey}}',
+          addressKeys: {
+            address1: 'Address 1',
+            address2: 'Address 2',
+            address3: 'Address 3',
+            address4: 'Address 4',
+            address5: 'Address 5'
+          },
           section: {
             fineTuning: 'Fine Tuning'
           }
