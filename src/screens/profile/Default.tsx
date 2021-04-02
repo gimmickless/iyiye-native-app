@@ -1,10 +1,11 @@
-import React, { useContext, useMemo } from 'react'
+import React, { useCallback, useContext, useMemo } from 'react'
 import {
   View,
   StyleSheet,
   SafeAreaView,
   FlatList,
-  Pressable
+  Pressable,
+  Alert
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import LoadingView from 'components/shared/LoadingView'
@@ -13,6 +14,7 @@ import { AuthUserContext } from 'contexts/Auth'
 import ListSeparator from 'components/shared/ListSeparator'
 import { Text, ThemeContext } from 'react-native-elements'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { HomeStackScreenNames, TabNames } from 'types/route'
 
 const Profile: React.FC = () => {
   const navigation = useNavigation()
@@ -22,10 +24,29 @@ const Profile: React.FC = () => {
     AuthUserContext
   )
 
-  const onSignOutPress = () => {
-    console.log('Sign out Pressed')
-    return
-  }
+  const onSignOutPress = useCallback(() => {
+    Alert.alert(
+      t('screen.profile.default.alert.signOutConfirmation.title'),
+      t('screen.profile.default.alert.signOutConfirmation.message'),
+      [
+        {
+          text: t('common.button.cancel'),
+          onPress: () => {
+            return
+          },
+          style: 'cancel'
+        },
+        {
+          text: t('screen.profile.default.alert.signOutConfirmation.okButton'),
+          onPress: async () => {
+            await authUserAction.logout()
+            navigation.navigate(HomeStackScreenNames.Default)
+          }
+        }
+      ],
+      { cancelable: true }
+    )
+  }, [authUserAction, navigation, t])
 
   const listItems = useMemo(
     () => [
@@ -39,7 +60,7 @@ const Profile: React.FC = () => {
         action: () => onSignOutPress()
       }
     ],
-    [t]
+    [onSignOutPress, t]
   )
 
   return !authUser.loaded ? (

@@ -270,6 +270,13 @@ const englishTranslation = {
       default: {
         list: {
           signOut: 'Sign Out'
+        },
+        alert: {
+          signOutConfirmation: {
+            title: 'About to Sign Out',
+            message: 'Are you sure?',
+            okButton: 'Yes, I am'
+          }
         }
       }
     },
