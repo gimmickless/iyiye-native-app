@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { RefObject, useContext, useEffect, useRef } from 'react'
 import { Animated, StyleSheet, View } from 'react-native'
 import { Text, ThemeContext } from 'react-native-elements'
 import { RectButton } from 'react-native-gesture-handler'
@@ -8,11 +8,23 @@ import { LocalizationContext } from 'contexts/Localization'
 interface SwipeableListItemProps {
   editAction?: () => void
   deleteAction?: () => void
+  hintOnShowUp?: boolean
 }
+
+const hintShowDuraionMillis = 1000
 
 const SwipeableListItem: React.FC<SwipeableListItemProps> = (props) => {
   const { t } = useContext(LocalizationContext)
   const { theme: rneTheme } = useContext(ThemeContext)
+  const swipeable = useRef(null) as RefObject<Swipeable>
+
+  useEffect(() => {
+    if (props.hintOnShowUp) {
+      swipeable.current?.openRight()
+      setTimeout(() => swipeable.current?.close(), hintShowDuraionMillis)
+    }
+  }, [props.hintOnShowUp])
+
   const ListItemRightActions = (
     progress: Animated.AnimatedInterpolation,
     _dragAnimatedValue: Animated.AnimatedInterpolation
@@ -69,6 +81,7 @@ const SwipeableListItem: React.FC<SwipeableListItemProps> = (props) => {
 
   return (
     <Swipeable
+      ref={swipeable}
       friction={1.5}
       rightThreshold={40}
       renderRightActions={

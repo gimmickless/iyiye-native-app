@@ -233,7 +233,7 @@ const AddressList: React.FC = () => {
       <FlatList
         style={styles.listContainer}
         data={addresses}
-        renderItem={({ item }) => {
+        renderItem={({ item, index }) => {
           const borderColor =
             changedAddressKey === item.key
               ? `rgba(0, 255, 255, ${changedListItemActualBorderOpacity})`
@@ -248,6 +248,7 @@ const AddressList: React.FC = () => {
               ]}
             >
               <SwipeableListItem
+                hintOnShowUp={index === 0}
                 editAction={() =>
                   editAction({
                     itemKey: item.key as AuthUserAddressKey,
