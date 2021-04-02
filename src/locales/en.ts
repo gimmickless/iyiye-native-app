@@ -266,7 +266,12 @@ const englishTranslation = {
     },
     profile: {
       title: 'Profile',
-      label: {}
+      label: {},
+      default: {
+        list: {
+          signOut: 'Sign Out'
+        }
+      }
     },
     settings: {
       title: 'Settings',

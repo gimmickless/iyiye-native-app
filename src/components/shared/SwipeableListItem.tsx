@@ -11,7 +11,7 @@ interface SwipeableListItemProps {
   hintOnShowUp?: boolean
 }
 
-const hintShowDuraionMillis = 1000
+const hintShowDuraionMillis = 3000
 
 const SwipeableListItem: React.FC<SwipeableListItemProps> = (props) => {
   const { t } = useContext(LocalizationContext)
@@ -21,7 +21,11 @@ const SwipeableListItem: React.FC<SwipeableListItemProps> = (props) => {
   useEffect(() => {
     if (props.hintOnShowUp) {
       swipeable.current?.openRight()
-      setTimeout(() => swipeable.current?.close(), hintShowDuraionMillis)
+      console.log('Swipeable initial open')
+      setTimeout(() => {
+        console.log('Swipeable initial close')
+        swipeable.current?.close()
+      }, hintShowDuraionMillis)
     }
   }, [props.hintOnShowUp])
 

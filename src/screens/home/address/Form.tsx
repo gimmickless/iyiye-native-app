@@ -82,12 +82,18 @@ const getReverseGeocodingAsync = async (latLng: LatLng) => {
     x.types.includes('route')
   )
 
+  console.log(
+    'street: ' + JSON.stringify(firstStreetAddressLevelResult, null, 2)
+  )
+
+  console.log('route: ' + JSON.stringify(firstRouteLevelResult, null, 2))
+
   return {
     placeId: firstStreetAddressLevelResult.place_id,
     routeAddressLine: firstRouteLevelResult.formatted_address,
     streetNumber: firstStreetAddressLevelResult.address_components.find(
       (x: any) => x.types.includes('street_number')
-    ).long_name
+    ).short_name
   } as PlaceReverseGeocodingResult
 }
 

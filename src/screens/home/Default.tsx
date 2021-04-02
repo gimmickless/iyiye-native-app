@@ -2,7 +2,7 @@ import React, { useContext, useLayoutEffect, useMemo } from 'react'
 import { View, StyleSheet, Pressable, Alert } from 'react-native'
 import { Text, ThemeContext } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native'
-import { AuthUserContext, useAuthUser } from 'contexts/Auth'
+import { useAuthUser } from 'contexts/Auth'
 import { homeHeaderHeight } from 'utils/constants'
 import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -92,9 +92,6 @@ const Default: React.FC = () => {
     if (isAuthUser && authUser.props?.address) {
       const defaultAddress = authUser.props[authUser.props?.address]
       switch (defaultAddress?.kind) {
-        case 'current':
-          buttonMaterialIcon = AddressTypeMaterialCommunityIcon.Current
-          break
         case 'home':
           buttonMaterialIcon = AddressTypeMaterialCommunityIcon.Home
           break
@@ -105,7 +102,7 @@ const Default: React.FC = () => {
           buttonMaterialIcon = AddressTypeMaterialCommunityIcon.Other
           break
       }
-      bottomText = defaultAddress?.name ?? ''
+      bottomText = defaultAddress?.routeAddress ?? ''
     } else {
       buttonMaterialIcon = 'my-location'
       bottomText = t('screen.home.default.button.location.current')
