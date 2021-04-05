@@ -1,5 +1,12 @@
 import React, { useContext } from 'react'
-import { Image, View, StyleSheet, Pressable, FlatList } from 'react-native'
+import {
+  Image,
+  View,
+  StyleSheet,
+  Pressable,
+  ScrollView,
+  FlatList
+} from 'react-native'
 import { Text, ThemeContext } from 'react-native-elements'
 
 interface CategoryItemViewProps {
@@ -11,7 +18,7 @@ interface CategoryListViewProps {
   username: string
 }
 
-const CategoryItem = ({ item }: any) => {
+const CategoryItem: React.FC<CategoryItemViewProps> = (props) => {
   const { theme: rneTheme } = useContext(ThemeContext)
   return (
     <View
@@ -21,8 +28,13 @@ const CategoryItem = ({ item }: any) => {
       ]}
     >
       <Pressable android_ripple={{ color: 'grey' }}>
-        <Image></Image>
-        <Text h3>{item.title}</Text>
+        <Image
+          style={styles.categoryItemImage}
+          source={{
+            uri: props.imageUrl
+          }}
+        />
+        <Text h4>{props.title}</Text>
       </Pressable>
     </View>
   )
@@ -31,22 +43,37 @@ const CategoryItem = ({ item }: any) => {
 const CategoryListView: React.FC<CategoryListViewProps> = (props) => {
   const { username } = props
   const { theme: rneTheme } = useContext(ThemeContext)
-  const categories = Array.from(Array(10).keys()).map((el) => ({
-    id: el.toString(),
-    title: 'Item ' + el
-  }))
+  const categories = [
+    {
+      title: 'Burger',
+      imageUrl: 'https://unsplash.com/photos/sc5sTPMrVfk'
+    },
+    {
+      title: 'Salad',
+      imageUrl: 'https://unsplash.com/photos/bBzjWthTqb8'
+    },
+    {
+      title: 'Fish',
+      imageUrl: 'https://unsplash.com/photos/Sz0sTpO8U6g'
+    },
+    {
+      title: 'Thai',
+      imageUrl: 'https://unsplash.com/photos/ElvU9T6-b0M'
+    }
+  ]
   return (
-    <FlatList
-      horizontal
-      style={styles.container}
-      data={categories}
-      renderItem={() => <CategoryItem />}
-      keyExtractor={(item) => item.id}
-    />
+    <ScrollView horizontal style={styles.container}>
+      {categories.map((el) => (
+        <CategoryItem title={el.title} imageUrl={el.imageUrl} />
+      ))}
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row'
+  },
   categoryItemContainer: {
     flexDirection: 'row',
     borderWidth: 1,
@@ -55,8 +82,8 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     width: 128
   },
-  container: {
-    flexDirection: 'row'
+  categoryItemImage: {
+    width: 48
   }
 })
 
