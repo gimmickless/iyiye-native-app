@@ -2,6 +2,7 @@ import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import { ConfirmAccount, ForgotPassword, SignIn, SignUp } from 'screens/auth'
 import { AuthStackScreenNames } from 'types/route'
+import { Scope, TranslateOptions } from 'i18n-js'
 
 export type AuthStackParamList = {
   SignIn: undefined
@@ -12,7 +13,9 @@ export type AuthStackParamList = {
 
 const AuthStack = createStackNavigator<AuthStackParamList>()
 
-const AuthStackScreen = (t: (scope: any, options?: any) => string) => (
+const AuthStackScreen = (
+  t: (scope: Scope, options?: TranslateOptions) => string
+) => (
   <AuthStack.Navigator
     initialRouteName={AuthStackScreenNames.SignIn}
     screenOptions={{

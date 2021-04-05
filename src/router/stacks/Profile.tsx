@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import { Default as ProfileDefault } from 'screens/profile'
 import { headerLeftContainerPaddingLeft } from 'utils/constants'
 import { ProfileStackScreenNames } from 'types/route'
+import { Scope, TranslateOptions } from 'i18n-js'
 
 type ProfileStackParamList = {
   ProfileDefault: undefined
@@ -12,7 +13,9 @@ type ProfileStackParamList = {
 
 const ProfileStack = createStackNavigator<ProfileStackParamList>()
 
-const ProfileStackScreen = (t: (scope: any, options?: any) => string) => (
+const ProfileStackScreen = (
+  t: (scope: Scope, options?: TranslateOptions) => string
+) => (
   <ProfileStack.Navigator
     initialRouteName={ProfileStackScreenNames.Default}
     screenOptions={{
@@ -28,6 +31,9 @@ const ProfileStackScreen = (t: (scope: any, options?: any) => string) => (
     <ProfileStack.Screen
       name={ProfileStackScreenNames.Default}
       component={ProfileDefault}
+      options={{
+        title: undefined
+      }}
     />
   </ProfileStack.Navigator>
 )

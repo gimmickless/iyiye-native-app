@@ -61,7 +61,7 @@ const getReverseGeocodingAsync = async (latLng: LatLng) => {
     key: GoogleConfig.Places.apiKey ?? '',
     latlng: `${latLng.latitude},${latLng.longitude}`,
     result_type: 'street_address|route',
-    location_type: 'ROOFTOP'
+    location_type: 'ROOFTOP|GEOMETRIC_CENTER'
   })
   const endpoint = `${baseUrl}?${query}`
   const response = await fetch(endpoint)
@@ -81,12 +81,6 @@ const getReverseGeocodingAsync = async (latLng: LatLng) => {
   const firstRouteLevelResult = data.results.find((x: any) =>
     x.types.includes('route')
   )
-
-  console.log(
-    'street: ' + JSON.stringify(firstStreetAddressLevelResult, null, 2)
-  )
-
-  console.log('route: ' + JSON.stringify(firstRouteLevelResult, null, 2))
 
   return {
     placeId: firstStreetAddressLevelResult.place_id,
@@ -289,8 +283,25 @@ const Form: React.FC = () => {
         directions: addressDirections
       })
       await authUserAction.updateAddresses(input)
+      if (isEdit) {
+        navigation.navigate(HomeStackScreenNames.AddressList, {
+          changedAddressKey: editObject?.key
+        })
+      } else {
+        const createdAddressKey = Object.keys(input).sort(() => 1)[0]
+        await authUserAction.update({
+          ...authUser.props,
+          fullName: authUser.props?.fullName ?? '',
+          address: createdAddressKey as AuthUserAddressKey
+        })
+        navigation.navigate(HomeStackScreenNames.AddressList, {
+          changedAddressKey: Object.keys(input).sort(() => 1)[0]
+        })
+      }
       navigation.navigate(HomeStackScreenNames.AddressList, {
-        changedAddressKey: editObject?.key
+        changedAddressKey: isEdit
+          ? editObject?.key
+          : Object.keys(input).sort(() => 1)[0]
       })
     } catch (err) {
       if (err instanceof AddressSlotFullError) {
@@ -340,6 +351,7 @@ const Form: React.FC = () => {
     fineTuningFlatNumber,
     fineTuningFloor,
     fineTuningStreetNumber,
+    isEdit,
     mapComputedAddress?.routeAddressLine,
     navigation,
     region?.latitude,

@@ -10,6 +10,7 @@ import { headerLeftContainerPaddingLeft } from 'utils/constants'
 import { HomeStackScreenNames } from 'types/route'
 import { Region } from 'react-native-maps'
 import { AuthUserAddressKey } from 'types/context'
+import { Scope, TranslateOptions } from 'i18n-js'
 
 export type HomeStackParamList = {
   HomeDefault: undefined
@@ -25,7 +26,9 @@ export type HomeStackParamList = {
 
 const HomeStack = createStackNavigator<HomeStackParamList>()
 
-const HomeStackScreen = (t: (scope: any, options?: any) => string) => (
+const HomeStackScreen = (
+  t: (scope: Scope, options?: TranslateOptions) => string
+) => (
   <HomeStack.Navigator
     initialRouteName={HomeStackScreenNames.Default}
     screenOptions={{

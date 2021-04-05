@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import { Default as SearchDefault } from 'screens/search'
 import { headerLeftContainerPaddingLeft } from 'utils/constants'
 import { SearchStackScreenNames } from 'types/route'
+import { Scope, TranslateOptions } from 'i18n-js'
 
 type SearchStackParamList = {
   SearchDefault: undefined
@@ -15,7 +16,9 @@ type SearchStackParamList = {
 
 const SearchStack = createStackNavigator<SearchStackParamList>()
 
-const SearchStackScreen = (t: (scope: any, options?: any) => string) => (
+const SearchStackScreen = (
+  t: (scope: Scope, options?: TranslateOptions) => string
+) => (
   <SearchStack.Navigator
     initialRouteName={SearchStackScreenNames.Default}
     screenOptions={{

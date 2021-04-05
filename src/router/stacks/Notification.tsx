@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import { Default as NotificationDefault } from 'screens/notification'
 import { headerLeftContainerPaddingLeft } from 'utils/constants'
 import { NotificationStackScreenNames } from 'types/route'
+import { Scope, TranslateOptions } from 'i18n-js'
 
 type NotificationStackParamList = {
   NotificationDefault: undefined
@@ -10,7 +11,9 @@ type NotificationStackParamList = {
 
 const NotificationStack = createStackNavigator<NotificationStackParamList>()
 
-const NotificationStackScreen = (t: (scope: any, options?: any) => string) => (
+const NotificationStackScreen = (
+  t: (scope: Scope, options?: TranslateOptions) => string
+) => (
   <NotificationStack.Navigator
     initialRouteName={NotificationStackScreenNames.Default}
     screenOptions={{

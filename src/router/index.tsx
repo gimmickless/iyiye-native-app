@@ -27,7 +27,7 @@ export const RootNavigator = () => {
   const scheme = useColorScheme()
   const { authUser } = useAuthUser()
   const isDarkMode = scheme === 'dark'
-  const isSignedIn = authUser.loaded ?? authUser.props?.username
+  const isSignedIn = authUser.loaded && authUser.props?.username
 
   return (
     <NavigationContainer

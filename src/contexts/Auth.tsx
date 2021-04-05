@@ -154,7 +154,9 @@ export default ({ children }: any) => {
     !(async () => {
       try {
         const [currentAuthUser] = await Promise.all([
-          Auth.currentAuthenticatedUser(),
+          Auth.currentAuthenticatedUser({
+            bypassCache: true
+          }),
           Auth.currentSession() // this is deliberately called for refreshing tokens: https://docs.amplify.aws/lib/auth/manageusers/q/platform/js#retrieve-current-session
         ])
         if (!currentAuthUser) {

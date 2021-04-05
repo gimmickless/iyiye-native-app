@@ -4,6 +4,7 @@ import { Text, ThemeContext } from 'react-native-elements'
 import { RectButton } from 'react-native-gesture-handler'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
 import { LocalizationContext } from 'contexts/Localization'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 interface SwipeableListItemProps {
   editAction?: () => void
@@ -11,7 +12,10 @@ interface SwipeableListItemProps {
   hintOnShowUp?: boolean
 }
 
-const hintShowDuraionMillis = 3000
+const hintShowDelay = 250
+const hintShowDurationMillis = 1750
+
+const actionButtonIconSize = 24
 
 const SwipeableListItem: React.FC<SwipeableListItemProps> = (props) => {
   const { t } = useContext(LocalizationContext)
@@ -19,14 +23,14 @@ const SwipeableListItem: React.FC<SwipeableListItemProps> = (props) => {
   const swipeable = useRef(null) as RefObject<Swipeable>
 
   useEffect(() => {
-    if (props.hintOnShowUp) {
+    if (!props.hintOnShowUp) return
+
+    setTimeout(() => {
       swipeable.current?.openRight()
-      console.log('Swipeable initial open')
-      setTimeout(() => {
-        console.log('Swipeable initial close')
-        swipeable.current?.close()
-      }, hintShowDuraionMillis)
-    }
+    }, hintShowDelay)
+    setTimeout(() => {
+      swipeable.current?.close()
+    }, hintShowDurationMillis)
   }, [props.hintOnShowUp])
 
   const ListItemRightActions = (
@@ -56,6 +60,11 @@ const SwipeableListItem: React.FC<SwipeableListItemProps> = (props) => {
             }}
             onPress={props.editAction}
           >
+            <MaterialCommunityIcons
+              name="pencil"
+              size={actionButtonIconSize}
+              color="white"
+            />
             <Text style={styles.listItemActionText}>
               {t('common.button.edit').toUpperCase()}
             </Text>
@@ -74,6 +83,11 @@ const SwipeableListItem: React.FC<SwipeableListItemProps> = (props) => {
             }}
             onPress={props.deleteAction}
           >
+            <MaterialCommunityIcons
+              name="trash-can"
+              size={actionButtonIconSize}
+              color="white"
+            />
             <Text style={styles.listItemActionText}>
               {t('common.button.delete').toUpperCase()}
             </Text>
