@@ -36,7 +36,7 @@ import { AuthStackScreenNames } from 'types/route'
 import Auth from '@aws-amplify/auth'
 import { useColorScheme } from 'react-native-appearance'
 import { convertDateToIsoString } from 'utils/conversions'
-import { useInAppNotification } from 'contexts/InAppNotification'
+import { useInAppMessage } from 'contexts/InAppMessage'
 
 type FormData = {
   fullName: string
@@ -53,7 +53,7 @@ const SignUp: React.FC = () => {
   const navigation = useNavigation()
   const scheme = useColorScheme()
   const { theme: rneTheme } = useContext(ThemeContext)
-  const { addNotification } = useInAppNotification()
+  const { addInAppMessage } = useInAppMessage()
   const [signUpLoading, setSignUpLoading] = useState(false)
   const [showDatePicker, setShowDatePicker] = useState(false)
   const [showTermsModal, setShowTermsModal] = useState(false)
@@ -139,7 +139,7 @@ const SignUp: React.FC = () => {
         username
       })
     } catch (err) {
-      addNotification({
+      addInAppMessage({
         message: err.message ?? err,
         type: 'error'
       })

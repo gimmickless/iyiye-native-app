@@ -24,7 +24,7 @@ import SegmentedControl, {
   NativeSegmentedControlIOSChangeEvent
 } from '@react-native-community/segmented-control'
 import { LocalizationContext } from 'contexts/Localization'
-import { useInAppNotification } from 'contexts/InAppNotification'
+import { useInAppMessage } from 'contexts/InAppMessage'
 
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { googlePlaceGeocodingBaseUrl } from 'utils/constants'
@@ -160,7 +160,7 @@ const Form: React.FC = () => {
   const { state: authUser, action: authUserAction } = useContext(
     AuthUserContext
   )
-  const { addNotification } = useInAppNotification()
+  const { addInAppMessage } = useInAppMessage()
   const navigation = useNavigation()
   const route = useRoute<HomeAddressFormRouteProps>()
   const initialRegion = route.params?.initialRegion
@@ -250,7 +250,7 @@ const Form: React.FC = () => {
         setMapComputedAddress(reverseGeocodingResult)
         setFineTuningStreetNumber(reverseGeocodingResult?.streetNumber)
       } catch (err) {
-        addNotification({
+        addInAppMessage({
           message: err,
           type: 'error'
         })
@@ -262,7 +262,7 @@ const Form: React.FC = () => {
 
   const onSave = useCallback(async () => {
     if (!fineTuningStreetNumber) {
-      addNotification({
+      addInAppMessage({
         message: t('screen.home.addressForm.message.streetNumberCannotBeEmpty'),
         type: 'error'
       })
@@ -334,7 +334,7 @@ const Form: React.FC = () => {
         )
         return
       }
-      addNotification({
+      addInAppMessage({
         message: err,
         type: 'error'
       })
@@ -342,7 +342,7 @@ const Form: React.FC = () => {
       setSaveLoading(false)
     }
   }, [
-    addNotification,
+    addInAppMessage,
     addressDirections,
     addressKindList,
     authUser.props,
@@ -412,7 +412,7 @@ const Form: React.FC = () => {
       setMapComputedAddress(reverseGeocodingResult)
       setFineTuningStreetNumber(reverseGeocodingResult?.streetNumber)
     } catch (err) {
-      addNotification({
+      addInAppMessage({
         message: err,
         type: 'error'
       })

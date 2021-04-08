@@ -7,7 +7,7 @@ import {
   UpdateAddressesInput
 } from 'types/context'
 import { cognitoNotAuthenticatedMessageList } from 'utils/constants'
-import { useInAppNotification } from 'contexts/InAppNotification'
+import { useInAppMessage } from 'contexts/InAppMessage'
 import { useColorScheme } from 'react-native-appearance'
 
 type CreateAuthUserInput = {
@@ -147,7 +147,7 @@ const authReducer = (
 
 export default ({ children }: any) => {
   const [state, dispatch] = useReducer(authReducer, initialState)
-  const { addNotification } = useInAppNotification()
+  const { addInAppMessage } = useInAppMessage()
   const scheme = useColorScheme()
 
   useEffect(() => {
@@ -209,7 +209,7 @@ export default ({ children }: any) => {
         })
       } catch (err) {
         if (!cognitoNotAuthenticatedMessageList.includes(err.toString())) {
-          addNotification({
+          addInAppMessage({
             message: JSON.stringify(err),
             type: 'error'
           })
@@ -217,7 +217,7 @@ export default ({ children }: any) => {
         dispatch({ type: 'remove_auth_user' })
       }
     })()
-  }, [addNotification])
+  }, [addInAppMessage])
 
   const login = async (payload: LoginInput) => {
     try {
@@ -257,7 +257,7 @@ export default ({ children }: any) => {
         }
       })
     } catch (err) {
-      addNotification({
+      addInAppMessage({
         message: JSON.stringify(err),
         type: 'error'
       })
@@ -291,7 +291,7 @@ export default ({ children }: any) => {
         }
       })
     } catch (err) {
-      addNotification({
+      addInAppMessage({
         message: JSON.stringify(err),
         type: 'error'
       })
@@ -331,7 +331,7 @@ export default ({ children }: any) => {
       })
     } catch (err) {
       console.log(err)
-      addNotification({
+      addInAppMessage({
         message: JSON.stringify(err),
         type: 'error'
       })
@@ -343,7 +343,7 @@ export default ({ children }: any) => {
       await Auth.signOut()
       dispatch({ type: 'remove_auth_user' })
     } catch (err) {
-      addNotification({
+      addInAppMessage({
         message: JSON.stringify(err),
         type: 'error'
       })

@@ -22,7 +22,7 @@ import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
 import { AuthStackScreenNames } from 'types/route'
 import Auth from '@aws-amplify/auth'
-import { useInAppNotification } from 'contexts/InAppNotification'
+import { useInAppMessage } from 'contexts/InAppMessage'
 
 type UserInfoFormData = {
   username: string
@@ -41,7 +41,7 @@ UIManager.setLayoutAnimationEnabledExperimental &&
 
 const ForgotPasword: React.FC = () => {
   const { t } = useContext(LocalizationContext)
-  const { addNotification } = useInAppNotification()
+  const { addInAppMessage } = useInAppMessage()
   const [sendEmailLoading, setSendEmailLoading] = useState(false)
   const [sendNewPasswordLoading, setSendNewPasswordLoading] = useState(false)
   const [emailSent, setEmailSent] = useState(false)
@@ -93,7 +93,7 @@ const ForgotPasword: React.FC = () => {
       setEmailSent(true)
       LayoutAnimation.easeInEaseOut()
     } catch (err) {
-      addNotification({
+      addInAppMessage({
         message: err.message ?? err,
         type: 'error'
       })
@@ -115,7 +115,7 @@ const ForgotPasword: React.FC = () => {
       )
       navigation.navigate(AuthStackScreenNames.SignIn)
     } catch (err) {
-      addNotification({
+      addInAppMessage({
         message: err.message ?? err,
         type: 'error'
       })

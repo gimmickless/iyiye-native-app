@@ -14,7 +14,7 @@ import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
 import { AuthUserContext } from 'contexts/Auth'
 import { AuthStackScreenNames } from 'types/route'
-import { useInAppNotification } from 'contexts/InAppNotification'
+import { useInAppMessage } from 'contexts/InAppMessage'
 
 type FormData = {
   usernameOrEmail: string
@@ -23,7 +23,7 @@ type FormData = {
 
 const SignIn: React.FC = () => {
   const { t } = useContext(LocalizationContext)
-  const { addNotification } = useInAppNotification()
+  const { addInAppMessage } = useInAppMessage()
   const { action } = useContext(AuthUserContext)
   const [signInLoading, setSignInLoading] = useState(false)
   const navigation = useNavigation()
@@ -49,7 +49,7 @@ const SignIn: React.FC = () => {
       await action.login({ usernameOrEmail, password })
       navigation.dispatch(CommonActions.goBack()) // Return to previous screen
     } catch (err) {
-      addNotification({
+      addInAppMessage({
         message: err.message ?? err,
         type: 'error'
       })

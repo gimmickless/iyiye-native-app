@@ -132,6 +132,23 @@ const englishTranslation = {
           auth: 'What are we cooking today?',
           unauth: 'What are we cooking today?'
         },
+        kitCategory: {
+          title: 'Categories',
+          item: {
+            burger: 'Burger',
+            chicken: 'Chicken',
+            glutenFree: 'Gluten Free',
+            halal: 'Halal',
+            jhatka: 'Jhatka',
+            kosher: 'Kosher',
+            nutFree: 'Nut Free',
+            raw: 'Raw',
+            seaFood: 'Sea Food',
+            thai: 'Thai',
+            vegan: 'Vegan',
+            vegetarian: 'Vegetarian'
+          }
+        },
         button: {
           location: {
             label: 'Address',
@@ -249,8 +266,10 @@ const englishTranslation = {
       label: {}
     },
     notifications: {
-      title: 'Notifications',
-      label: {}
+      default: {
+        title: 'Notifications',
+        label: {}
+      }
     },
     favorites: {
       title: 'Favorites'

@@ -1,8 +1,8 @@
-import { useInAppNotification } from 'contexts/InAppNotification'
+import { useInAppMessage } from 'contexts/InAppMessage'
 import { LocalizationContext } from 'contexts/Localization'
 import React, { useContext } from 'react'
 import { Alert, Platform, ToastAndroid } from 'react-native'
-import { InAppNotificationType } from 'types/context'
+import { InAppMessageType } from 'types/context'
 
 const Toast = ({
   visible,
@@ -13,7 +13,7 @@ const Toast = ({
 }: {
   visible: boolean
   message: string | undefined
-  type: InAppNotificationType['type'] | undefined
+  type: InAppMessageType['type'] | undefined
   dismissButtonText: string
   dismiss: () => void
 }) => {
@@ -46,19 +46,19 @@ const Toast = ({
   return null
 }
 
-const InAppNotificationBox: React.FC = () => {
+const InAppMessageBox: React.FC = () => {
   const { t } = useContext(LocalizationContext)
-  const { notification, removeNotification } = useInAppNotification()
+  const { inAppMessage, removeInAppMessage } = useInAppMessage()
 
   return (
     <Toast
-      visible={!!notification}
-      message={notification?.message}
-      type={notification?.type}
+      visible={!!inAppMessage}
+      message={inAppMessage?.message}
+      type={inAppMessage?.type}
       dismissButtonText={t('common.button.ok')}
-      dismiss={removeNotification}
+      dismiss={removeInAppMessage}
     />
   )
 }
 
-export default InAppNotificationBox
+export default InAppMessageBox

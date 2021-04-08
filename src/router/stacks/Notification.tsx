@@ -29,6 +29,9 @@ const NotificationStackScreen = (
     <NotificationStack.Screen
       name={NotificationStackScreenNames.Default}
       component={NotificationDefault}
+      options={{
+        title: t('screen.notifications.default.title')
+      }}
     />
   </NotificationStack.Navigator>
 )

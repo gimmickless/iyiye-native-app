@@ -50,7 +50,7 @@ export type UpdateAddressesInput = {
   address5?: AuthUserAddress
 }
 
-export type InAppNotificationType = {
+export type InAppMessageType = {
   type: 'success' | 'info' | 'warn' | 'error'
   message: string
 }

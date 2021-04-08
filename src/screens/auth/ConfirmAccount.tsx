@@ -9,7 +9,7 @@ import { ScrollView } from 'react-native-gesture-handler'
 import { AuthStackParamList } from 'router/stacks/Auth'
 import Auth from '@aws-amplify/auth'
 import { AuthStackScreenNames } from 'types/route'
-import { useInAppNotification } from 'contexts/InAppNotification'
+import { useInAppMessage } from 'contexts/InAppMessage'
 
 type FormData = {
   verificationCode: string
@@ -23,7 +23,7 @@ type ConfirmAccountScreenRouteProp = RouteProp<
 const ConfirmAccount: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
-  const { addNotification } = useInAppNotification()
+  const { addInAppMessage } = useInAppMessage()
   const route = useRoute<ConfirmAccountScreenRouteProp>()
   const email = useMemo(() => route.params.email, [route])
   const username = useMemo(() => route.params.username, [route])
@@ -41,7 +41,7 @@ const ConfirmAccount: React.FC = () => {
       await Auth.confirmSignUp(username, verificationCode)
       navigation.navigate(AuthStackScreenNames.SignIn)
     } catch (err) {
-      addNotification({
+      addInAppMessage({
         message: err.message ?? err,
         type: 'error'
       })
@@ -54,7 +54,7 @@ const ConfirmAccount: React.FC = () => {
     try {
       await Auth.resendSignUp(username)
     } catch (err) {
-      addNotification({
+      addInAppMessage({
         message: err.message ?? err,
         type: 'error'
       })

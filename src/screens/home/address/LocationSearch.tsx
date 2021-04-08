@@ -31,7 +31,7 @@ import {
   listItemSecondaryFontSize,
   locationDelta
 } from 'utils/constants'
-import { useInAppNotification } from 'contexts/InAppNotification'
+import { useInAppMessage } from 'contexts/InAppMessage'
 import { SearchBar, ThemeContext } from 'react-native-elements'
 import { GoogleConfig } from 'config'
 import { useDebounce } from 'hooks'
@@ -106,7 +106,7 @@ const getPlaceDetailAsync = async (placeId: string) => {
 }
 
 const LocationSearch: React.FC = () => {
-  const { addNotification } = useInAppNotification()
+  const { addInAppMessage } = useInAppMessage()
   const { colors } = useTheme()
   const scheme = useColorScheme()
   const { theme: rneTheme } = useContext(ThemeContext)
@@ -138,13 +138,13 @@ const LocationSearch: React.FC = () => {
         const results = await searchPlaceAsync(debouncedSearchText)
         setSearchResultData(results)
       } catch (err) {
-        addNotification({
+        addInAppMessage({
           message: err,
           type: 'error'
         })
       }
     })()
-  }, [addNotification, debouncedSearchText])
+  }, [addInAppMessage, debouncedSearchText])
 
   useEffect(() => {
     !(async () => {
@@ -153,13 +153,13 @@ const LocationSearch: React.FC = () => {
         const storageDataArray = jsonValue ? JSON.parse(jsonValue) : []
         setRecentSearchesData(storageDataArray)
       } catch (err) {
-        addNotification({
+        addInAppMessage({
           message: err,
           type: 'error'
         })
       }
     })()
-  }, [addNotification])
+  }, [addInAppMessage])
 
   // Customize header
   useLayoutEffect(() => {
@@ -193,7 +193,7 @@ const LocationSearch: React.FC = () => {
         JSON.stringify(recentSearchesData)
       )
     } catch (err) {
-      addNotification({
+      addInAppMessage({
         message: err.message ?? err,
         type: 'error'
       })
@@ -227,7 +227,7 @@ const LocationSearch: React.FC = () => {
     setIsBlockingLoading(true)
     const { status } = await Location.requestPermissionsAsync()
     if (status !== 'granted') {
-      addNotification({
+      addInAppMessage({
         message: t('screen.home.addressList.message.locationPermissionDenied'),
         type: 'error'
       })
@@ -250,7 +250,7 @@ const LocationSearch: React.FC = () => {
       await AsyncStorage.setItem(recentLocationSearchesKey, JSON.stringify([]))
       setRecentSearchesData([])
     } catch (err) {
-      addNotification({
+      addInAppMessage({
         message: err.message ?? err,
         type: 'error'
       })

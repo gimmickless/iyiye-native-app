@@ -23,7 +23,7 @@ import {
   locationDelta,
   maxAddressCount
 } from 'utils/constants'
-import { useInAppNotification } from 'contexts/InAppNotification'
+import { useInAppMessage } from 'contexts/InAppMessage'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { HomeStackParamList } from 'router/stacks/Home'
 import { HomeAddressFormRouteProps } from './Form'
@@ -41,9 +41,9 @@ type AddressKeyValue = {
 const addressKeyPrefix = 'address'
 const changedListItemBorderInitialOpacity = 2
 
-const getAddressItemIconName = (address?: string) => {
-  if (!address) return 'map-marker-question'
-  switch (address) {
+const getAddressItemIconName = (kind?: string) => {
+  if (!kind) return 'map-marker-question'
+  switch (kind) {
     case 'home':
       return 'home'
     case 'office':
@@ -58,7 +58,7 @@ const AddressList: React.FC = () => {
   const navigation = useNavigation()
   const { theme: rneTheme } = useContext(ThemeContext)
   const route = useRoute<HomeAddressListRouteProps>()
-  const { addNotification } = useInAppNotification()
+  const { addInAppMessage } = useInAppMessage()
   const [operationInProgress, setOperationInProgress] = useState(false)
   const { state: authUser, action: authUserAction } = useContext(
     AuthUserContext
@@ -193,7 +193,7 @@ const AddressList: React.FC = () => {
       await authUserAction.updateAddresses(deletedItemAddressesObj)
       setAddresses(deletedItemAddresses)
     } catch (err) {
-      addNotification({
+      addInAppMessage({
         message: err.message ?? err,
         type: 'error'
       })
