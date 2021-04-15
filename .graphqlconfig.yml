@@ -1,0 +1,15 @@
+projects:
+  iyiye-prod-appsync-api:
+    schemaPath: src/graphql/schema.json
+    includes:
+      - src/graphql/**/*.ts
+    excludes:
+      - ./amplify/**
+    extensions:
+      amplify:
+        codeGenTarget: typescript
+        generatedFileName: src/API.ts
+        docsFilePath: src/graphql
+        region: eu-west-1
+        apiId: p3gm6bqos5gifkb6mciwgk3lsa
+        maxDepth: 3

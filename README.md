@@ -10,21 +10,25 @@ Native app for iyiye
 expo upgrade
 ```
 
-## Prerequisities
+## Local Development
 
-### Local Development
+1. Install the prerequisites:
 
-Create an `.env.development.local` file with some content like:
+   - [Expo CLI](https://docs.expo.io/workflow/expo-cli/)
 
-```env
-REACT_APP_APPSYNC_GRAPHQL_ENDPOINT=https://{api_id}.appsync-api.{region}.amazonaws.com/graphql
-REACT_APP_COGNITO_IDENTITY_POOL_ID={region}:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-REACT_APP_COGNITO_USER_POOL_CLIENT_ID=xxxxxxxxxxxxxxxxxxxxxxxxxx
-REACT_APP_COGNITO_USER_POOL_ID={region}_xxxxxxxxx
-REACT_APP_S3_USER_STORAGE_BUCKET={USER_STORAGE_BUCKET_NAME}
-REACT_APP_S3_SITE_META_BUCKET={SITE_META_BUCKET_NAME}
-REACT_APP_GOOGLE_PLACES_API_KEY={GOOGLE_PLACES_API_KEY}
-```
+   - [AWS Amplify CLI](https://docs.amplify.aws/cli/start/install)
+
+2. Create an `.env.development.local` file with some content like:
+
+   ```env
+   REACT_APP_APPSYNC_GRAPHQL_ENDPOINT=https://{api_id}.appsync-api.{region}.amazonaws.com/graphql
+   REACT_APP_COGNITO_IDENTITY_POOL_ID={region}:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+   REACT_APP_COGNITO_USER_POOL_CLIENT_ID=xxxxxxxxxxxxxxxxxxxxxxxxxx
+   REACT_APP_COGNITO_USER_POOL_ID={region}_xxxxxxxxx
+   REACT_APP_S3_USER_STORAGE_BUCKET={USER_STORAGE_BUCKET_NAME}
+   REACT_APP_S3_SITE_META_BUCKET={SITE_META_BUCKET_NAME}
+   REACT_APP_GOOGLE_PLACES_API_KEY={GOOGLE_PLACES_API_KEY}
+   ```
 
 ### Github actions secrets
 
@@ -55,6 +59,24 @@ So, the following should be added to the repo secrets beforehand:
 
 `expo start` (or `npm start`) starts the app locally.
 
+## Generating Types for AppSync
+
+TypeScript client code (i.e. types etc.) can be updated by the command:
+
+```
+amplify codegen
+```
+
+Also visit follows for further info:
+
+- **Schema** section in _AWS Console AppSync_
+
+- [Amplify Codegen Docs](https://docs.amplify.aws/cli/graphql-transformer/codegen)
+
+- [Can I use Amplify Codegen on an existing schema?](https://github.com/aws-amplify/amplify-js/issues/2166)
+
 ## See also
 
 - Some of the icons downloaded from [Icons8](https://icons8.com)
+
+- Lottie Files downloaded from [LottieFiles](https://lottiefiles.com/)

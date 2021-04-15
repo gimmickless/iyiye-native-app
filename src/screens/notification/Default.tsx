@@ -1,11 +1,13 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { FlatList, SafeAreaView, StyleSheet, View } from 'react-native'
 import { Text, ThemeContext } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native'
-import Checkbox from 'react-native-bouncy-checkbox'
 import ListSeparator from 'components/shared/ListSeparator'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { LocalizationContext } from 'contexts/Localization'
+import API, { graphqlOperation } from '@aws-amplify/api'
+import { AuthUserContext } from 'contexts/Auth'
+import LoadingView from 'components/shared/LoadingView'
 
 const getNotificationItemIconName = (type?: string) => {
   if (!type) return 'map-marker-question'
@@ -30,9 +32,41 @@ const getNotificationItemIconName = (type?: string) => {
 const Default: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
+  const { state: authUser } = useContext(AuthUserContext)
   const { theme: rneTheme } = useContext(ThemeContext)
 
-  return (
+  const [dataLoading, setDataLoading] = useState(false)
+  const [notifications, setNotifications] = useState<Array<any>>([])
+
+  useEffect(() => {
+    if (!authUser.props) return
+    !(async () => {
+      try {
+        setDataLoading(true)
+        const liveStreamsGraphqlResponse = (await API.graphql(
+          graphqlOperation(ListNotifications, {
+            limit: itemsPerFetch
+          })
+        )) as {
+          data: ListLiveStreamsForInfoCardQuery
+        }
+        const listNotificationsResult =
+          liveStreamsGraphqlResponse.data.listLiveStreams
+        setNotifications(listNotificationsResult)
+      } catch (err) {
+        addInAppMessage({
+          message: err,
+          type: 'error'
+        })
+      } finally {
+        setDataLoading(false)
+      }
+    })()
+  }, [])
+
+  return !authUser.loaded || dataLoading ? (
+    <LoadingView />
+  ) : (
     <SafeAreaView style={styles.container}>
       <FlatList
         style={styles.listContainer}
@@ -80,5 +114,6 @@ const styles = StyleSheet.create({
     flex: 7
   }
 })
-
-export default Default
+function addInAppMessage(arg0: { message: any; type: string }) {
+  throw new Error('Function not implemented.')
+}
