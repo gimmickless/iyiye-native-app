@@ -26,6 +26,7 @@ export const cognitoNotAuthenticatedMessageList = [
   'not authenticated'
 ]
 export const cognitoNoCurrentUserMessage = 'No current user'
+export const defaultLoadItemLimit = 10
 
 // Async Storage
 export const globalAsyncStorageKeyPrefix = '@gimmickless:iyiye'

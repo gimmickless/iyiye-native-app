@@ -19,11 +19,13 @@ import {
   IyiyeNavigationDarkTheme
 } from 'utils/theme'
 import { ThemeProvider as ReactNativeElementsThemeProvider } from 'react-native-elements'
+import { TabBarBadgeContext } from 'contexts/TabBarBadge'
 
 const Tab = createBottomTabNavigator()
 
 export const RootNavigator = () => {
   const { t } = useContext(LocalizationContext)
+  const { tabCount } = useContext(TabBarBadgeContext)
   const scheme = useColorScheme()
   const { authUser } = useAuthUser()
   const isDarkMode = scheme === 'dark'
@@ -77,7 +79,10 @@ export const RootNavigator = () => {
           <Tab.Screen name={TabNames.Search}>
             {() => SearchStackScreen(t)}
           </Tab.Screen>
-          <Tab.Screen name={TabNames.Notification}>
+          <Tab.Screen
+            name={TabNames.Notification}
+            options={{ tabBarBadge: tabCount?.notification ? ' ' : undefined }}
+          >
             {() => NotificationStackScreen(t)}
           </Tab.Screen>
           {isSignedIn ? (
