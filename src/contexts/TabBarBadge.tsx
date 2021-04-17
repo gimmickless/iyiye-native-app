@@ -1,31 +1,40 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 
-interface TabCountType {
+interface TabBarBadgeCountType {
   notification: number
 }
 
 export const TabBarBadgeContext = React.createContext<{
-  tabCount: TabCountType
-  setTabCount: React.Dispatch<React.SetStateAction<TabCountType>>
+  tabBarBadgeCount: TabBarBadgeCountType
+  setTabBarBadgeCount: React.Dispatch<
+    React.SetStateAction<TabBarBadgeCountType>
+  >
 }>({
-  tabCount: {
+  tabBarBadgeCount: {
     notification: 0
   },
-  setTabCount: () => {
+  setTabBarBadgeCount: () => {
     return
   }
 })
 
+export const useTabBarBadgeCount = () => {
+  const { tabBarBadgeCount, setTabBarBadgeCount } = useContext(
+    TabBarBadgeContext
+  )
+  return { tabBarBadgeCount, setTabBarBadgeCount }
+}
+
 export default ({ children }: any) => {
-  const [tabCount, setTabCount] = useState({
+  const [tabBarBadgeCount, setTabBarBadgeCount] = useState({
     notification: 3
   })
 
   return (
     <TabBarBadgeContext.Provider
       value={{
-        tabCount,
-        setTabCount
+        tabBarBadgeCount,
+        setTabBarBadgeCount
       }}
     >
       {children}

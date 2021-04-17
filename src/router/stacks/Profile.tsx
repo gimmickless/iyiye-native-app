@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import { Default as ProfileDefault } from 'screens/profile'
 import { headerLeftContainerPaddingLeft } from 'utils/constants'
 import { ProfileStackScreenNames } from 'types/route'
-import { Scope, TranslateOptions } from 'i18n-js'
+import { LocalizationContext } from 'contexts/Localization'
 
 type ProfileStackParamList = {
   ProfileDefault: undefined
@@ -13,29 +13,30 @@ type ProfileStackParamList = {
 
 const ProfileStack = createStackNavigator<ProfileStackParamList>()
 
-const ProfileStackScreen = (
-  t: (scope: Scope, options?: TranslateOptions) => string
-) => (
-  <ProfileStack.Navigator
-    initialRouteName={ProfileStackScreenNames.Default}
-    screenOptions={{
-      headerStyle: {
-        elevation: 0,
-        shadowOpacity: 0
-      },
-      headerLeftContainerStyle: {
-        paddingLeft: headerLeftContainerPaddingLeft
-      }
-    }}
-  >
-    <ProfileStack.Screen
-      name={ProfileStackScreenNames.Default}
-      component={ProfileDefault}
-      options={{
-        title: undefined
+const ProfileStackScreen: React.FC = () => {
+  const { t } = useContext(LocalizationContext)
+  return (
+    <ProfileStack.Navigator
+      initialRouteName={ProfileStackScreenNames.Default}
+      screenOptions={{
+        headerStyle: {
+          elevation: 0,
+          shadowOpacity: 0
+        },
+        headerLeftContainerStyle: {
+          paddingLeft: headerLeftContainerPaddingLeft
+        }
       }}
-    />
-  </ProfileStack.Navigator>
-)
+    >
+      <ProfileStack.Screen
+        name={ProfileStackScreenNames.Default}
+        component={ProfileDefault}
+        options={{
+          title: undefined
+        }}
+      />
+    </ProfileStack.Navigator>
+  )
+}
 
 export default ProfileStackScreen

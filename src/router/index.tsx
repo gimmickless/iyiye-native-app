@@ -13,88 +13,103 @@ import {
 } from './stacks'
 import { LocalizationContext } from 'contexts/Localization'
 import { TabNames } from 'types/route'
-import { useAuthUser } from 'contexts/Auth'
 import {
   IyiyeNavigationLightTheme,
   IyiyeNavigationDarkTheme
 } from 'utils/theme'
-import { ThemeProvider as ReactNativeElementsThemeProvider } from 'react-native-elements'
-import { TabBarBadgeContext } from 'contexts/TabBarBadge'
+import {
+  ThemeContext,
+  ThemeProvider as ReactNativeElementsThemeProvider
+} from 'react-native-elements'
+
+import { useAuthUser } from 'contexts/Auth'
+import TabBarBadgeContextProvider, {
+  useTabBarBadgeCount
+} from 'contexts/TabBarBadge'
 
 const Tab = createBottomTabNavigator()
 
-export const RootNavigator = () => {
+export const RootNavigator: React.FC = () => {
   const { t } = useContext(LocalizationContext)
-  const { tabCount } = useContext(TabBarBadgeContext)
+  const { tabBarBadgeCount } = useTabBarBadgeCount()
   const scheme = useColorScheme()
+  const { theme: rneTheme } = useContext(ThemeContext)
   const { authUser } = useAuthUser()
   const isDarkMode = scheme === 'dark'
   const isSignedIn = authUser.loaded && authUser.props?.username
+  const activeTintColor = isDarkMode ? 'lightcoral' : 'red'
+  const inactiveTintColor = 'grey'
 
   return (
     <NavigationContainer
       theme={isDarkMode ? IyiyeNavigationDarkTheme : IyiyeNavigationLightTheme}
     >
       <ReactNativeElementsThemeProvider useDark={isDarkMode}>
-        <Tab.Navigator
-          initialRouteName={TabNames.Home}
-          screenOptions={({ route }) => ({
-            tabBarIcon: ({ focused, color, size }) => {
-              let iconName
-              if (route.name === TabNames.Home) {
-                iconName = focused ? 'home' : 'home-outline'
-              } else if (route.name === TabNames.Search) {
-                iconName = 'magnify'
-              } else if (route.name === TabNames.Notification) {
-                iconName = focused ? 'bell' : 'bell-outline'
-              } else if (route.name === TabNames.Profile) {
-                iconName = focused ? 'account' : 'account-outline'
-              } else if (route.name === TabNames.Auth) {
-                iconName = 'login-variant'
+        <TabBarBadgeContextProvider>
+          <Tab.Navigator
+            initialRouteName={TabNames.Home}
+            screenOptions={({ route }) => ({
+              tabBarIcon: ({ focused, color, size }) => {
+                let iconName
+                if (route.name === TabNames.Home) {
+                  iconName = focused ? 'home' : 'home-outline'
+                } else if (route.name === TabNames.Search) {
+                  iconName = 'magnify'
+                } else if (route.name === TabNames.Notification) {
+                  iconName = focused ? 'bell' : 'bell-outline'
+                } else if (route.name === TabNames.Profile) {
+                  iconName = focused ? 'account' : 'account-outline'
+                } else if (route.name === TabNames.Auth) {
+                  iconName = 'login-variant'
+                }
+                return (
+                  <MaterialCommunityIcons
+                    name={iconName}
+                    size={size}
+                    color={color}
+                  />
+                )
               }
-              return (
-                <MaterialCommunityIcons
-                  name={iconName}
-                  size={size}
-                  color={color}
-                />
-              )
-            }
-          })}
-          tabBarOptions={{
-            activeTintColor: isDarkMode ? 'lightcoral' : 'red',
-            inactiveTintColor: 'grey',
-            keyboardHidesTabBar: true,
-            showLabel: false,
-            style: {
-              elevation: 0,
-              shadowOpacity: 0
-            }
-          }}
-          backBehavior="history"
-        >
-          <Tab.Screen name={TabNames.Home}>
-            {() => HomeStackScreen(t)}
-          </Tab.Screen>
-          <Tab.Screen name={TabNames.Search}>
-            {() => SearchStackScreen(t)}
-          </Tab.Screen>
-          <Tab.Screen
-            name={TabNames.Notification}
-            options={{ tabBarBadge: tabCount?.notification ? ' ' : undefined }}
+            })}
+            tabBarOptions={{
+              activeTintColor: activeTintColor,
+              inactiveTintColor: inactiveTintColor,
+              keyboardHidesTabBar: true,
+              showLabel: false,
+              style: {
+                elevation: 0,
+                shadowOpacity: 0
+              }
+            }}
+            backBehavior="history"
           >
-            {() => NotificationStackScreen(t)}
-          </Tab.Screen>
-          {isSignedIn ? (
-            <Tab.Screen name={TabNames.Profile}>
-              {() => ProfileStackScreen(t)}
-            </Tab.Screen>
-          ) : (
-            <Tab.Screen name={TabNames.Auth}>
-              {() => AuthStackScreen(t)}
-            </Tab.Screen>
-          )}
-        </Tab.Navigator>
+            <Tab.Screen name={TabNames.Home} component={HomeStackScreen} />
+            <Tab.Screen name={TabNames.Search} component={SearchStackScreen} />
+            <Tab.Screen
+              name={TabNames.Notification}
+              component={NotificationStackScreen}
+              options={
+                tabBarBadgeCount?.notification
+                  ? {
+                      tabBarBadge: tabBarBadgeCount.notification,
+                      tabBarBadgeStyle: {
+                        backgroundColor: activeTintColor,
+                        color: rneTheme.colors?.white
+                      }
+                    }
+                  : undefined
+              }
+            />
+            {isSignedIn ? (
+              <Tab.Screen
+                name={TabNames.Profile}
+                component={ProfileStackScreen}
+              />
+            ) : (
+              <Tab.Screen name={TabNames.Auth} component={AuthStackScreen} />
+            )}
+          </Tab.Navigator>
+        </TabBarBadgeContextProvider>
       </ReactNativeElementsThemeProvider>
     </NavigationContainer>
   )

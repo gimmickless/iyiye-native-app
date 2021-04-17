@@ -84,7 +84,7 @@ const SignIn: React.FC = () => {
                 onBlur={handleBlur('usernameOrEmail')}
                 errorMessage={errors.usernameOrEmail}
                 style={styles.formInput}
-                autoCompleteType="username"
+                autoCompleteType="email"
                 autoCorrect={false}
                 keyboardType="visible-password"
                 maxLength={Math.max(emailMaxLength, usernameMaxLength)}

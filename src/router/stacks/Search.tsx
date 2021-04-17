@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import { Default as SearchDefault } from 'screens/search'
 import { headerLeftContainerPaddingLeft } from 'utils/constants'
 import { SearchStackScreenNames } from 'types/route'
-import { Scope, TranslateOptions } from 'i18n-js'
+import { LocalizationContext } from 'contexts/Localization'
 
 type SearchStackParamList = {
   SearchDefault: undefined
@@ -16,26 +16,27 @@ type SearchStackParamList = {
 
 const SearchStack = createStackNavigator<SearchStackParamList>()
 
-const SearchStackScreen = (
-  t: (scope: Scope, options?: TranslateOptions) => string
-) => (
-  <SearchStack.Navigator
-    initialRouteName={SearchStackScreenNames.Default}
-    screenOptions={{
-      headerStyle: {
-        elevation: 0,
-        shadowOpacity: 0
-      },
-      headerLeftContainerStyle: {
-        paddingLeft: headerLeftContainerPaddingLeft
-      }
-    }}
-  >
-    <SearchStack.Screen
-      name={SearchStackScreenNames.Default}
-      component={SearchDefault}
-    />
-  </SearchStack.Navigator>
-)
+const SearchStackScreen: React.FC = () => {
+  const { t } = useContext(LocalizationContext)
+  return (
+    <SearchStack.Navigator
+      initialRouteName={SearchStackScreenNames.Default}
+      screenOptions={{
+        headerStyle: {
+          elevation: 0,
+          shadowOpacity: 0
+        },
+        headerLeftContainerStyle: {
+          paddingLeft: headerLeftContainerPaddingLeft
+        }
+      }}
+    >
+      <SearchStack.Screen
+        name={SearchStackScreenNames.Default}
+        component={SearchDefault}
+      />
+    </SearchStack.Navigator>
+  )
+}
 
 export default SearchStackScreen

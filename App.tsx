@@ -9,7 +9,6 @@ import PubSub from '@aws-amplify/pubsub'
 import AuthUserContextProvider from 'contexts/Auth'
 import LocalizationContextProvider from 'contexts/Localization'
 import InAppMessageContextProvider from 'contexts/InAppMessage'
-import TabBarBadgeContextProvider from 'contexts/TabBarBadge'
 import InAppMessageBox from 'components/shared/InAppMessageBox'
 import { en } from 'locales'
 import { RootNavigator } from 'router'
@@ -35,9 +34,7 @@ const App: React.FC = () => {
       <InAppMessageContextProvider>
         <AuthUserContextProvider>
           <LocalizationContextProvider>
-            <TabBarBadgeContextProvider>
-              <RootNavigator />
-            </TabBarBadgeContextProvider>
+            <RootNavigator />
           </LocalizationContextProvider>
         </AuthUserContextProvider>
         <InAppMessageBox />

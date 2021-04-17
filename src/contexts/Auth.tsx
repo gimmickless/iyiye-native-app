@@ -257,8 +257,9 @@ export default ({ children }: any) => {
         }
       })
     } catch (err) {
+      console.log(err)
       addInAppMessage({
-        message: JSON.stringify(err),
+        message: err,
         type: 'error'
       })
     }

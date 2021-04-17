@@ -2,6 +2,7 @@
   "expo": {
     "name": "iyiye",
     "description": "Delivers curated recipe kits",
+    "owner": "gimmickless",
     "slug": "iyiye-native-app",
     "githubUrl": "https://github.com/gimmickless/iyiye-native-app",
     "version": "1.0.0",
@@ -18,7 +19,9 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "androidNavigationBar": {
       "backgroundColor": "#000000"
     },

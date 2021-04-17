@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { FlatList, SafeAreaView, StyleSheet, View, Image } from 'react-native'
 import { Text, ThemeContext } from 'react-native-elements'
-import { useNavigation } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import ListSeparator from 'components/shared/ListSeparator'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { LocalizationContext } from 'contexts/Localization'
@@ -14,7 +14,8 @@ import {
 } from 'API'
 import { listInAppNotificationsForUser } from 'graphql/queries'
 import { defaultLoadItemLimit } from 'utils/constants'
-import { TabBarBadgeContext } from 'contexts/TabBarBadge'
+import { useTabBarBadgeCount } from 'contexts/TabBarBadge'
+import { useInAppMessage } from 'contexts/InAppMessage'
 
 // interface ListInAppNotificationsForUserAppSyncResult
 //   extends Omit<
@@ -48,7 +49,7 @@ const getNotificationItemIconName = (type: string | undefined | null) => {
 const Default: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
-  const { tabCount, setTabCount } = useContext(TabBarBadgeContext)
+  const { addInAppMessage } = useInAppMessage()
   const { state: authUser } = useContext(AuthUserContext)
   const { theme: rneTheme } = useContext(ThemeContext)
 
@@ -96,16 +97,12 @@ const Default: React.FC = () => {
     } finally {
       setDataLoading(false)
     }
-  }, [authUser.props?.username, notificationDataOffset, notifications])
-
-  useEffect(() => {
-    setTabCount({
-      ...tabCount,
-      notification: 0
-    })
-    if (!authUser.props) return
-    fetchNotifications()
-  }, [authUser.props, fetchNotifications, setTabCount, tabCount])
+  }, [
+    addInAppMessage,
+    authUser.props?.username,
+    notificationDataOffset,
+    notifications
+  ])
 
   return !authUser.loaded ? (
     <LoadingView />
@@ -134,7 +131,9 @@ const Default: React.FC = () => {
         keyExtractor={(item) => item?.id ?? ''}
         ItemSeparatorComponent={ListSeparator}
         ListEmptyComponent={() => (
-          <Image source={require('visuals/notfound.png')} />
+          <View style={styles.nothingFoundContainer}>
+            <Image source={require('visuals/notfound.png')} />
+          </View>
         )}
         refreshing={dataLoading}
       />
@@ -146,6 +145,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center'
+  },
+  nothingFoundContainer: {
+    flex: 1,
+    marginVertical: 192,
+    marginHorizontal: 36,
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'space-around'
   },
   listContainer: { paddingHorizontal: 8 },
   listItem: {
@@ -162,6 +169,5 @@ const styles = StyleSheet.create({
     flex: 7
   }
 })
-function addInAppMessage(arg0: { message: any; type: string }) {
-  throw new Error('Function not implemented.')
-}
+
+export default Default

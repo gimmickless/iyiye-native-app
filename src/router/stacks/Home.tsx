@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import {
   Default as HomeDefault,
@@ -10,7 +10,7 @@ import { headerLeftContainerPaddingLeft } from 'utils/constants'
 import { HomeStackScreenNames } from 'types/route'
 import { Region } from 'react-native-maps'
 import { AuthUserAddressKey } from 'types/context'
-import { Scope, TranslateOptions } from 'i18n-js'
+import { LocalizationContext } from 'contexts/Localization'
 
 export type HomeStackParamList = {
   HomeDefault: undefined
@@ -26,43 +26,44 @@ export type HomeStackParamList = {
 
 const HomeStack = createStackNavigator<HomeStackParamList>()
 
-const HomeStackScreen = (
-  t: (scope: Scope, options?: TranslateOptions) => string
-) => (
-  <HomeStack.Navigator
-    initialRouteName={HomeStackScreenNames.Default}
-    screenOptions={{
-      headerStyle: {
-        elevation: 0,
-        shadowOpacity: 0
-      },
-      headerLeftContainerStyle: {
-        paddingLeft: headerLeftContainerPaddingLeft
-      }
-    }}
-  >
-    <HomeStack.Screen
-      name={HomeStackScreenNames.Default}
-      component={HomeDefault}
-    />
-    <HomeStack.Screen
-      name={HomeStackScreenNames.AddressList}
-      component={HomeAddressList}
-      options={{
-        title: t('screen.home.addressList.title')
+const HomeStackScreen: React.FC = () => {
+  const { t } = useContext(LocalizationContext)
+  return (
+    <HomeStack.Navigator
+      initialRouteName={HomeStackScreenNames.Default}
+      screenOptions={{
+        headerStyle: {
+          elevation: 0,
+          shadowOpacity: 0
+        },
+        headerLeftContainerStyle: {
+          paddingLeft: headerLeftContainerPaddingLeft
+        }
       }}
-    />
-    <HomeStack.Screen
-      name={HomeStackScreenNames.AddressLocationSearch}
-      component={HomeAddressLocationSearch}
-      options={{}}
-    />
-    <HomeStack.Screen
-      name={HomeStackScreenNames.AddressForm}
-      component={HomeAddressForm}
-      options={{}}
-    />
-  </HomeStack.Navigator>
-)
+    >
+      <HomeStack.Screen
+        name={HomeStackScreenNames.Default}
+        component={HomeDefault}
+      />
+      <HomeStack.Screen
+        name={HomeStackScreenNames.AddressList}
+        component={HomeAddressList}
+        options={{
+          title: t('screen.home.addressList.title')
+        }}
+      />
+      <HomeStack.Screen
+        name={HomeStackScreenNames.AddressLocationSearch}
+        component={HomeAddressLocationSearch}
+        options={{}}
+      />
+      <HomeStack.Screen
+        name={HomeStackScreenNames.AddressForm}
+        component={HomeAddressForm}
+        options={{}}
+      />
+    </HomeStack.Navigator>
+  )
+}
 
 export default HomeStackScreen
