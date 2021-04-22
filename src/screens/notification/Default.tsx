@@ -14,8 +14,8 @@ import {
 } from 'API'
 import { listInAppNotificationsForUser } from 'graphql/queries'
 import { defaultLoadItemLimit } from 'utils/constants'
-import { useTabBarBadgeCount } from 'contexts/TabBarBadge'
 import { useInAppMessage } from 'contexts/InAppMessage'
+import { GuestNotAllowedView } from 'components/auth'
 
 // interface ListInAppNotificationsForUserAppSyncResult
 //   extends Omit<
@@ -104,9 +104,15 @@ const Default: React.FC = () => {
     notifications
   ])
 
-  return !authUser.loaded ? (
-    <LoadingView />
-  ) : (
+  if (!authUser.loaded) {
+    return <LoadingView />
+  }
+
+  if (!authUser.props) {
+    return <GuestNotAllowedView />
+  }
+
+  return (
     <SafeAreaView style={styles.container}>
       <FlatList
         style={styles.listContainer}

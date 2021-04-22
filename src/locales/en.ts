@@ -17,6 +17,16 @@ const englishTranslation = {
       }
     }
   },
+  component: {
+    auth: {
+      guestNotAllowed: {
+        message: 'Please log in to your account to see the content',
+        button: {
+          goToLogin: 'Go to Login'
+        }
+      }
+    }
+  },
   screen: {
     auth: {
       signIn: {

@@ -57,7 +57,17 @@ So, the following should be added to the repo secrets beforehand:
 
 ### expo start
 
-`expo start` (or `npm start`) starts the app locally.
+Running
+
+```sh
+EXPO_LEGACY_IMPORTS=1 expo start
+```
+
+starts the app locally.
+
+> As 4/20/2021, `EXPO_LEGACY_IMPORTS=1` is required for AWS Amplify's Auth capabilities with Expo 41+ (See: https://github.com/aws-amplify/amplify-js/issues/8113 )
+
+> However, PowerShell may not accept `EXPO_LEGACY_IMPORTS=1`, so use [GitBash](https://git-scm.com/downloads) when working on Windows.
 
 ## Generating Types for AppSync
 
