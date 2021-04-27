@@ -19,7 +19,7 @@ export type CreateInAppNotificationInput = {
 // @aws_cognito_user_pools(cognito_groups: ["iyiye-default-ug"]) {
 // id: ID!
 // name: String!
-// version: String!
+// version: String
 // description: String
 // authorUsername: ID
 // author: User
