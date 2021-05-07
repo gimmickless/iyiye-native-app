@@ -17,15 +17,6 @@ import { defaultLoadItemLimit } from 'utils/constants'
 import { useInAppMessage } from 'contexts/InAppMessage'
 import { GuestNotAllowedView } from 'components/auth'
 
-// interface ListInAppNotificationsForUserAppSyncResult
-//   extends Omit<
-//     Exclude<
-//       ListInAppNotificationsForUserQuery['listInAppNotificationsForUser'],
-//       null
-//     >,
-//     '__typename'
-//   > {}
-
 const getNotificationItemIconName = (type: string | undefined | null) => {
   if (!type) return 'map-marker-question'
   switch (type) {
@@ -58,7 +49,7 @@ const Default: React.FC = () => {
   const [notifications, setNotifications] = useState<
     Exclude<
       ListInAppNotificationsForUserQuery['listInAppNotificationsForUser'],
-      null
+      undefined | null
     >
   >([])
 
@@ -81,6 +72,8 @@ const Default: React.FC = () => {
       ] = (await Promise.all([
         listInAppNotificationsForUserAppSyncRequest
       ])) as [{ data: ListInAppNotificationsForUserQuery }]
+      console.log('yukle')
+      console.log(listInAppNotificationsForUserAppSyncResponse)
       const listInAppNotificationsForUserResult =
         listInAppNotificationsForUserAppSyncResponse.data
           .listInAppNotificationsForUser ?? []
@@ -90,8 +83,9 @@ const Default: React.FC = () => {
         ...listInAppNotificationsForUserResult
       ])
     } catch (err) {
+      console.log('Err: ' + JSON.stringify(err))
       addInAppMessage({
-        message: err,
+        message: JSON.stringify(err),
         type: 'error'
       })
     } finally {
@@ -103,6 +97,11 @@ const Default: React.FC = () => {
     notificationDataOffset,
     notifications
   ])
+
+  useEffect(() => {
+    fetchNotifications()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   if (!authUser.loaded) {
     return <LoadingView />
@@ -136,11 +135,13 @@ const Default: React.FC = () => {
         }}
         keyExtractor={(item) => item?.id ?? ''}
         ItemSeparatorComponent={ListSeparator}
-        ListEmptyComponent={() => (
-          <View style={styles.nothingFoundContainer}>
-            <Image source={require('visuals/notfound.png')} />
-          </View>
-        )}
+        ListEmptyComponent={
+          dataLoading ? undefined : (
+            <View style={styles.nothingFoundContainer}>
+              <Image source={require('visuals/notfound.png')} />
+            </View>
+          )
+        }
         refreshing={dataLoading}
       />
     </SafeAreaView>
@@ -172,6 +173,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   listItemMainField: {
+    justifyContent: 'center',
     flex: 7
   }
 })

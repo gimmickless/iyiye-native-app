@@ -47,21 +47,40 @@ export enum InAppNotificationType {
 }
 
 
+export type InAppNotification = {
+  __typename: "InAppNotification",
+  id?: string,
+  type?: InAppNotificationType | null,
+  receiverUsername?: string,
+  body?: string | null,
+  isRead?: boolean,
+  createdTime?: string,
+  lastUpdatedTime?: string,
+};
+
 export type UpdateInAppNotificationsForUserAsReadInput = {
   receiverUsername: string,
 };
 
+export type User = {
+  __typename: "User",
+  username?: string,
+  picture?: string | null,
+  bio?: string | null,
+  contactable?: boolean | null,
+};
+
 export type CreateInAppNotificationMutationVariables = {
-  input: CreateInAppNotificationInput,
+  input?: CreateInAppNotificationInput,
 };
 
 export type CreateInAppNotificationMutation = {
-  createInAppNotification:  {
+  createInAppNotification?:  {
     __typename: "InAppNotification",
     id: string,
-    type: InAppNotificationType | null,
+    type?: InAppNotificationType | null,
     receiverUsername: string,
-    body: string | null,
+    body?: string | null,
     isRead: boolean,
     createdTime: string,
     lastUpdatedTime: string,
@@ -69,16 +88,16 @@ export type CreateInAppNotificationMutation = {
 };
 
 export type UpdateInAppNotificationsForUserAsReadMutationVariables = {
-  input: UpdateInAppNotificationsForUserAsReadInput,
+  input?: UpdateInAppNotificationsForUserAsReadInput,
 };
 
 export type UpdateInAppNotificationsForUserAsReadMutation = {
-  updateInAppNotificationsForUserAsRead:  {
+  updateInAppNotificationsForUserAsRead?:  {
     __typename: "InAppNotification",
     id: string,
-    type: InAppNotificationType | null,
+    type?: InAppNotificationType | null,
     receiverUsername: string,
-    body: string | null,
+    body?: string | null,
     isRead: boolean,
     createdTime: string,
     lastUpdatedTime: string,
@@ -86,32 +105,32 @@ export type UpdateInAppNotificationsForUserAsReadMutation = {
 };
 
 export type GetUserBasicInfoQueryVariables = {
-  username: string,
+  username?: string,
 };
 
 export type GetUserBasicInfoQuery = {
-  getUserBasicInfo:  {
+  getUserBasicInfo?:  {
     __typename: "User",
     username: string,
-    picture: string | null,
-    bio: string | null,
-    contactable: boolean | null,
+    picture?: string | null,
+    bio?: string | null,
+    contactable?: boolean | null,
   } | null,
 };
 
 export type ListInAppNotificationsForUserQueryVariables = {
-  username: string,
+  username?: string,
   limit?: number | null,
   offset?: number | null,
 };
 
 export type ListInAppNotificationsForUserQuery = {
-  listInAppNotificationsForUser:  Array< {
+  listInAppNotificationsForUser?:  Array< {
     __typename: "InAppNotification",
     id: string,
-    type: InAppNotificationType | null,
+    type?: InAppNotificationType | null,
     receiverUsername: string,
-    body: string | null,
+    body?: string | null,
     isRead: boolean,
     createdTime: string,
     lastUpdatedTime: string,
@@ -119,12 +138,12 @@ export type ListInAppNotificationsForUserQuery = {
 };
 
 export type OnCreateInAppNotificationSubscription = {
-  onCreateInAppNotification:  {
+  onCreateInAppNotification?:  {
     __typename: "InAppNotification",
     id: string,
-    type: InAppNotificationType | null,
+    type?: InAppNotificationType | null,
     receiverUsername: string,
-    body: string | null,
+    body?: string | null,
     isRead: boolean,
     createdTime: string,
     lastUpdatedTime: string,
@@ -132,12 +151,12 @@ export type OnCreateInAppNotificationSubscription = {
 };
 
 export type OnUpdateInAppNotificationsForUserAsReadSubscription = {
-  onUpdateInAppNotificationsForUserAsRead:  {
+  onUpdateInAppNotificationsForUserAsRead?:  {
     __typename: "InAppNotification",
     id: string,
-    type: InAppNotificationType | null,
+    type?: InAppNotificationType | null,
     receiverUsername: string,
-    body: string | null,
+    body?: string | null,
     isRead: boolean,
     createdTime: string,
     lastUpdatedTime: string,
