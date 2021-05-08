@@ -1,7 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { FlatList, SafeAreaView, StyleSheet, View, Image } from 'react-native'
 import { Text, ThemeContext } from 'react-native-elements'
-import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import ListSeparator from 'components/shared/ListSeparator'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { LocalizationContext } from 'contexts/Localization'
@@ -16,6 +15,7 @@ import { listInAppNotificationsForUser } from 'graphql/queries'
 import { defaultLoadItemLimit } from 'utils/constants'
 import { useInAppMessage } from 'contexts/InAppMessage'
 import { GuestNotAllowedView } from 'components/auth'
+import NotFoundView from 'components/shared/NotFoundView'
 
 const getNotificationItemIconName = (type: string | undefined | null) => {
   if (!type) return 'map-marker-question'
@@ -39,7 +39,6 @@ const getNotificationItemIconName = (type: string | undefined | null) => {
 
 const Default: React.FC = () => {
   const { t } = useContext(LocalizationContext)
-  const navigation = useNavigation()
   const { addInAppMessage } = useInAppMessage()
   const { state: authUser } = useContext(AuthUserContext)
   const { theme: rneTheme } = useContext(ThemeContext)
@@ -72,8 +71,6 @@ const Default: React.FC = () => {
       ] = (await Promise.all([
         listInAppNotificationsForUserAppSyncRequest
       ])) as [{ data: ListInAppNotificationsForUserQuery }]
-      console.log('yukle')
-      console.log(listInAppNotificationsForUserAppSyncResponse)
       const listInAppNotificationsForUserResult =
         listInAppNotificationsForUserAppSyncResponse.data
           .listInAppNotificationsForUser ?? []
@@ -135,13 +132,7 @@ const Default: React.FC = () => {
         }}
         keyExtractor={(item) => item?.id ?? ''}
         ItemSeparatorComponent={ListSeparator}
-        ListEmptyComponent={
-          dataLoading ? undefined : (
-            <View style={styles.nothingFoundContainer}>
-              <Image source={require('visuals/notfound.png')} />
-            </View>
-          )
-        }
+        ListEmptyComponent={dataLoading ? undefined : <NotFoundView />}
         refreshing={dataLoading}
       />
     </SafeAreaView>

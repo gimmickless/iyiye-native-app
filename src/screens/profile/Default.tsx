@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useMemo } from 'react'
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState
+} from 'react'
 import {
   View,
   StyleSheet,
@@ -7,22 +13,46 @@ import {
   Pressable,
   Alert
 } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import LoadingView from 'components/shared/LoadingView'
 import { LocalizationContext } from 'contexts/Localization'
 import { AuthUserContext } from 'contexts/Auth'
 import ListSeparator from 'components/shared/ListSeparator'
-import { Text, ThemeContext } from 'react-native-elements'
+import { Avatar, Text, ThemeContext } from 'react-native-elements'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { HomeStackScreenNames, TabNames } from 'types/route'
+import { ProfileStackParamList } from 'router/stacks/Profile'
+import NotFoundView from 'components/shared/NotFoundView'
+import { GuestNotAllowedView } from 'components/auth'
+import API, { graphqlOperation } from '@aws-amplify/api'
+import { getUserBasicInfo } from 'graphql/queries'
+import { GetUserBasicInfoQuery, GetUserBasicInfoQueryVariables } from 'API'
+import { useInAppMessage } from 'contexts/InAppMessage'
+import { AuthUserState } from 'types/context'
+
+export type ProfileDefaultRouteProps = RouteProp<
+  ProfileStackParamList,
+  'ProfileDefault'
+>
 
 const Profile: React.FC = () => {
   const navigation = useNavigation()
   const { t } = useContext(LocalizationContext)
+  const route = useRoute<ProfileDefaultRouteProps>()
   const { theme: rneTheme } = useContext(ThemeContext)
+  const { addInAppMessage } = useInAppMessage()
   const { state: authUser, action: authUserAction } = useContext(
     AuthUserContext
   )
+  const [profileUserProps, setProfileUserProps] = useState<
+    | AuthUserState['props']
+    | GetUserBasicInfoQuery['getUserBasicInfo']
+    | undefined
+  >(undefined)
+
+  const authUsername = authUser.props?.username
+  const profileUsername = route.params?.username ?? authUsername
+  const isOwnProfile = authUsername === profileUsername
 
   const onSignOutPress = useCallback(() => {
     Alert.alert(
@@ -48,6 +78,35 @@ const Profile: React.FC = () => {
     )
   }, [authUserAction, navigation, t])
 
+  useEffect(() => {
+    !(async () => {
+      try {
+        if (isOwnProfile) {
+          setProfileUserProps(authUser.props)
+        } else {
+          const getUserInfoRequest = API.graphql(
+            graphqlOperation(getUserBasicInfo, {
+              username: authUser.props?.username
+            } as GetUserBasicInfoQueryVariables)
+          ) as PromiseLike<{
+            data: GetUserBasicInfoQuery
+          }>
+          const [getUserInfoAppSyncResponse] = (await Promise.all([
+            getUserInfoRequest
+          ])) as [{ data: GetUserBasicInfoQuery }]
+          const getUserInfoResult =
+            getUserInfoAppSyncResponse.data.getUserBasicInfo ?? undefined
+          setProfileUserProps(getUserInfoResult)
+        }
+      } catch (err) {
+        addInAppMessage({
+          message: err.message ?? err,
+          type: 'error'
+        })
+      }
+    })()
+  }, [addInAppMessage, authUser.props, isOwnProfile, setProfileUserProps])
+
   const listItems = useMemo(
     () => [
       {
@@ -63,40 +122,78 @@ const Profile: React.FC = () => {
     [onSignOutPress, t]
   )
 
-  return !authUser.loaded ? (
-    <LoadingView />
-  ) : (
+  const onChangeAvatar = () => {
+    console.log('Change Avatar clicked')
+    return
+  }
+
+  if (!authUser.loaded) {
+    return <LoadingView />
+  }
+
+  if (!authUser.props) {
+    return <GuestNotAllowedView />
+  }
+
+  if (!profileUsername) {
+    return <NotFoundView />
+  }
+
+  return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.userInfoContainer}>
+        <Avatar
+          size="large"
+          rounded
+          icon={{ name: 'account', type: 'material-community' }}
+          containerStyle={{ backgroundColor: rneTheme.colors?.grey1 }}
+          source={
+            profileUserProps?.picture
+              ? { uri: profileUserProps.picture }
+              : undefined
+          }
+        >
+          {isOwnProfile && (
+            <Avatar.Accessory
+              onPress={onChangeAvatar}
+              size={25}
+              type="material-community"
+              name="pencil"
+            />
+          )}
+        </Avatar>
+      </View>
+      <Text h4 style={styles.usernameText}>
+        {profileUsername}
+      </Text>
       <FlatList
         style={styles.listContainer}
         data={listItems}
-        renderItem={({ item }) => {
-          return (
-            <Pressable onPress={item.action}>
-              <View style={styles.listItem}>
-                <View style={styles.listItemTypeIconField}>
-                  <MaterialCommunityIcons
-                    name={item.value?.iconName}
-                    size={25}
-                    color={item.value?.color ?? rneTheme.colors?.grey0}
-                  />
-                </View>
-                <View style={styles.listItemMainField}>
-                  <Text
-                    style={[
-                      styles.listItemMainFieldText,
-                      {
-                        color: item.value?.color ?? rneTheme.colors?.grey0
-                      }
-                    ]}
-                  >
-                    {item.value?.title}
-                  </Text>
-                </View>
+        renderItem={({ item }) => (
+          <Pressable onPress={item.action}>
+            <View style={styles.listItem}>
+              <View style={styles.listItemTypeIconField}>
+                <MaterialCommunityIcons
+                  name={item.value?.iconName}
+                  size={25}
+                  color={item.value?.color ?? rneTheme.colors?.grey0}
+                />
               </View>
-            </Pressable>
-          )
-        }}
+              <View style={styles.listItemMainField}>
+                <Text
+                  style={[
+                    styles.listItemMainFieldText,
+                    {
+                      color: item.value?.color ?? rneTheme.colors?.grey0
+                    }
+                  ]}
+                >
+                  {item.value?.title}
+                </Text>
+              </View>
+            </View>
+          </Pressable>
+        )}
         keyExtractor={(item) => item.key}
         ItemSeparatorComponent={ListSeparator}
       />
@@ -108,6 +205,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center'
+  },
+  userInfoContainer: {
+    alignItems: 'center'
+  },
+  usernameText: {
+    alignSelf: 'center'
   },
   listContainer: { paddingHorizontal: 8 },
   listItem: {

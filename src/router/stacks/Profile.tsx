@@ -5,8 +5,8 @@ import { headerLeftContainerPaddingLeft } from 'utils/constants'
 import { ProfileStackScreenNames } from 'types/route'
 import { LocalizationContext } from 'contexts/Localization'
 
-type ProfileStackParamList = {
-  ProfileDefault: undefined
+export type ProfileStackParamList = {
+  ProfileDefault: { username?: string }
   ProfileList: undefined
   ProfileItem: { id: string }
 }
@@ -32,7 +32,7 @@ const ProfileStackScreen: React.FC = () => {
         name={ProfileStackScreenNames.Default}
         component={ProfileDefault}
         options={{
-          title: undefined
+          headerTitle: ''
         }}
       />
     </ProfileStack.Navigator>

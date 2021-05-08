@@ -14,7 +14,8 @@ const englishTranslation = {
         tooShort: 'Too short',
         tooLong: 'Too long',
         mustCheck: 'This field must be checked'
-      }
+      },
+      notFound: 'Not Found'
     }
   },
   component: {

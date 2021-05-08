@@ -7,7 +7,7 @@ import { LocalizationContext } from 'contexts/Localization'
 import { useTabBarBadgeCount } from 'contexts/TabBarBadge'
 import { useFocusEffect } from '@react-navigation/native'
 
-type NotificationStackParamList = {
+export type NotificationStackParamList = {
   NotificationDefault: undefined
 }
 

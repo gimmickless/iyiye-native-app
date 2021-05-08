@@ -5,7 +5,7 @@ import { headerLeftContainerPaddingLeft } from 'utils/constants'
 import { SearchStackScreenNames } from 'types/route'
 import { LocalizationContext } from 'contexts/Localization'
 
-type SearchStackParamList = {
+export type SearchStackParamList = {
   SearchDefault: undefined
   SearchList: { sort: 'latest' | 'top' } | undefined
   SearchItem: { id: string }

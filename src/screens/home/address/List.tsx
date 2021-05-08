@@ -27,6 +27,7 @@ import { useInAppMessage } from 'contexts/InAppMessage'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { HomeStackParamList } from 'router/stacks/Home'
 import { HomeAddressFormRouteProps } from './Form'
+import NotFoundView from 'components/shared/NotFoundView'
 
 export type HomeAddressListRouteProps = RouteProp<
   HomeStackParamList,
@@ -206,13 +207,9 @@ const AddressList: React.FC = () => {
     <LoadingView />
   ) : !addresses || !addresses.length ? (
     <View style={styles.nothingFoundContainer}>
-      <Image source={require('visuals/notfound.png')} />
-      <Text
-        h4
-        style={{ ...styles.nothingFoundText, color: rneTheme.colors?.grey1 }}
-      >
-        {t('screen.home.addressList.message.nothingFound')}
-      </Text>
+      <NotFoundView
+        message={t('screen.home.addressList.message.nothingFound')}
+      />
       <Button
         style={styles.nothingFoundAddNewButton}
         title={t('screen.home.addressList.button.createFirstAddress')}
