@@ -302,6 +302,10 @@ const englishTranslation = {
           signOut: 'Sign Out'
         },
         alert: {
+          mediaLibraryPermissionNotGranted: {
+            message:
+              'Sorry, we need camera roll permissions to change the profile picture'
+          },
           signOutConfirmation: {
             title: 'About to Sign Out',
             message: 'Are you sure?',

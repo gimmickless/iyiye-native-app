@@ -11,7 +11,8 @@ import {
   SafeAreaView,
   FlatList,
   Pressable,
-  Alert
+  Alert,
+  Platform
 } from 'react-native'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import LoadingView from 'components/shared/LoadingView'
@@ -19,6 +20,7 @@ import { LocalizationContext } from 'contexts/Localization'
 import { AuthUserContext } from 'contexts/Auth'
 import ListSeparator from 'components/shared/ListSeparator'
 import { Avatar, Text, ThemeContext } from 'react-native-elements'
+import * as ImagePicker from 'expo-image-picker'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { HomeStackScreenNames, TabNames } from 'types/route'
 import { ProfileStackParamList } from 'router/stacks/Profile'
@@ -29,11 +31,30 @@ import { getUserBasicInfo } from 'graphql/queries'
 import { GetUserBasicInfoQuery, GetUserBasicInfoQueryVariables } from 'API'
 import { useInAppMessage } from 'contexts/InAppMessage'
 import { AuthUserState } from 'types/context'
+import { Storage } from '@aws-amplify/storage'
+import { Auth } from '@aws-amplify/auth'
 
 export type ProfileDefaultRouteProps = RouteProp<
   ProfileStackParamList,
   'ProfileDefault'
 >
+
+const requestMediaLibraryPermissionsAsync = async (
+  t: (scope: I18n.Scope, options?: I18n.TranslateOptions | undefined) => string
+) => {
+  if (Platform.OS !== 'web') {
+    const {
+      status: mediaLibraryPermissionStatus
+    } = await ImagePicker.requestMediaLibraryPermissionsAsync()
+    if (mediaLibraryPermissionStatus !== 'granted') {
+      throw new Error(
+        t(
+          'screen.profile.default.alert.mediaLibraryPermissionNotGranted.message'
+        )
+      )
+    }
+  }
+}
 
 const Profile: React.FC = () => {
   const navigation = useNavigation()
@@ -41,6 +62,7 @@ const Profile: React.FC = () => {
   const route = useRoute<ProfileDefaultRouteProps>()
   const { theme: rneTheme } = useContext(ThemeContext)
   const { addInAppMessage } = useInAppMessage()
+  const [avatarImage, setAvatarImage] = useState(null)
   const { state: authUser, action: authUserAction } = useContext(
     AuthUserContext
   )
@@ -122,8 +144,46 @@ const Profile: React.FC = () => {
     [onSignOutPress, t]
   )
 
-  const onChangeAvatar = () => {
-    console.log('Change Avatar clicked')
+  const onChangeAvatar = async () => {
+    if (!profileUsername) return
+    try {
+      await requestMediaLibraryPermissionsAsync(t)
+
+      const imagePickResult = await ImagePicker.launchImageLibraryAsync({
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1
+      })
+
+      if (imagePickResult.cancelled) return
+
+      console.log('currentCredentials')
+      const resasd = await Auth.currentCredentials()
+      console.log(resasd)
+
+      const storagePutResult = await Storage.put(
+        profileUsername,
+        imagePickResult.uri,
+        {
+          level: 'protected',
+          customPrefix: 'protected/avatar/'
+        }
+      )
+      console.log(JSON.stringify(storagePutResult))
+
+      // if (!result.cancelled) {
+      //   setImage(result.uri)
+      //   // TODO: Upload Image to S3
+
+      //   // TODO: Update user data ['picture'] as the resulting S3 url
+      // }
+    } catch (err) {
+      console.log('Err: ' + JSON.stringify(err))
+      addInAppMessage({
+        message: JSON.stringify(err),
+        type: 'error'
+      })
+    }
     return
   }
 

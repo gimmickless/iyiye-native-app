@@ -3,9 +3,7 @@ import { InAppMessageType } from 'types/context'
 
 export const InAppMessageContext = React.createContext<{
   inAppMessage: InAppMessageType | undefined
-  addInAppMessage: React.Dispatch<
-    React.SetStateAction<InAppMessageType | undefined>
-  >
+  addInAppMessage: (input: InAppMessageType) => void
   removeInAppMessage: () => void
 }>({
   inAppMessage: undefined,
@@ -29,12 +27,15 @@ export default ({ children }: any) => {
     InAppMessageType | undefined
   >(undefined)
 
+  const addInAppMessage = (input: InAppMessageType) => setInAppMessage(input)
+  const removeInAppMessage = () => setInAppMessage(undefined)
+
   return (
     <InAppMessageContext.Provider
       value={{
         inAppMessage,
-        addInAppMessage: setInAppMessage,
-        removeInAppMessage: () => setInAppMessage(undefined)
+        addInAppMessage,
+        removeInAppMessage
       }}
     >
       {children}

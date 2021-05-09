@@ -47,7 +47,8 @@
     "react-native-screens": "~3.0.0",
     "react-native-skeleton-placeholder": "^3.0.4",
     "react-native-web": "^0.16.2",
-    "yup": "^0.32.8"
+    "yup": "^0.32.8",
+    "expo-image-picker": "~10.1.4"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",
