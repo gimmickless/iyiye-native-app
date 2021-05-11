@@ -9,6 +9,7 @@ export const getUserBasicInfo = /* GraphQL */ `
       picture
       bio
       contactable
+      identityId
     }
   }
 `;

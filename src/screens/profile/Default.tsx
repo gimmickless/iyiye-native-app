@@ -39,13 +39,14 @@ export type ProfileDefaultRouteProps = RouteProp<
   'ProfileDefault'
 >
 
+const protectedAvatarFolderCustomPrefix = 'protected/avatar/'
+
 const requestMediaLibraryPermissionsAsync = async (
   t: (scope: I18n.Scope, options?: I18n.TranslateOptions | undefined) => string
 ) => {
   if (Platform.OS !== 'web') {
-    const {
-      status: mediaLibraryPermissionStatus
-    } = await ImagePicker.requestMediaLibraryPermissionsAsync()
+    const { status: mediaLibraryPermissionStatus } =
+      await ImagePicker.requestMediaLibraryPermissionsAsync()
     if (mediaLibraryPermissionStatus !== 'granted') {
       throw new Error(
         t(
@@ -62,15 +63,15 @@ const Profile: React.FC = () => {
   const route = useRoute<ProfileDefaultRouteProps>()
   const { theme: rneTheme } = useContext(ThemeContext)
   const { addInAppMessage } = useInAppMessage()
-  const [avatarImage, setAvatarImage] = useState(null)
-  const { state: authUser, action: authUserAction } = useContext(
-    AuthUserContext
-  )
-  const [profileUserProps, setProfileUserProps] = useState<
-    | AuthUserState['props']
-    | GetUserBasicInfoQuery['getUserBasicInfo']
-    | undefined
-  >(undefined)
+  const [avatarImageUrl, setAvatarImageUrl] = useState<string>('')
+  const { state: authUser, action: authUserAction } =
+    useContext(AuthUserContext)
+  const [profileUserProps, setProfileUserProps] =
+    useState<
+      | AuthUserState['props']
+      | GetUserBasicInfoQuery['getUserBasicInfo']
+      | undefined
+    >(undefined)
 
   const authUsername = authUser.props?.username
   const profileUsername = route.params?.username ?? authUsername
@@ -129,6 +130,24 @@ const Profile: React.FC = () => {
     })()
   }, [addInAppMessage, authUser.props, isOwnProfile, setProfileUserProps])
 
+  useEffect(() => {
+    if (!profileUsername) return
+    !(async () => {
+      try {
+        const signedUrl = await Storage.get(profileUsername, {
+          level: 'protected',
+          identityId: profileUserProps?.identityId
+        })
+        setAvatarImageUrl(signedUrl.toString())
+      } catch (err) {
+        addInAppMessage({
+          message: err.message ?? err,
+          type: 'error'
+        })
+      }
+    })()
+  }, [addInAppMessage, profileUserProps?.identityId, profileUsername])
+
   const listItems = useMemo(
     () => [
       {
@@ -157,19 +176,17 @@ const Profile: React.FC = () => {
 
       if (imagePickResult.cancelled) return
 
-      console.log('currentCredentials')
-      const resasd = await Auth.currentCredentials()
-      console.log(resasd)
-
-      const storagePutResult = await Storage.put(
+      const storagePutResult: any = await Storage.put(
         profileUsername,
         imagePickResult.uri,
         {
           level: 'protected',
-          customPrefix: 'protected/avatar/'
+          customPrefix: {
+            protected: protectedAvatarFolderCustomPrefix
+          }
         }
       )
-      console.log(JSON.stringify(storagePutResult))
+      console.log(JSON.stringify(storagePutResult?.key))
 
       // if (!result.cancelled) {
       //   setImage(result.uri)
@@ -207,11 +224,7 @@ const Profile: React.FC = () => {
           rounded
           icon={{ name: 'account', type: 'material-community' }}
           containerStyle={{ backgroundColor: rneTheme.colors?.grey1 }}
-          source={
-            profileUserProps?.picture
-              ? { uri: profileUserProps.picture }
-              : undefined
-          }
+          source={avatarImageUrl ? { uri: avatarImageUrl } : undefined}
         >
           {isOwnProfile && (
             <Avatar.Accessory

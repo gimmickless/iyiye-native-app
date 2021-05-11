@@ -30,6 +30,17 @@ expo upgrade
    REACT_APP_GOOGLE_PLACES_API_KEY={GOOGLE_PLACES_API_KEY}
    ```
 
+3. Import:
+
+- existing Cognito User Pool and Identity Pool as written in [the docs](https://docs.amplify.aws/cli/auth/import)
+
+- existing storage as [mentioned here](https://docs.amplify.aws/cli/storage/import#import-an-existing-s3-bucket)
+
+  ```sh
+  amplify import storage
+  amplify import auth
+  ```
+
 ### Github actions secrets
 
 Some

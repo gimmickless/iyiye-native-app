@@ -21,6 +21,7 @@ export type AuthUserState = {
         theme?: string
         bio?: string
         contactable?: boolean
+        identityId?: string
         address1?: AuthUserAddress
         address2?: AuthUserAddress
         address3?: AuthUserAddress

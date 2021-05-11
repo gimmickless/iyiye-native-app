@@ -68,6 +68,7 @@ export type User = {
   picture?: string | null,
   bio?: string | null,
   contactable?: boolean | null,
+  identityId?: string | null,
 };
 
 export type CreateInAppNotificationMutationVariables = {
@@ -115,6 +116,7 @@ export type GetUserBasicInfoQuery = {
     picture?: string | null,
     bio?: string | null,
     contactable?: boolean | null,
+    identityId?: string | null,
   } | null,
 };
 

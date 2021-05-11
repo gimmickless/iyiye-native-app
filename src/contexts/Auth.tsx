@@ -21,6 +21,7 @@ type CreateAuthUserInput = {
   locale?: string
   theme?: string
   bio?: string
+  identityId?: string
   contactable?: boolean
   address1?: AuthUserAddress
   address2?: AuthUserAddress
@@ -153,10 +154,11 @@ export default ({ children }: any) => {
   useEffect(() => {
     !(async () => {
       try {
-        const [currentAuthUser] = await Promise.all([
+        const [currentAuthUser, currentCredentials] = await Promise.all([
           Auth.currentAuthenticatedUser({
             bypassCache: true
           }),
+          Auth.currentCredentials(),
           Auth.currentSession() // this is deliberately called for refreshing tokens: https://docs.amplify.aws/lib/auth/manageusers/q/platform/js#retrieve-current-session
         ])
         if (!currentAuthUser) {
@@ -164,6 +166,16 @@ export default ({ children }: any) => {
           return
         }
         const { attributes: currentAuthUserAttributes } = currentAuthUser
+
+        const cognitoIdentityId = currentCredentials.identityId
+        if (
+          !currentAuthUserAttributes['custom:identityId'] ||
+          currentAuthUserAttributes['custom:identityId'] !== cognitoIdentityId
+        ) {
+          await Auth.updateUserAttributes(currentAuthUser, {
+            'custom:identityId': cognitoIdentityId
+          })
+        }
 
         dispatch({
           type: 'add_auth_user',
@@ -178,6 +190,7 @@ export default ({ children }: any) => {
             locale: currentAuthUserAttributes.locale,
             theme: currentAuthUserAttributes['custom:theme'],
             bio: currentAuthUserAttributes['custom:bio'],
+            identityId: currentAuthUserAttributes['custom:identityId'],
             contactable:
               currentAuthUserAttributes['custom:contactable'] === 'true',
             address1: currentAuthUserAttributes['custom:address1']
@@ -239,6 +252,7 @@ export default ({ children }: any) => {
           theme: attributes['custom:theme'],
           bio: attributes['custom:bio'],
           contactable: attributes['custom:contactable'] === 'true',
+          identityId: attributes['custom:identityId'],
           address1: attributes['custom:address1']
             ? (JSON.parse(attributes['custom:address1']) as AuthUserAddress)
             : undefined,
