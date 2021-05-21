@@ -11,11 +11,11 @@
     "format": "prettier --write src/**/*.{ts,tsx,scss,css,json}"
   },
   "dependencies": {
-    "@aws-amplify/api": "^3.3.0",
-    "@aws-amplify/auth": "^3.4.31",
-    "@aws-amplify/core": "^3.8.23",
-    "@aws-amplify/pubsub": "^3.3.0",
-    "@aws-amplify/storage": "^3.4.1",
+    "@aws-amplify/api": "^4.0.0",
+    "@aws-amplify/auth": "^4.0.0",
+    "@aws-amplify/core": "^4.0.2",
+    "@aws-amplify/pubsub": "^4.0.0",
+    "@aws-amplify/storage": "^4.0.0",
     "@react-native-async-storage/async-storage": "^1.13.0",
     "@react-native-community/datetimepicker": "3.2.0",
     "@react-native-community/masked-view": "0.1.10",
