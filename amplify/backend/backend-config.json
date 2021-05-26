@@ -1,6 +1,6 @@
 {
   "auth": {
-    "iyiyenativeapp4e16bded": {
+    "iyiyenativeapp0dff086c": {
       "service": "Cognito",
       "serviceType": "imported",
       "providerPlugin": "awscloudformation",
