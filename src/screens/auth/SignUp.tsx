@@ -1,11 +1,12 @@
-import React, { useContext, useRef, useState } from 'react'
+import React, { ReactElement, useContext, useRef, useState } from 'react'
 import {
   StyleSheet,
   Platform,
   KeyboardAvoidingView,
   Pressable,
   Modal,
-  View
+  View,
+  TextInput
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import * as Localization from 'expo-localization'
@@ -59,15 +60,15 @@ const SignUp: React.FC = () => {
   const [showTermsModal, setShowTermsModal] = useState(false)
   const [showPrivacyModal, setShowPrivacyModal] = useState(false)
 
-  const usernameRef = useRef<typeof Input | null>(null)
-  const emailRef = useRef<typeof Input | null>(null)
-  const passwordRef = useRef<typeof Input | null>(null)
-  const retypePasswordRef = useRef<typeof Input | null>(null)
-  const birthDateRef = useRef<typeof Input | null>(null)
+  const usernameRef = useRef<TextInput | null>(null)
+  const emailRef = useRef<TextInput | null>(null)
+  const passwordRef = useRef<TextInput | null>(null)
+  const retypePasswordRef = useRef<TextInput | null>(null)
+  const birthDateRef = useRef<TextInput | null>(null)
 
   const maxBirthDate = getMaxDateFor18OrMoreYearsOld()
 
-  // Schema valdiation
+  // Schema validation
   const formSchema: Yup.SchemaOf<FormData> = Yup.object().shape({
     fullName: Yup.string().required(t('common.message.validation.required')),
     username: Yup.string()
@@ -174,6 +175,7 @@ const SignUp: React.FC = () => {
             handleChange,
             handleBlur,
             handleSubmit,
+            touched,
             values,
             errors,
             setFieldValue
@@ -184,7 +186,7 @@ const SignUp: React.FC = () => {
                 placeholder={t('screen.auth.signUp.label.fullName')}
                 onChangeText={handleChange('fullName')}
                 onBlur={handleBlur('fullName')}
-                errorMessage={errors.fullName}
+                errorMessage={touched.fullName ? errors.fullName : undefined}
                 style={styles.formInput}
                 autoCompleteType="name"
                 autoCorrect={false}
@@ -200,7 +202,7 @@ const SignUp: React.FC = () => {
                 placeholder={t('screen.auth.signUp.label.username')}
                 onChangeText={handleChange('username')}
                 onBlur={handleBlur('username')}
-                errorMessage={errors.username}
+                errorMessage={touched.username ? errors.username : undefined}
                 style={styles.formInput}
                 autoCompleteType="username"
                 autoCorrect={false}
@@ -217,7 +219,7 @@ const SignUp: React.FC = () => {
                 placeholder={t('screen.auth.signUp.label.email')}
                 onChangeText={handleChange('email')}
                 onBlur={handleBlur('email')}
-                errorMessage={errors.email}
+                errorMessage={touched.email ? errors.email : undefined}
                 style={styles.formInput}
                 autoCompleteType="email"
                 autoCorrect={false}
@@ -233,7 +235,7 @@ const SignUp: React.FC = () => {
                 placeholder={t('screen.auth.signUp.label.password')}
                 onChangeText={handleChange('password')}
                 onBlur={handleBlur('password')}
-                errorMessage={errors.password}
+                errorMessage={touched.password ? errors.password : undefined}
                 style={styles.formInput}
                 autoCompleteType="password"
                 autoCorrect={false}
@@ -249,7 +251,9 @@ const SignUp: React.FC = () => {
                 placeholder={t('screen.auth.signUp.label.retypePassword')}
                 onChangeText={handleChange('retypePassword')}
                 onBlur={handleBlur('retypePassword')}
-                errorMessage={errors.retypePassword}
+                errorMessage={
+                  touched.retypePassword ? errors.retypePassword : undefined
+                }
                 style={styles.formInput}
                 autoCompleteType="off"
                 autoCorrect={false}
@@ -268,7 +272,9 @@ const SignUp: React.FC = () => {
                     onFocus={() => setShowDatePicker(true)}
                     onChangeText={handleChange('birthDate')}
                     onBlur={handleBlur('birthDate')}
-                    errorMessage={errors.birthDate}
+                    errorMessage={
+                      touched.birthDate ? errors.birthDate : undefined
+                    }
                     style={styles.formInput}
                     autoCompleteType="off"
                     autoCorrect={false}
@@ -327,7 +333,7 @@ const SignUp: React.FC = () => {
                 uncheckedColor={rneTheme.colors?.error}
                 containerStyle={styles.formCheckbox}
               />
-              {errors.termsAgreed && (
+              {touched.termsAgreed && errors.termsAgreed && (
                 <Text
                   style={{
                     ...styles.errorMessageText,

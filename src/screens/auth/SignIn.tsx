@@ -1,5 +1,11 @@
 import React, { useContext, useRef, useState } from 'react'
-import { StyleSheet, Platform, KeyboardAvoidingView, View } from 'react-native'
+import {
+  StyleSheet,
+  Platform,
+  KeyboardAvoidingView,
+  View,
+  TextInput
+} from 'react-native'
 import { CommonActions, useNavigation } from '@react-navigation/native'
 import { Input, Button, Text } from 'react-native-elements'
 import { Formik } from 'formik'
@@ -27,7 +33,7 @@ const SignIn: React.FC = () => {
   const { action } = useContext(AuthUserContext)
   const [signInLoading, setSignInLoading] = useState(false)
   const navigation = useNavigation()
-  const passwordRef = useRef<typeof Input | null>(null)
+  const passwordRef = useRef<TextInput | null>(null)
 
   const formSchema: Yup.SchemaOf<FormData> = Yup.object().shape({
     usernameOrEmail: Yup.string()
@@ -75,14 +81,23 @@ const SignIn: React.FC = () => {
           validationSchema={formSchema}
           onSubmit={onSubmit}
         >
-          {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
+          {({
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            touched,
+            values,
+            errors
+          }) => (
             <View>
               <Input
                 value={values.usernameOrEmail}
                 placeholder={t('screen.auth.signIn.label.usernameOrEmail')}
                 onChangeText={handleChange('usernameOrEmail')}
                 onBlur={handleBlur('usernameOrEmail')}
-                errorMessage={errors.usernameOrEmail}
+                errorMessage={
+                  touched.usernameOrEmail ? errors.usernameOrEmail : undefined
+                }
                 style={styles.formInput}
                 autoCompleteType="email"
                 autoCorrect={false}
@@ -101,7 +116,9 @@ const SignIn: React.FC = () => {
                     placeholder={t('screen.auth.signIn.label.password')}
                     onChangeText={handleChange('password')}
                     onBlur={handleBlur('password')}
-                    errorMessage={errors.password}
+                    errorMessage={
+                      touched.password ? errors.password : undefined
+                    }
                     style={styles.formInput}
                     autoCompleteType="password"
                     autoCorrect={false}

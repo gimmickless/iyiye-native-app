@@ -5,7 +5,8 @@ import {
   KeyboardAvoidingView,
   View,
   NativeModules,
-  LayoutAnimation
+  LayoutAnimation,
+  TextInput
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { Input, Button, Text, Divider, Card } from 'react-native-elements'
@@ -47,8 +48,8 @@ const ForgotPasword: React.FC = () => {
   const [emailSent, setEmailSent] = useState(false)
   const navigation = useNavigation()
   const formRef = useRef<FormikProps<UserInfoFormData>>(null)
-  const newPasswordRef = useRef<typeof Input | null>(null)
-  const retypeNewPasswordRef = useRef<typeof Input | null>(null)
+  const newPasswordRef = useRef<TextInput | null>(null)
+  const retypeNewPasswordRef = useRef<TextInput | null>(null)
 
   const userInfoSchema: Yup.SchemaOf<UserInfoFormData> = Yup.object().shape({
     username: Yup.string()
@@ -61,8 +62,8 @@ const ForgotPasword: React.FC = () => {
       )
   })
 
-  const resetPasswordSchema: Yup.SchemaOf<ResetPasswordFormData> = Yup.object().shape(
-    {
+  const resetPasswordSchema: Yup.SchemaOf<ResetPasswordFormData> =
+    Yup.object().shape({
       confirmationCode: Yup.string()
         .required(t('common.message.validation.required'))
         .matches(
@@ -83,8 +84,7 @@ const ForgotPasword: React.FC = () => {
           [Yup.ref('newPassword'), null],
           'screen.auth.forgotPassword.message.validation.passwordsNotMatch'
         )
-    }
-  )
+    })
 
   const onSubmitEmail = async ({ username }: UserInfoFormData) => {
     setSendEmailLoading(true)
@@ -142,7 +142,14 @@ const ForgotPasword: React.FC = () => {
           onSubmit={onSubmitEmail}
           innerRef={formRef}
         >
-          {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
+          {({
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            touched,
+            values,
+            errors
+          }) => (
             <View style={styles.inputAndButtonRow}>
               <View style={styles.inputAndButtonCol1}>
                 <Input
@@ -150,7 +157,7 @@ const ForgotPasword: React.FC = () => {
                   placeholder={t('screen.auth.forgotPassword.label.username')}
                   onChangeText={handleChange('username')}
                   onBlur={handleBlur('username')}
-                  errorMessage={errors.username}
+                  errorMessage={touched.username ? errors.username : undefined}
                   style={styles.formInput}
                   autoCompleteType="username"
                   autoCorrect={false}
@@ -194,7 +201,14 @@ const ForgotPasword: React.FC = () => {
               validationSchema={resetPasswordSchema}
               onSubmit={onSubmitNewPassword}
             >
-              {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
+              {({
+                handleChange,
+                handleBlur,
+                handleSubmit,
+                touched,
+                values,
+                errors
+              }) => (
                 <View>
                   <Input
                     value={values.confirmationCode}
@@ -203,7 +217,11 @@ const ForgotPasword: React.FC = () => {
                     )}
                     onChangeText={handleChange('confirmationCode')}
                     onBlur={handleBlur('confirmationCode')}
-                    errorMessage={errors.confirmationCode}
+                    errorMessage={
+                      touched.confirmationCode
+                        ? errors.confirmationCode
+                        : undefined
+                    }
                     style={styles.formInput}
                     autoCompleteType="off"
                     autoCorrect={false}
@@ -221,7 +239,9 @@ const ForgotPasword: React.FC = () => {
                     )}
                     onChangeText={handleChange('newPassword')}
                     onBlur={handleBlur('newPassword')}
-                    errorMessage={errors.newPassword}
+                    errorMessage={
+                      touched.newPassword ? errors.newPassword : undefined
+                    }
                     style={styles.formInput}
                     autoCompleteType="password"
                     autoCorrect={false}
@@ -240,7 +260,11 @@ const ForgotPasword: React.FC = () => {
                     )}
                     onChangeText={handleChange('retypeNewPassword')}
                     onBlur={handleBlur('retypeNewPassword')}
-                    errorMessage={errors.retypeNewPassword}
+                    errorMessage={
+                      touched.retypeNewPassword
+                        ? errors.retypeNewPassword
+                        : undefined
+                    }
                     style={styles.formInput}
                     autoCompleteType="off"
                     autoCorrect={false}

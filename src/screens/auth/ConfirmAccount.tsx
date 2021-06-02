@@ -80,7 +80,14 @@ const ConfirmAccount: React.FC = () => {
           validationSchema={formSchema}
           onSubmit={onSubmit}
         >
-          {({ handleChange, handleBlur, handleSubmit, values, errors }) => (
+          {({
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            touched,
+            values,
+            errors
+          }) => (
             <View>
               <Input
                 value={values.verificationCode}
@@ -89,7 +96,9 @@ const ConfirmAccount: React.FC = () => {
                 )}
                 onChangeText={handleChange('verificationCode')}
                 onBlur={handleBlur('verificationCode')}
-                errorMessage={errors.verificationCode}
+                errorMessage={
+                  touched.verificationCode ? errors.verificationCode : undefined
+                }
                 style={styles.formInput}
                 autoCompleteType="password"
                 autoCorrect={false}
