@@ -33,6 +33,7 @@ import { useInAppMessage } from 'contexts/InAppMessage'
 import { AuthUserState } from 'types/context'
 import { Storage } from '@aws-amplify/storage'
 import { Auth } from '@aws-amplify/auth'
+import { getUserAvatarUrl } from 'utils/constants'
 
 export type ProfileDefaultRouteProps = RouteProp<
   ProfileStackParamList,
@@ -63,7 +64,8 @@ const Profile: React.FC = () => {
   const route = useRoute<ProfileDefaultRouteProps>()
   const { theme: rneTheme } = useContext(ThemeContext)
   const { addInAppMessage } = useInAppMessage()
-  const [avatarImageUrl, setAvatarImageUrl] = useState<string>('')
+  const [avatarImageUrl, setAvatarImageUrl] =
+    useState<string | undefined>(undefined)
   const { state: authUser, action: authUserAction } =
     useContext(AuthUserContext)
   const [profileUserProps, setProfileUserProps] =
@@ -135,8 +137,13 @@ const Profile: React.FC = () => {
     !(async () => {
       try {
         const signedUrl = await Storage.get(profileUsername, {
+          // cacheControl: 'no-cache',
+          contentType: 'image/*',
           level: 'protected',
-          identityId: profileUserProps?.identityId
+          identityId: profileUserProps?.identityId,
+          customPrefix: {
+            protected: protectedAvatarFolderCustomPrefix
+          }
         })
         setAvatarImageUrl(signedUrl.toString())
       } catch (err) {
@@ -169,6 +176,7 @@ const Profile: React.FC = () => {
       await requestMediaLibraryPermissionsAsync(t)
 
       const imagePickResult = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
         aspect: [1, 1],
         quality: 1
@@ -176,24 +184,26 @@ const Profile: React.FC = () => {
 
       if (imagePickResult.cancelled) return
 
-      const storagePutResult: any = await Storage.put(
-        profileUsername,
-        imagePickResult.uri,
-        {
-          level: 'protected',
-          customPrefix: {
-            protected: protectedAvatarFolderCustomPrefix
-          }
+      const response = await fetch(imagePickResult.uri)
+      const blob = await response.blob()
+      await Storage.put(profileUsername, blob, {
+        contentType: 'image/*',
+        level: 'protected',
+        customPrefix: {
+          protected: protectedAvatarFolderCustomPrefix
         }
-      )
-      console.log(JSON.stringify(storagePutResult?.key))
+      })
+      setAvatarImageUrl(imagePickResult.uri)
 
-      // if (!result.cancelled) {
-      //   setImage(result.uri)
-      //   // TODO: Upload Image to S3
-
-      //   // TODO: Update user data ['picture'] as the resulting S3 url
-      // }
+      // TODO: Actually the avatar URL kept in the Cognito is useless as Storage does not take urls
+      await authUserAction.update({
+        ...authUser.props,
+        fullName: authUser.props?.fullName ?? '',
+        picture: getUserAvatarUrl(
+          authUser.props?.identityId ?? '',
+          profileUsername
+        )
+      })
     } catch (err) {
       console.log('Err: ' + JSON.stringify(err))
       addInAppMessage({

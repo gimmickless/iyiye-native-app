@@ -1,5 +1,8 @@
+const googleMapsEndpoint = 'https://maps.googleapis.com/'
+
 // Limitations
-export const passwordRegex = /^(?=.*\d)(?=.*[.!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/i
+export const passwordRegex =
+  /^(?=.*\d)(?=.*[.!@#$%^&*])(?=.*[a-z])(?=.*[A-Z]).{8,}$/i
 export const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i
 export const usernameRegex = /^[A-Z0-9]+$/i
 // export const usernameOrEmailRegex = new RegExp(
@@ -38,16 +41,28 @@ export const headerRightButtonTextFont = 16
 export const listItemPrimaryFontSize = 22
 export const listItemSecondaryFontSize = 18
 
-export const getHyperlinkTextColor = (isDark: boolean) => {
+export const getHyperlinkTextColor = (isDark: boolean): string => {
   return isDark ? 'lightblue' : 'blue'
 }
 
 // Place
 export const locationDelta = 0.0025
 
+// Storage
+export const getUserAvatarUrl = (
+  cognitoIdentityId: string,
+  username: string
+): string => {
+  if (!cognitoIdentityId || !username) {
+    throw new Error(
+      'cognitoIdentityId and username both required for inferring the profile pic URL'
+    )
+  }
+  return `https://${process.env.REACT_APP_S3_USER_STORAGE_BUCKET}.s3-${process.env.REACT_APP_AWS_REGION}.amazonaws.com/protected/avatar/${cognitoIdentityId}/${username}`
+}
+
 // API
 export const googleMapsAddressComponentStreetNumberType = 'street_number'
-const googleMapsEndpoint = 'https://maps.googleapis.com/'
 export const googlePlacesAutocompleteBaseUrl = new URL(
   '/maps/api/place/autocomplete/json',
   googleMapsEndpoint
