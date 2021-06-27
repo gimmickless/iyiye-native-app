@@ -1,7 +1,7 @@
 name: android-build
 on:
   release:
-    types: [published]
+    types: [created]
 jobs:
   install-and-test:
     runs-on: ubuntu-latest

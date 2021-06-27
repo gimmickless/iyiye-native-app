@@ -2,6 +2,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useState
 } from 'react'
@@ -9,17 +10,15 @@ import {
   View,
   StyleSheet,
   SafeAreaView,
-  FlatList,
-  Pressable,
   Alert,
-  Platform
+  Platform,
+  ScrollView
 } from 'react-native'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import LoadingView from 'components/shared/LoadingView'
 import { LocalizationContext } from 'contexts/Localization'
 import { AuthUserContext } from 'contexts/Auth'
-import ListSeparator from 'components/shared/ListSeparator'
-import { Avatar, Text, ThemeContext } from 'react-native-elements'
+import { Avatar, Chip, Text, ThemeContext } from 'react-native-elements'
 import * as ImagePicker from 'expo-image-picker'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { HomeStackScreenNames, TabNames } from 'types/route'
@@ -34,12 +33,20 @@ import { AuthUserState } from 'types/context'
 import { Storage } from '@aws-amplify/storage'
 import { Auth } from '@aws-amplify/auth'
 import { getUserAvatarUrl } from 'utils/constants'
+import {
+  defaultOnOverflowMenuPress,
+  HeaderButtons,
+  HiddenItem,
+  OverflowMenu
+} from 'react-navigation-header-buttons'
+import { SceneMap, TabView } from 'react-native-tab-view'
 
 export type ProfileDefaultRouteProps = RouteProp<
   ProfileStackParamList,
   'ProfileDefault'
 >
 
+const defaultContainerMargin = 8
 const protectedAvatarFolderCustomPrefix = 'protected/avatar/'
 
 const requestMediaLibraryPermissionsAsync = async (
@@ -58,22 +65,39 @@ const requestMediaLibraryPermissionsAsync = async (
   }
 }
 
+const FirstRoute = () => (
+  <View style={{ flex: 1, backgroundColor: '#ff4081' }}>
+    <Text>Asdsad1</Text>
+  </View>
+)
+
+const SecondRoute = () => (
+  <View style={{ flex: 1, backgroundColor: '#673ab7' }}>
+    <Text>Asdsad2</Text>
+  </View>
+)
+
 const Profile: React.FC = () => {
   const navigation = useNavigation()
   const { t } = useContext(LocalizationContext)
   const route = useRoute<ProfileDefaultRouteProps>()
   const { theme: rneTheme } = useContext(ThemeContext)
   const { addInAppMessage } = useInAppMessage()
-  const [avatarImageUrl, setAvatarImageUrl] =
-    useState<string | undefined>(undefined)
+  const [avatarImageUrl, setAvatarImageUrl] = useState<string | undefined>(
+    undefined
+  )
+  const [tabIndex, setTabIndex] = useState(0)
+  const [tabRoutes] = useState([
+    { key: 'first', title: 'First' },
+    { key: 'second', title: 'Second' }
+  ])
   const { state: authUser, action: authUserAction } =
     useContext(AuthUserContext)
-  const [profileUserProps, setProfileUserProps] =
-    useState<
-      | AuthUserState['props']
-      | GetUserBasicInfoQuery['getUserBasicInfo']
-      | undefined
-    >(undefined)
+  const [profileUserProps, setProfileUserProps] = useState<
+    | AuthUserState['props']
+    | GetUserBasicInfoQuery['getUserBasicInfo']
+    | undefined
+  >(undefined)
 
   const authUsername = authUser.props?.username
   const profileUsername = route.params?.username ?? authUsername
@@ -102,6 +126,38 @@ const Profile: React.FC = () => {
       { cancelable: true }
     )
   }, [authUserAction, navigation, t])
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      // headerStyle: { height: homeHeaderHeight, elevation: 0, shadowOpacity: 0 },
+      headerRight: () => (
+        <HeaderButtons>
+          <OverflowMenu
+            OverflowIcon={({ color }) => (
+              <MaterialCommunityIcons
+                name="dots-vertical"
+                size={23}
+                color={color}
+              />
+            )}
+            onPress={(params) => {
+              defaultOnOverflowMenuPress({
+                ...params,
+                cancelButtonLabel: t(
+                  'screen.profile.default.menu.options.cancel'
+                )
+              })
+            }}
+          >
+            <HiddenItem
+              title={t('screen.profile.default.menu.options.signOut')}
+              onPress={onSignOutPress}
+            />
+          </OverflowMenu>
+        </HeaderButtons>
+      )
+    })
+  }, [navigation, onSignOutPress, t])
 
   useEffect(() => {
     !(async () => {
@@ -154,21 +210,6 @@ const Profile: React.FC = () => {
       }
     })()
   }, [addInAppMessage, profileUserProps?.identityId, profileUsername])
-
-  const listItems = useMemo(
-    () => [
-      {
-        key: 'logout',
-        value: {
-          title: t('screen.profile.default.list.signOut'),
-          iconName: 'logout',
-          color: undefined
-        },
-        action: () => onSignOutPress()
-      }
-    ],
-    [onSignOutPress, t]
-  )
 
   const onChangeAvatar = async () => {
     if (!profileUsername) return
@@ -229,6 +270,7 @@ const Profile: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.userInfoContainer}>
+        {/* Profile Picture */}
         <Avatar
           size="large"
           rounded
@@ -246,40 +288,46 @@ const Profile: React.FC = () => {
           )}
         </Avatar>
       </View>
+      {/* Username */}
       <Text h4 style={styles.usernameText}>
         {profileUsername}
       </Text>
-      <FlatList
-        style={styles.listContainer}
-        data={listItems}
-        renderItem={({ item }) => (
-          <Pressable onPress={item.action}>
-            <View style={styles.listItem}>
-              <View style={styles.listItemTypeIconField}>
-                <MaterialCommunityIcons
-                  name={item.value?.iconName}
-                  size={25}
-                  color={item.value?.color ?? rneTheme.colors?.grey0}
-                />
-              </View>
-              <View style={styles.listItemMainField}>
-                <Text
-                  style={[
-                    styles.listItemMainFieldText,
-                    {
-                      color: item.value?.color ?? rneTheme.colors?.grey0
-                    }
-                  ]}
-                >
-                  {item.value?.title}
-                </Text>
-              </View>
-            </View>
-          </Pressable>
-        )}
-        keyExtractor={(item) => item.key}
-        ItemSeparatorComponent={ListSeparator}
-      />
+      {/* Bio */}
+      <Text style={styles.bioText}>{authUser.props.bio ?? '{No bio}'}</Text>
+      {/* TODO: Badges */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={{
+          marginVertical: defaultContainerMargin,
+          marginLeft: defaultContainerMargin
+        }}
+      >
+        <Chip
+          title="Fossil"
+          type="outline"
+          icon={{
+            name: 'bone',
+            type: 'material-community',
+            size: 20,
+            color: 'pink'
+          }}
+          titleStyle={{ color: 'pink', fontSize: 14 }}
+          buttonStyle={{ borderColor: 'pink' }}
+        />
+      </ScrollView>
+      {/* TODO: Tabs */}
+
+      <View style={{ marginVertical: defaultContainerMargin }}>
+        <TabView
+          navigationState={{ index: tabIndex, routes: tabRoutes }}
+          onIndexChange={setTabIndex}
+          renderScene={SceneMap({
+            first: FirstRoute,
+            second: SecondRoute
+          })}
+        />
+      </View>
     </SafeAreaView>
   )
 }
@@ -287,12 +335,15 @@ const Profile: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: 'flex-start'
   },
   userInfoContainer: {
     alignItems: 'center'
   },
   usernameText: {
+    alignSelf: 'center'
+  },
+  bioText: {
     alignSelf: 'center'
   },
   listContainer: { paddingHorizontal: 8 },

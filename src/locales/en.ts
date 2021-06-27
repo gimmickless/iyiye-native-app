@@ -298,6 +298,13 @@ const englishTranslation = {
       title: 'Profile',
       label: {},
       default: {
+        menu: {
+          title: 'Actions',
+          options: {
+            cancel: 'Cancel',
+            signOut: 'Sign Out'
+          }
+        },
         list: {
           signOut: 'Sign Out'
         },
