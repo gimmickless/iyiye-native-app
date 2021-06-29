@@ -298,32 +298,46 @@ const englishTranslation = {
       title: 'Profile',
       label: {},
       default: {
-        menu: {
-          title: 'Actions',
-          options: {
-            cancel: 'Cancel',
-            signOut: 'Sign Out'
-          }
-        },
         list: {
-          signOut: 'Sign Out'
+          orders: 'Orders',
+          kits: 'Recipe Kits',
+          auditLog: 'Audit Log'
         },
         alert: {
           mediaLibraryPermissionNotGranted: {
             message:
               'Sorry, we need camera roll permissions to change the profile picture'
-          },
+          }
+        }
+      },
+      settings: {
+        title: 'Settings',
+        label: {},
+        sectionList: {
+          default: {
+            title: '',
+            items: {
+              signOut: ''
+            }
+          }
+        },
+        alert: {
           signOutConfirmation: {
             title: 'About to Sign Out',
             message: 'Are you sure?',
             okButton: 'Yes, I am'
           }
         }
+      },
+      orders: {
+        title: 'Orders'
+      },
+      kits: {
+        title: 'Kits'
+      },
+      auditLog: {
+        title: 'Audit Log'
       }
-    },
-    settings: {
-      title: 'Settings',
-      label: {}
     }
   }
 }

@@ -1,5 +1,4 @@
 import React, {
-  useCallback,
   useContext,
   useEffect,
   useLayoutEffect,
@@ -10,9 +9,10 @@ import {
   View,
   StyleSheet,
   SafeAreaView,
-  Alert,
   Platform,
-  ScrollView
+  ScrollView,
+  Pressable,
+  FlatList
 } from 'react-native'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import LoadingView from 'components/shared/LoadingView'
@@ -21,7 +21,7 @@ import { AuthUserContext } from 'contexts/Auth'
 import { Avatar, Chip, Text, ThemeContext } from 'react-native-elements'
 import * as ImagePicker from 'expo-image-picker'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { HomeStackScreenNames, TabNames } from 'types/route'
+import { ProfileStackScreenNames } from 'types/route'
 import { ProfileStackParamList } from 'router/stacks/Profile'
 import NotFoundView from 'components/shared/NotFoundView'
 import { GuestNotAllowedView } from 'components/auth'
@@ -31,20 +31,22 @@ import { GetUserBasicInfoQuery, GetUserBasicInfoQueryVariables } from 'API'
 import { useInAppMessage } from 'contexts/InAppMessage'
 import { AuthUserState } from 'types/context'
 import { Storage } from '@aws-amplify/storage'
-import { Auth } from '@aws-amplify/auth'
 import { getUserAvatarUrl } from 'utils/constants'
-import {
-  defaultOnOverflowMenuPress,
-  HeaderButtons,
-  HiddenItem,
-  OverflowMenu
-} from 'react-navigation-header-buttons'
-import { SceneMap, TabView } from 'react-native-tab-view'
 
 export type ProfileDefaultRouteProps = RouteProp<
   ProfileStackParamList,
   'ProfileDefault'
 >
+
+interface ListItemProps {
+  isPublic: boolean
+  icon: {
+    name: string
+    color: string
+  }
+  title: string
+  onPress: () => void
+}
 
 const defaultContainerMargin = 8
 const protectedAvatarFolderCustomPrefix = 'protected/avatar/'
@@ -65,18 +67,6 @@ const requestMediaLibraryPermissionsAsync = async (
   }
 }
 
-const FirstRoute = () => (
-  <View style={{ flex: 1, backgroundColor: '#ff4081' }}>
-    <Text>Asdsad1</Text>
-  </View>
-)
-
-const SecondRoute = () => (
-  <View style={{ flex: 1, backgroundColor: '#673ab7' }}>
-    <Text>Asdsad2</Text>
-  </View>
-)
-
 const Profile: React.FC = () => {
   const navigation = useNavigation()
   const { t } = useContext(LocalizationContext)
@@ -86,11 +76,6 @@ const Profile: React.FC = () => {
   const [avatarImageUrl, setAvatarImageUrl] = useState<string | undefined>(
     undefined
   )
-  const [tabIndex, setTabIndex] = useState(0)
-  const [tabRoutes] = useState([
-    { key: 'first', title: 'First' },
-    { key: 'second', title: 'Second' }
-  ])
   const { state: authUser, action: authUserAction } =
     useContext(AuthUserContext)
   const [profileUserProps, setProfileUserProps] = useState<
@@ -103,65 +88,30 @@ const Profile: React.FC = () => {
   const profileUsername = route.params?.username ?? authUsername
   const isOwnProfile = authUsername === profileUsername
 
-  const onSignOutPress = useCallback(() => {
-    Alert.alert(
-      t('screen.profile.default.alert.signOutConfirmation.title'),
-      t('screen.profile.default.alert.signOutConfirmation.message'),
-      [
-        {
-          text: t('common.button.cancel'),
-          onPress: () => {
-            return
-          },
-          style: 'cancel'
-        },
-        {
-          text: t('screen.profile.default.alert.signOutConfirmation.okButton'),
-          onPress: async () => {
-            await authUserAction.logout()
-            navigation.navigate(HomeStackScreenNames.Default)
-          }
-        }
-      ],
-      { cancelable: true }
-    )
-  }, [authUserAction, navigation, t])
-
   useLayoutEffect(() => {
     navigation.setOptions({
       // headerStyle: { height: homeHeaderHeight, elevation: 0, shadowOpacity: 0 },
       headerRight: () => (
-        <HeaderButtons>
-          <OverflowMenu
-            OverflowIcon={({ color }) => (
-              <MaterialCommunityIcons
-                name="dots-vertical"
-                size={23}
-                color={color}
-              />
-            )}
-            onPress={(params) => {
-              defaultOnOverflowMenuPress({
-                ...params,
-                cancelButtonLabel: t(
-                  'screen.profile.default.menu.options.cancel'
-                )
-              })
-            }}
-          >
-            <HiddenItem
-              title={t('screen.profile.default.menu.options.signOut')}
-              onPress={onSignOutPress}
-            />
-          </OverflowMenu>
-        </HeaderButtons>
+        <View style={styles.headerRightButtonGroup}>
+          {/* TODO: Share Profile Button */}
+          {isOwnProfile && (
+            <Pressable
+              onPress={() => {
+                navigation.navigate(ProfileStackScreenNames.Settings)
+              }}
+            >
+              <MaterialCommunityIcons name="dots-horizontal-circle" size={23} />
+            </Pressable>
+          )}
+        </View>
       )
     })
-  }, [navigation, onSignOutPress, t])
+  }, [isOwnProfile, navigation])
 
   useEffect(() => {
     !(async () => {
       try {
+        // Collect initial user info to display
         if (isOwnProfile) {
           setProfileUserProps(authUser.props)
         } else {
@@ -191,9 +141,9 @@ const Profile: React.FC = () => {
   useEffect(() => {
     if (!profileUsername) return
     !(async () => {
+      // Load profile picture
       try {
         const signedUrl = await Storage.get(profileUsername, {
-          // cacheControl: 'no-cache',
           contentType: 'image/*',
           level: 'protected',
           identityId: profileUserProps?.identityId,
@@ -255,20 +205,45 @@ const Profile: React.FC = () => {
     return
   }
 
-  if (!authUser.loaded) {
-    return <LoadingView />
-  }
+  const optionList = useMemo(
+    () =>
+      [
+        {
+          isPublic: false,
+          icon: {
+            name: 'shopping',
+            color: 'orange'
+          },
+          title: t('screen.profile.default.list.orders'),
+          onPress: () => navigation.navigate(ProfileStackScreenNames.Orders)
+        },
+        {
+          isPublic: true,
+          icon: {
+            name: 'apps-box',
+            color: 'blue'
+          },
+          title: t('screen.profile.default.list.kits'),
+          onPress: () => navigation.navigate(ProfileStackScreenNames.Kits)
+        },
+        {
+          isPublic: false,
+          icon: {
+            name: 'sine-wave',
+            color: 'purple'
+          },
+          title: t('screen.profile.default.list.auditLog'),
+          onPress: () => navigation.navigate(ProfileStackScreenNames.AuditLog)
+        }
+      ] as Array<ListItemProps>,
+    [navigation, t]
+  )
 
-  if (!authUser.props) {
-    return <GuestNotAllowedView />
-  }
-
-  if (!profileUsername) {
-    return <NotFoundView />
-  }
-
+  if (!authUser.loaded) return <LoadingView />
+  if (!authUser.props) return <GuestNotAllowedView />
+  if (!profileUsername) return <NotFoundView />
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.view}>
       <View style={styles.userInfoContainer}>
         {/* Profile Picture */}
         <Avatar
@@ -294,7 +269,7 @@ const Profile: React.FC = () => {
       </Text>
       {/* Bio */}
       <Text style={styles.bioText}>{authUser.props.bio ?? '{No bio}'}</Text>
-      {/* TODO: Badges */}
+      {/* TODO: Calculate badges (with a lambda function and cache it maybe) */}
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -316,16 +291,25 @@ const Profile: React.FC = () => {
           buttonStyle={{ borderColor: 'pink' }}
         />
       </ScrollView>
-      {/* TODO: Tabs */}
-
+      {/* TODO: OptionList */}
       <View style={{ marginVertical: defaultContainerMargin }}>
-        <TabView
-          navigationState={{ index: tabIndex, routes: tabRoutes }}
-          onIndexChange={setTabIndex}
-          renderScene={SceneMap({
-            first: FirstRoute,
-            second: SecondRoute
-          })}
+        <FlatList
+          data={
+            isOwnProfile ? optionList : optionList.filter((el) => el.isPublic)
+          }
+          renderItem={({ item }) => (
+            <Pressable onPress={item.onPress}>
+              <View style={styles.listItem}>
+                <MaterialCommunityIcons
+                  name={item.icon.name}
+                  size={24}
+                  color={item.icon.color}
+                />
+                <Text style={styles.listItemTitle}>{item.title}</Text>
+              </View>
+            </Pressable>
+          )}
+          keyExtractor={(item, index) => item.title + index}
         />
       </View>
     </SafeAreaView>
@@ -333,9 +317,9 @@ const Profile: React.FC = () => {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'flex-start'
+  view: {},
+  headerRightButtonGroup: {
+    flexDirection: 'row'
   },
   userInfoContainer: {
     alignItems: 'center'
@@ -348,8 +332,13 @@ const styles = StyleSheet.create({
   },
   listContainer: { paddingHorizontal: 8 },
   listItem: {
-    flex: 1,
-    flexDirection: 'row'
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  listItemTitle: {
+    marginLeft: 12,
+    fontSize: 22
   },
   listItemTypeIconField: {
     paddingHorizontal: 8,

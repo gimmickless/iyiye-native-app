@@ -25,7 +25,11 @@ export enum NotificationStackScreenNames {
 }
 
 export enum ProfileStackScreenNames {
-  Default = 'ProfileDefault'
+  Default = 'ProfileDefault',
+  Orders = 'ProfileOrders',
+  Kits = 'ProfileKits',
+  AuditLog = 'ProfileAuditLog',
+  Settings = 'ProfileSettings'
 }
 
 export enum SearchStackScreenNames {

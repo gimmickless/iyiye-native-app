@@ -1,2 +1,5 @@
 export { default as Default } from './Default'
 export { default as Settings } from './Settings'
+export { default as AuditLog } from './AuditLog'
+export { default as Kits } from './Kits'
+export { default as Orders } from './Orders'

@@ -66,11 +66,9 @@ const Default: React.FC = () => {
         data: ListInAppNotificationsForUserQuery
       }>
 
-      const [
-        listInAppNotificationsForUserAppSyncResponse
-      ] = (await Promise.all([
-        listInAppNotificationsForUserAppSyncRequest
-      ])) as [{ data: ListInAppNotificationsForUserQuery }]
+      const [listInAppNotificationsForUserAppSyncResponse] = (await Promise.all(
+        [listInAppNotificationsForUserAppSyncRequest]
+      )) as [{ data: ListInAppNotificationsForUserQuery }]
       const listInAppNotificationsForUserResult =
         listInAppNotificationsForUserAppSyncResponse.data
           .listInAppNotificationsForUser ?? []
@@ -114,22 +112,20 @@ const Default: React.FC = () => {
         style={styles.listContainer}
         data={notifications}
         onEndReached={fetchNotifications}
-        renderItem={({ item }) => {
-          return (
-            <View style={styles.listItem}>
-              <View style={styles.listItemTypeIconField}>
-                <MaterialCommunityIcons
-                  name={getNotificationItemIconName(item?.type)}
-                  size={25}
-                  color={rneTheme.colors?.grey2}
-                />
-              </View>
-              <View style={styles.listItemMainField}>
-                <Text>{item?.body}</Text>
-              </View>
+        renderItem={({ item }) => (
+          <View style={styles.listItem}>
+            <View style={styles.listItemTypeIconField}>
+              <MaterialCommunityIcons
+                name={getNotificationItemIconName(item?.type)}
+                size={25}
+                color={rneTheme.colors?.grey2}
+              />
             </View>
-          )
-        }}
+            <View style={styles.listItemMainField}>
+              <Text>{item?.body}</Text>
+            </View>
+          </View>
+        )}
         keyExtractor={(item) => item?.id ?? ''}
         ItemSeparatorComponent={ListSeparator}
         ListEmptyComponent={dataLoading ? undefined : <NotFoundView />}
