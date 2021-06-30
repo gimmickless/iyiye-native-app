@@ -3,7 +3,10 @@ import { View, StyleSheet, Pressable, Alert } from 'react-native'
 import { Text, ThemeContext } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native'
 import { useAuthUser } from 'contexts/Auth'
-import { homeHeaderHeight } from 'utils/constants'
+import {
+  defaultContainerViewHorizontalPadding,
+  homeHeaderHeight
+} from 'utils/constants'
 import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
 import { MaterialIcons } from '@expo/vector-icons'
@@ -29,9 +32,10 @@ const Default: React.FC = () => {
   const { authUser } = useAuthUser()
 
   const isAuthUser = useMemo(() => authUser.props ?? undefined, [authUser])
-  const username = useMemo(() => authUser.props?.username ?? '', [
-    authUser.props?.username
-  ])
+  const username = useMemo(
+    () => authUser.props?.username ?? '',
+    [authUser.props?.username]
+  )
 
   const renderHeaderTitle = useMemo(
     () => (
@@ -155,7 +159,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 64,
     paddingVertical: 8,
-    paddingHorizontal: 8,
+    paddingHorizontal: defaultContainerViewHorizontalPadding,
     justifyContent: 'center'
   },
   headerTitlePrimaryText: {

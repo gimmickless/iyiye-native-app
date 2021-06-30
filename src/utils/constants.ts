@@ -23,6 +23,10 @@ export const commentMaxLength = 255
 
 export const maxAddressCount = 5
 
+// Style
+export const defaultListVerticalPadding = 10
+export const defaultContainerViewHorizontalPadding = 8
+
 // AWS, Amplify
 export const cognitoNotAuthenticatedMessageList = [
   'The user is not authenticated',

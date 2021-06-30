@@ -301,6 +301,7 @@ const englishTranslation = {
         list: {
           orders: 'Orders',
           kits: 'Recipe Kits',
+          addresses: 'Addresses',
           auditLog: 'Audit Log'
         },
         alert: {

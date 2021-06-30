@@ -21,7 +21,7 @@ import { AuthUserContext } from 'contexts/Auth'
 import { Avatar, Chip, Text, ThemeContext } from 'react-native-elements'
 import * as ImagePicker from 'expo-image-picker'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { ProfileStackScreenNames } from 'types/route'
+import { HomeStackScreenNames, ProfileStackScreenNames } from 'types/route'
 import { ProfileStackParamList } from 'router/stacks/Profile'
 import NotFoundView from 'components/shared/NotFoundView'
 import { GuestNotAllowedView } from 'components/auth'
@@ -31,7 +31,11 @@ import { GetUserBasicInfoQuery, GetUserBasicInfoQueryVariables } from 'API'
 import { useInAppMessage } from 'contexts/InAppMessage'
 import { AuthUserState } from 'types/context'
 import { Storage } from '@aws-amplify/storage'
-import { getUserAvatarUrl } from 'utils/constants'
+import {
+  defaultContainerViewHorizontalPadding,
+  defaultListVerticalPadding,
+  getUserAvatarUrl
+} from 'utils/constants'
 
 export type ProfileDefaultRouteProps = RouteProp<
   ProfileStackParamList,
@@ -94,7 +98,7 @@ const Profile: React.FC = () => {
       headerRight: () => (
         <View style={styles.headerRightButtonGroup}>
           {/* TODO: Share Profile Button */}
-          {isOwnProfile && (
+          {isOwnProfile ? (
             <Pressable
               onPress={() => {
                 navigation.navigate(ProfileStackScreenNames.Settings)
@@ -102,7 +106,7 @@ const Profile: React.FC = () => {
             >
               <MaterialCommunityIcons name="dots-horizontal-circle" size={23} />
             </Pressable>
-          )}
+          ) : undefined}
         </View>
       )
     })
@@ -212,7 +216,7 @@ const Profile: React.FC = () => {
           isPublic: false,
           icon: {
             name: 'shopping',
-            color: 'orange'
+            color: 'tomato'
           },
           title: t('screen.profile.default.list.orders'),
           onPress: () => navigation.navigate(ProfileStackScreenNames.Orders)
@@ -221,7 +225,7 @@ const Profile: React.FC = () => {
           isPublic: true,
           icon: {
             name: 'apps-box',
-            color: 'blue'
+            color: 'blueviolet'
           },
           title: t('screen.profile.default.list.kits'),
           onPress: () => navigation.navigate(ProfileStackScreenNames.Kits)
@@ -229,8 +233,17 @@ const Profile: React.FC = () => {
         {
           isPublic: false,
           icon: {
+            name: 'map-marker-radius',
+            color: 'mediumvioletred'
+          },
+          title: t('screen.profile.default.list.addresses'),
+          onPress: () => navigation.navigate(HomeStackScreenNames.AddressList)
+        },
+        {
+          isPublic: false,
+          icon: {
             name: 'sine-wave',
-            color: 'purple'
+            color: 'deepskyblue'
           },
           title: t('screen.profile.default.list.auditLog'),
           onPress: () => navigation.navigate(ProfileStackScreenNames.AuditLog)
@@ -285,10 +298,10 @@ const Profile: React.FC = () => {
             name: 'bone',
             type: 'material-community',
             size: 20,
-            color: 'pink'
+            color: 'springgreen'
           }}
-          titleStyle={{ color: 'pink', fontSize: 14 }}
-          buttonStyle={{ borderColor: 'pink' }}
+          titleStyle={{ color: 'springgreen', fontSize: 14 }}
+          buttonStyle={{ borderColor: 'springgreen' }}
         />
       </ScrollView>
       {/* TODO: OptionList */}
@@ -299,13 +312,25 @@ const Profile: React.FC = () => {
           }
           renderItem={({ item }) => (
             <Pressable onPress={item.onPress}>
-              <View style={styles.listItem}>
-                <MaterialCommunityIcons
-                  name={item.icon.name}
-                  size={24}
-                  color={item.icon.color}
-                />
-                <Text style={styles.listItemTitle}>{item.title}</Text>
+              <View style={styles.listItemContainer}>
+                <View style={styles.listItem}>
+                  <MaterialCommunityIcons
+                    name={item.icon.name}
+                    size={24}
+                    color={item.icon.color}
+                  />
+                  <Text style={styles.listItemTitle}>{item.title}</Text>
+                </View>
+                <View style={styles.listItemDetail}>
+                  <Text
+                    style={[
+                      styles.listItemTitle,
+                      { color: rneTheme.colors?.grey1 }
+                    ]}
+                  >
+                    {0}
+                  </Text>
+                </View>
               </View>
             </Pressable>
           )}
@@ -317,7 +342,9 @@ const Profile: React.FC = () => {
 }
 
 const styles = StyleSheet.create({
-  view: {},
+  view: {
+    paddingHorizontal: defaultContainerViewHorizontalPadding
+  },
   headerRightButtonGroup: {
     flexDirection: 'row'
   },
@@ -330,15 +357,23 @@ const styles = StyleSheet.create({
   bioText: {
     alignSelf: 'center'
   },
-  listContainer: { paddingHorizontal: 8 },
+  listContainer: {},
+  listItemContainer: {
+    flexDirection: 'row',
+    paddingVertical: defaultListVerticalPadding,
+    justifyContent: 'space-between'
+  },
   listItem: {
-    padding: 16,
     flexDirection: 'row',
     alignItems: 'center'
   },
   listItemTitle: {
     marginLeft: 12,
     fontSize: 22
+  },
+  listItemDetail: {
+    alignItems: 'center',
+    justifyContent: 'flex-end'
   },
   listItemTypeIconField: {
     paddingHorizontal: 8,
