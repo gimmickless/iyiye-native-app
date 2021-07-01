@@ -157,9 +157,8 @@ const getAddressObject = (
 
 const Form: React.FC = () => {
   const { t } = useContext(LocalizationContext)
-  const { state: authUser, action: authUserAction } = useContext(
-    AuthUserContext
-  )
+  const { state: authUser, action: authUserAction } =
+    useContext(AuthUserContext)
   const { addInAppMessage } = useInAppMessage()
   const navigation = useNavigation()
   const route = useRoute<HomeAddressFormRouteProps>()
@@ -174,10 +173,8 @@ const Form: React.FC = () => {
   const [selectedAddressKindIndex, setSelectedAddressKindIndex] = useState<
     number | undefined
   >(undefined)
-  const [
-    mapComputedAddress,
-    setMapComputedAddress
-  ] = useState<PlaceReverseGeocodingResult>()
+  const [mapComputedAddress, setMapComputedAddress] =
+    useState<PlaceReverseGeocodingResult>()
 
   const [fineTuningStreetNumber, setFineTuningStreetNumber] = useState<
     string | undefined
@@ -200,15 +197,17 @@ const Form: React.FC = () => {
     () => [
       {
         value: 'home',
-        text: t('screen.home.addressForm.segmentedControl.addressType.home')
+        text: t('screen.common.address.form.segmentedControl.addressType.home')
       },
       {
         value: 'office',
-        text: t('screen.home.addressForm.segmentedControl.addressType.office')
+        text: t(
+          'screen.common.address.form.segmentedControl.addressType.office'
+        )
       },
       {
         value: 'other',
-        text: t('screen.home.addressForm.segmentedControl.addressType.other')
+        text: t('screen.common.address.form.segmentedControl.addressType.other')
       }
     ],
     [t]
@@ -263,7 +262,9 @@ const Form: React.FC = () => {
   const onSave = useCallback(async () => {
     if (!fineTuningStreetNumber) {
       addInAppMessage({
-        message: t('screen.home.addressForm.message.streetNumberCannotBeEmpty'),
+        message: t(
+          'screen.common.address.form.message.streetNumberCannotBeEmpty'
+        ),
         type: 'error'
       })
       return
@@ -306,8 +307,8 @@ const Form: React.FC = () => {
     } catch (err) {
       if (err instanceof AddressSlotFullError) {
         Alert.alert(
-          t('screen.home.addressForm.alert.addressSlotFull.title'),
-          t('screen.home.addressForm.alert.addressSlotFull.message', {
+          t('screen.common.address.form.alert.addressSlotFull.title'),
+          t('screen.common.address.form.alert.addressSlotFull.message', {
             maxAddressCount: 5
           }),
           [
@@ -320,7 +321,7 @@ const Form: React.FC = () => {
             },
             {
               text: t(
-                'screen.home.addressForm.alert.addressSlotFull.button.backToList'
+                'screen.common.address.form.alert.addressSlotFull.button.backToList'
               ),
               onPress: () => {
                 navigation.navigate(HomeStackScreenNames.AddressList)
@@ -364,10 +365,10 @@ const Form: React.FC = () => {
   useLayoutEffect(() => {
     navigation.setOptions({
       title: !isEdit
-        ? t('screen.home.addressForm.title.new')
-        : t('screen.home.addressForm.title.edit', {
+        ? t('screen.common.address.form.title.new')
+        : t('screen.common.address.form.title.edit', {
             addressKey: t(
-              `screen.home.addressForm.title.addressKeys.${editObject?.key}`
+              `screen.common.address.form.title.addressKeys.${editObject?.key}`
             )
           }),
       headerRight: () => (
@@ -444,13 +445,15 @@ const Form: React.FC = () => {
           <Button
             style={styles.blockButton}
             onPress={calculateAddressLine}
-            title={t('screen.home.addressForm.button.updateWithThisLocation')}
+            title={t(
+              'screen.common.address.form.button.updateWithThisLocation'
+            )}
             disabled={!hasRegionChanged}
           />
         </View>
 
         <Input
-          label={t('screen.home.addressForm.label.addressLine')}
+          label={t('screen.common.address.form.label.addressLine')}
           value={mapComputedAddress?.routeAddressLine}
           containerStyle={styles.addressBoxContainer}
           textContentType="fullStreetAddress"
@@ -475,13 +478,15 @@ const Form: React.FC = () => {
         <Card containerStyle={styles.fineTuningCard}>
           <Card.Title h4Style={{ color: rneTheme.colors?.grey1 }}>
             {t(
-              'screen.home.addressForm.title.section.fineTuning'
+              'screen.common.address.form.title.section.fineTuning'
             ).toLocaleUpperCase()}
           </Card.Title>
           <Card.Divider />
           <View style={styles.fineTuningInputFormContainer}>
             <Input
-              label={t('screen.home.addressForm.label.fineTuning.streetNumber')}
+              label={t(
+                'screen.common.address.form.label.fineTuning.streetNumber'
+              )}
               containerStyle={styles.fineTuningInputContainer}
               value={fineTuningStreetNumber}
               onChangeText={(val) => setFineTuningStreetNumber(val)}
@@ -490,7 +495,9 @@ const Form: React.FC = () => {
               keyboardType="default"
             />
             <Input
-              label={t('screen.home.addressForm.label.fineTuning.flatNumber')}
+              label={t(
+                'screen.common.address.form.label.fineTuning.flatNumber'
+              )}
               containerStyle={styles.fineTuningInputContainer}
               value={fineTuningFlatNumber ? `${fineTuningFlatNumber}` : ''}
               onChangeText={(val) => setFineTuningFlatNumber(parseInt(val, 10))}
@@ -499,7 +506,7 @@ const Form: React.FC = () => {
               keyboardType="number-pad"
             />
             <Input
-              label={t('screen.home.addressForm.label.fineTuning.floor')}
+              label={t('screen.common.address.form.label.fineTuning.floor')}
               containerStyle={styles.fineTuningInputContainer}
               value={fineTuningFloor ? `${fineTuningFloor}` : ''}
               onChangeText={(val) => setFineTuningFloor(parseInt(val, 10))}
@@ -508,7 +515,7 @@ const Form: React.FC = () => {
               keyboardType="number-pad"
             />
             <Input
-              label={t('screen.home.addressForm.label.addressDirections')}
+              label={t('screen.common.address.form.label.addressDirections')}
               value={addressDirections}
               onChangeText={(val) => setAddressDirections(val)}
               inputStyle={styles.addressDirectionsInput}

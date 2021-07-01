@@ -33,8 +33,8 @@ const Settings: React.FC = () => {
 
   const onSignOutPress = useCallback(() => {
     Alert.alert(
-      t('screen.profile.settings.alert.signOutConfirmation.title'),
-      t('screen.profile.settings.alert.signOutConfirmation.message'),
+      t('screen.common.profile.settings.alert.signOutConfirmation.title'),
+      t('screen.common.profile.settings.alert.signOutConfirmation.message'),
       [
         {
           text: t('common.button.cancel'),
@@ -44,7 +44,9 @@ const Settings: React.FC = () => {
           style: 'cancel'
         },
         {
-          text: t('screen.profile.settings.alert.signOutConfirmation.okButton'),
+          text: t(
+            'screen.common.profile.settings.alert.signOutConfirmation.okButton'
+          ),
           onPress: async () => {
             await authUserAction.logout()
             navigation.navigate(HomeStackScreenNames.Default)

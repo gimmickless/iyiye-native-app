@@ -133,6 +133,151 @@ const englishTranslation = {
         }
       }
     },
+    common: {
+      address: {
+        list: {
+          title: 'Addresses',
+          button: {
+            create: 'Add New',
+            createFirstAddress: "Let's create your first address"
+          },
+          message: {
+            locationPermissionDenied:
+              'Permission to access location was denied',
+            nothingFound: 'No addresses here'
+          },
+          list: {
+            currentLocation: {
+              title: 'Current Location'
+            },
+            subtitle: {
+              streetNumber: 'StreetNumber',
+              floor: 'Floor'
+            }
+          },
+          kind: {
+            current: 'Current',
+            home: 'Home',
+            office: 'Office',
+            other: 'Other'
+          },
+          alert: {
+            maxAddressLimit: {
+              title: 'Max Address Limit Hit',
+              message: 'Please edit one of the addresses or delete to make room'
+            }
+          }
+        },
+        locationSearch: {
+          titleSearchTextInput: {
+            placeholder: 'Search...'
+          },
+          quickAccessSectionList: {
+            currLocationItem: 'Use Current Location',
+            listTitle: {
+              recents: 'Recent'
+            },
+            button: {
+              clearHistory: 'Clear All'
+            }
+          }
+        },
+        form: {
+          title: {
+            new: 'New Address',
+            edit: 'Edit {{addressKey}}',
+            addressKeys: {
+              address1: 'Address 1',
+              address2: 'Address 2',
+              address3: 'Address 3',
+              address4: 'Address 4',
+              address5: 'Address 5'
+            },
+            section: {
+              fineTuning: 'Fine Tuning'
+            }
+          },
+          label: {
+            addressLine: 'Address',
+            fineTuning: {
+              streetNumber: 'Street Num',
+              flatNumber: 'Flat Num',
+              floor: 'Floor'
+            },
+            addressDirections: 'Directions'
+          },
+          segmentedControl: {
+            addressType: {
+              home: 'Home',
+              office: 'Office',
+              other: 'Other'
+            }
+          },
+          button: {
+            updateWithThisLocation: 'Update Address with Pinned Location'
+          },
+          message: {
+            streetNumberCannotBeEmpty: 'Street number cannot be empty'
+          },
+          alert: {
+            addressSlotFull: {
+              title: 'Address Slot Full',
+              message:
+                'Cannot add more than {{maxAddressCount}} addresses. Please delete a record from list, or edit an existing one',
+              button: {
+                backToList: 'Back to List'
+              }
+            }
+          }
+        }
+      },
+      profile: {
+        title: 'Profile',
+        label: {},
+        default: {
+          list: {
+            orders: 'Orders',
+            kits: 'Recipe Kits',
+            addresses: 'Addresses',
+            auditLog: 'Audit Log'
+          },
+          alert: {
+            mediaLibraryPermissionNotGranted: {
+              message:
+                'Sorry, we need camera roll permissions to change the profile picture'
+            }
+          }
+        },
+        settings: {
+          title: 'Settings',
+          label: {},
+          sectionList: {
+            default: {
+              title: '',
+              items: {
+                signOut: ''
+              }
+            }
+          },
+          alert: {
+            signOutConfirmation: {
+              title: 'About to Sign Out',
+              message: 'Are you sure?',
+              okButton: 'Yes, I am'
+            }
+          }
+        },
+        orders: {
+          title: 'Orders'
+        },
+        kits: {
+          title: 'Kits'
+        },
+        auditLog: {
+          title: 'Audit Log'
+        }
+      }
+    },
     home: {
       default: {
         title: {
@@ -176,100 +321,6 @@ const englishTranslation = {
             }
           }
         }
-      },
-      addressList: {
-        title: 'Addresses',
-        button: {
-          create: 'Add New',
-          createFirstAddress: "Let's create your first address"
-        },
-        message: {
-          locationPermissionDenied: 'Permission to access location was denied',
-          nothingFound: 'No addresses here'
-        },
-        list: {
-          currentLocation: {
-            title: 'Current Location'
-          },
-          subtitle: {
-            streetNumber: 'StreetNumber',
-            floor: 'Floor'
-          }
-        },
-        kind: {
-          current: 'Current',
-          home: 'Home',
-          office: 'Office',
-          other: 'Other'
-        },
-        alert: {
-          maxAddressLimit: {
-            title: 'Max Address Limit Hit',
-            message: 'Please edit one of the addresses or delete to make room'
-          }
-        }
-      },
-      addressLocationSearch: {
-        titleSearchTextInput: {
-          placeholder: 'Search...'
-        },
-        quickAccessSectionList: {
-          currLocationItem: 'Use Current Location',
-          listTitle: {
-            recents: 'Recent'
-          },
-          button: {
-            clearHistory: 'Clear All'
-          }
-        }
-      },
-      addressForm: {
-        title: {
-          new: 'New Address',
-          edit: 'Edit {{addressKey}}',
-          addressKeys: {
-            address1: 'Address 1',
-            address2: 'Address 2',
-            address3: 'Address 3',
-            address4: 'Address 4',
-            address5: 'Address 5'
-          },
-          section: {
-            fineTuning: 'Fine Tuning'
-          }
-        },
-        label: {
-          addressLine: 'Address',
-          fineTuning: {
-            streetNumber: 'Street Num',
-            flatNumber: 'Flat Num',
-            floor: 'Floor'
-          },
-          addressDirections: 'Directions'
-        },
-        segmentedControl: {
-          addressType: {
-            home: 'Home',
-            office: 'Office',
-            other: 'Other'
-          }
-        },
-        button: {
-          updateWithThisLocation: 'Update Address with Pinned Location'
-        },
-        message: {
-          streetNumberCannotBeEmpty: 'Street number cannot be empty'
-        },
-        alert: {
-          addressSlotFull: {
-            title: 'Address Slot Full',
-            message:
-              'Cannot add more than {{maxAddressCount}} addresses. Please delete a record from list, or edit an existing one',
-            button: {
-              backToList: 'Back to List'
-            }
-          }
-        }
       }
     },
     recipeKits: {
@@ -292,52 +343,6 @@ const englishTranslation = {
       },
       checkout: {
         title: 'Checkout'
-      }
-    },
-    profile: {
-      title: 'Profile',
-      label: {},
-      default: {
-        list: {
-          orders: 'Orders',
-          kits: 'Recipe Kits',
-          addresses: 'Addresses',
-          auditLog: 'Audit Log'
-        },
-        alert: {
-          mediaLibraryPermissionNotGranted: {
-            message:
-              'Sorry, we need camera roll permissions to change the profile picture'
-          }
-        }
-      },
-      settings: {
-        title: 'Settings',
-        label: {},
-        sectionList: {
-          default: {
-            title: '',
-            items: {
-              signOut: ''
-            }
-          }
-        },
-        alert: {
-          signOutConfirmation: {
-            title: 'About to Sign Out',
-            message: 'Are you sure?',
-            okButton: 'Yes, I am'
-          }
-        }
-      },
-      orders: {
-        title: 'Orders'
-      },
-      kits: {
-        title: 'Kits'
-      },
-      auditLog: {
-        title: 'Audit Log'
       }
     }
   }

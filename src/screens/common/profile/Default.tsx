@@ -64,7 +64,7 @@ const requestMediaLibraryPermissionsAsync = async (
     if (mediaLibraryPermissionStatus !== 'granted') {
       throw new Error(
         t(
-          'screen.profile.default.alert.mediaLibraryPermissionNotGranted.message'
+          'screen.common.profile.default.alert.mediaLibraryPermissionNotGranted.message'
         )
       )
     }
@@ -218,7 +218,7 @@ const Profile: React.FC = () => {
             name: 'shopping',
             color: 'tomato'
           },
-          title: t('screen.profile.default.list.orders'),
+          title: t('screen.common.profile.default.list.orders'),
           onPress: () => navigation.navigate(ProfileStackScreenNames.Orders)
         },
         {
@@ -227,7 +227,7 @@ const Profile: React.FC = () => {
             name: 'apps-box',
             color: 'blueviolet'
           },
-          title: t('screen.profile.default.list.kits'),
+          title: t('screen.common.profile.default.list.kits'),
           onPress: () => navigation.navigate(ProfileStackScreenNames.Kits)
         },
         {
@@ -236,7 +236,7 @@ const Profile: React.FC = () => {
             name: 'map-marker-radius',
             color: 'mediumvioletred'
           },
-          title: t('screen.profile.default.list.addresses'),
+          title: t('screen.common.profile.default.list.addresses'),
           onPress: () => navigation.navigate(HomeStackScreenNames.AddressList)
         },
         {
@@ -245,7 +245,7 @@ const Profile: React.FC = () => {
             name: 'sine-wave',
             color: 'deepskyblue'
           },
-          title: t('screen.profile.default.list.auditLog'),
+          title: t('screen.common.profile.default.list.auditLog'),
           onPress: () => navigation.navigate(ProfileStackScreenNames.AuditLog)
         }
       ] as Array<ListItemProps>,

@@ -1,8 +1,14 @@
 import React, { useContext } from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import { ConfirmAccount, ForgotPassword, SignIn, SignUp } from 'screens/auth'
-import { AuthStackScreenNames } from 'types/route'
 import { LocalizationContext } from 'contexts/Localization'
+
+export enum AuthStackScreenNames {
+  SignIn = 'SignIn',
+  SignUp = 'SignUp',
+  ConfirmAccount = 'ConfirmAccount',
+  ForgotPassword = 'ForgotPassword'
+}
 
 export type AuthStackParamList = {
   SignIn: undefined

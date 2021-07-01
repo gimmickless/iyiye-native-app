@@ -1,16 +1,22 @@
 import React, { useContext } from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
+import { Default as HomeDefault } from 'screens/home'
 import {
-  Default as HomeDefault,
   AddressList as HomeAddressList,
   AddressLocationSearch as HomeAddressLocationSearch,
   AddressForm as HomeAddressForm
-} from 'screens/home'
+} from 'screens/common/address'
 import { headerLeftContainerPaddingLeft } from 'utils/constants'
-import { HomeStackScreenNames } from 'types/route'
 import { Region } from 'react-native-maps'
 import { AuthUserAddressKey } from 'types/context'
 import { LocalizationContext } from 'contexts/Localization'
+
+export enum HomeStackScreenNames {
+  Default = 'HomeDefault',
+  AddressList = 'HomeAddressList',
+  AddressLocationSearch = 'HomeAddressLocationSearch',
+  AddressForm = 'HomeAddressForm'
+}
 
 export type HomeStackParamList = {
   HomeDefault: undefined
@@ -49,7 +55,7 @@ const HomeStackScreen: React.FC = () => {
         name={HomeStackScreenNames.AddressList}
         component={HomeAddressList}
         options={{
-          title: t('screen.home.addressList.title')
+          title: t('screen.common.address.list.title')
         }}
       />
       <HomeStack.Screen

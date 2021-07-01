@@ -126,7 +126,7 @@ const LocationSearch: React.FC = () => {
     return [
       {
         title: t(
-          'screen.home.addressLocationSearch.quickAccessSectionList.currLocationItem'
+          'screen.common.address.locationSearch.quickAccessSectionList.currLocationItem'
         )
       }
     ]
@@ -175,7 +175,7 @@ const LocationSearch: React.FC = () => {
           }}
           autoCorrect={false}
           placeholder={t(
-            'screen.home.addressLocationSearch.titleSearchTextInput.placeholder'
+            'screen.common.address.locationSearch.titleSearchTextInput.placeholder'
           )}
           returnKeyType="done"
           textContentType="streetAddressLine1"
@@ -228,7 +228,9 @@ const LocationSearch: React.FC = () => {
     const { status } = await Location.requestPermissionsAsync()
     if (status !== 'granted') {
       addInAppMessage({
-        message: t('screen.home.addressList.message.locationPermissionDenied'),
+        message: t(
+          'screen.common.address.list.message.locationPermissionDenied'
+        ),
         type: 'error'
       })
       return
@@ -375,7 +377,7 @@ const LocationSearch: React.FC = () => {
               }}
             >
               {t(
-                'screen.home.addressLocationSearch.quickAccessSectionList.listTitle.recents'
+                'screen.common.address.locationSearch.quickAccessSectionList.listTitle.recents'
               )}
             </Text>
             <Pressable onPress={onClearSearchHistory}>
@@ -386,7 +388,7 @@ const LocationSearch: React.FC = () => {
                 }}
               >
                 {t(
-                  'screen.home.addressLocationSearch.quickAccessSectionList.button.clearHistory'
+                  'screen.common.address.locationSearch.quickAccessSectionList.button.clearHistory'
                 )}
               </Text>
             </Pressable>

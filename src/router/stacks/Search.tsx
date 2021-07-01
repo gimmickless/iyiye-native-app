@@ -2,8 +2,11 @@ import React, { useContext } from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import { Default as SearchDefault } from 'screens/search'
 import { headerLeftContainerPaddingLeft } from 'utils/constants'
-import { SearchStackScreenNames } from 'types/route'
 import { LocalizationContext } from 'contexts/Localization'
+
+export enum SearchStackScreenNames {
+  Default = 'SearchDefault'
+}
 
 export type SearchStackParamList = {
   SearchDefault: undefined

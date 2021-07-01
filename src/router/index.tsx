@@ -12,7 +12,6 @@ import {
   SearchStackScreen
 } from './stacks'
 import { LocalizationContext } from 'contexts/Localization'
-import { TabNames } from 'types/route'
 import {
   IyiyeNavigationLightTheme,
   IyiyeNavigationDarkTheme
@@ -28,6 +27,14 @@ import TabBarBadgeContextProvider, {
 } from 'contexts/TabBarBadge'
 import { ActionSheetProvider } from '@expo/react-native-action-sheet'
 import { OverflowMenuProvider } from 'react-navigation-header-buttons'
+
+export enum TabNames {
+  Home = 'Home',
+  Search = 'Search',
+  Notification = 'Notification',
+  Profile = 'Profile',
+  Auth = 'Auth'
+}
 
 const Tab = createBottomTabNavigator()
 

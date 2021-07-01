@@ -61,13 +61,10 @@ const AddressList: React.FC = () => {
   const route = useRoute<HomeAddressListRouteProps>()
   const { addInAppMessage } = useInAppMessage()
   const [operationInProgress, setOperationInProgress] = useState(false)
-  const { state: authUser, action: authUserAction } = useContext(
-    AuthUserContext
-  )
-  const [
-    defaultAddressKey,
-    setDefaultAddressKey
-  ] = useState<AuthUserAddressKey>()
+  const { state: authUser, action: authUserAction } =
+    useContext(AuthUserContext)
+  const [defaultAddressKey, setDefaultAddressKey] =
+    useState<AuthUserAddressKey>()
   const [addresses, setAddresses] = useState<Array<AddressKeyValue>>([])
 
   const changedAddressKey = route.params?.changedAddressKey
@@ -124,12 +121,12 @@ const AddressList: React.FC = () => {
               color={rneTheme.colors?.primary}
             />
           }
-          title={t('screen.home.addressList.button.create')}
+          title={t('screen.common.address.list.button.create')}
           onPress={() => {
             if (addresses.length >= maxAddressCount) {
               Alert.alert(
-                t('screen.home.addressList.alert.maxAddressLimit.title'),
-                t('screen.home.addressList.alert.maxAddressLimit.message'),
+                t('screen.common.address.list.alert.maxAddressLimit.title'),
+                t('screen.common.address.list.alert.maxAddressLimit.message'),
                 [
                   {
                     text: t('common.button.ok'),
@@ -208,11 +205,11 @@ const AddressList: React.FC = () => {
   ) : !addresses || !addresses.length ? (
     <View style={styles.nothingFoundContainer}>
       <NotFoundView
-        message={t('screen.home.addressList.message.nothingFound')}
+        message={t('screen.common.address.list.message.nothingFound')}
       />
       <Button
         style={styles.nothingFoundAddNewButton}
-        title={t('screen.home.addressList.button.createFirstAddress')}
+        title={t('screen.common.address.list.button.createFirstAddress')}
         onPress={() =>
           navigation.navigate(HomeStackScreenNames.AddressLocationSearch)
         }
@@ -293,7 +290,7 @@ const AddressList: React.FC = () => {
                           ]}
                         >
                           {t(
-                            'screen.home.addressList.list.subtitle.streetNumber'
+                            'screen.common.address.list.list.subtitle.streetNumber'
                           )}
                           :&nbsp;
                         </Text>
@@ -316,7 +313,9 @@ const AddressList: React.FC = () => {
                               { color: rneTheme.colors?.grey2 }
                             ]}
                           >
-                            {t('screen.home.addressList.list.subtitle.floor')}
+                            {t(
+                              'screen.common.address.list.list.subtitle.floor'
+                            )}
                             :&nbsp;
                           </Text>
                           <Text
