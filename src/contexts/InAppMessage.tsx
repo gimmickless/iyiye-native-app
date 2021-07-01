@@ -16,9 +16,8 @@ export const InAppMessageContext = React.createContext<{
 })
 
 export const useInAppMessage = () => {
-  const { inAppMessage, addInAppMessage, removeInAppMessage } = useContext(
-    InAppMessageContext
-  )
+  const { inAppMessage, addInAppMessage, removeInAppMessage } =
+    useContext(InAppMessageContext)
   return { inAppMessage, addInAppMessage, removeInAppMessage }
 }
 

@@ -8,7 +8,6 @@ import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
 import { AuthStackParamList } from 'router/stacks/Auth'
 import Auth from '@aws-amplify/auth'
-import { AuthStackScreenNames } from 'types/route'
 import { useInAppMessage } from 'contexts/InAppMessage'
 
 type FormData = {
@@ -39,7 +38,7 @@ const ConfirmAccount: React.FC = () => {
     try {
       setConfirmAccountLoading(true)
       await Auth.confirmSignUp(username, verificationCode)
-      navigation.navigate(AuthStackScreenNames.SignIn)
+      navigation.navigate('SignIn' as keyof AuthStackParamList)
     } catch (err) {
       addInAppMessage({
         message: err.message ?? err,

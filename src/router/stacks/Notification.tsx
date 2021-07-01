@@ -1,17 +1,13 @@
-import React, { useCallback, useContext } from 'react'
+import React, { useContext } from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
-import { Default as NotificationDefault } from 'screens/notification'
+import { Default } from 'screens/notification'
 import { headerLeftContainerPaddingLeft } from 'utils/constants'
 import { LocalizationContext } from 'contexts/Localization'
 import { useTabBarBadgeCount } from 'contexts/TabBarBadge'
 import { useFocusEffect } from '@react-navigation/native'
 
-export enum NotificationStackScreenNames {
-  Default = 'NotificationDefault'
-}
-
 export type NotificationStackParamList = {
-  NotificationDefault: undefined
+  Default: undefined
 }
 
 const NotificationStack = createStackNavigator<NotificationStackParamList>()
@@ -30,7 +26,7 @@ const NotificationStackScreen: React.FC = () => {
   // )
   return (
     <NotificationStack.Navigator
-      initialRouteName={NotificationStackScreenNames.Default}
+      initialRouteName="Default"
       screenOptions={{
         headerStyle: {
           elevation: 0,
@@ -42,8 +38,8 @@ const NotificationStackScreen: React.FC = () => {
       }}
     >
       <NotificationStack.Screen
-        name={NotificationStackScreenNames.Default}
-        component={NotificationDefault}
+        name="Default"
+        component={Default}
         options={{
           title: t('screen.notifications.default.title')
         }}

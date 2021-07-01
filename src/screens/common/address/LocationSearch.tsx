@@ -21,7 +21,6 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { LocalizationContext } from 'contexts/Localization'
 import { useNavigation, useTheme } from '@react-navigation/native'
-import { HomeStackScreenNames } from 'types/route'
 import {
   getHyperlinkTextColor,
   globalAsyncStorageKeyPrefix,
@@ -38,6 +37,7 @@ import { useDebounce } from 'hooks'
 import { Region } from 'react-native-maps'
 import { HomeAddressFormRouteProps } from './Form'
 import OverlayLoader from 'components/shared/OverlayLoader'
+import { HomeStackParamList } from 'router/stacks/Home'
 
 const recentLocationSearchesKey = `${globalAsyncStorageKeyPrefix}:recentLocationSearches`
 
@@ -207,19 +207,25 @@ const LocationSearch: React.FC = () => {
       mainText: title
     })
     const r = await getPlaceDetailAsync(placeId)
-    navigation.navigate(HomeStackScreenNames.AddressForm, {
-      initialRegion: r,
-      edit: undefined
-    } as HomeAddressFormRouteProps['params'])
+    navigation.navigate(
+      'AddressForm' as keyof HomeStackParamList,
+      {
+        initialRegion: r,
+        edit: undefined
+      } as HomeAddressFormRouteProps['params']
+    )
     setIsBlockingLoading(false)
   }
 
   const onRecentSearchClick = async (placeId: string) => {
     setIsBlockingLoading(true)
     const r = await getPlaceDetailAsync(placeId)
-    navigation.navigate(HomeStackScreenNames.AddressForm, {
-      initialRegion: r
-    } as HomeAddressFormRouteProps['params'])
+    navigation.navigate(
+      'AddressForm' as keyof HomeStackParamList,
+      {
+        initialRegion: r
+      } as HomeAddressFormRouteProps['params']
+    )
     setIsBlockingLoading(false)
   }
 
@@ -236,14 +242,17 @@ const LocationSearch: React.FC = () => {
       return
     }
     const { coords } = await Location.getCurrentPositionAsync({})
-    navigation.navigate(HomeStackScreenNames.AddressForm, {
-      initialRegion: {
-        latitude: coords.latitude,
-        longitude: coords.longitude,
-        latitudeDelta: locationDelta,
-        longitudeDelta: locationDelta
-      }
-    } as HomeAddressFormRouteProps['params'])
+    navigation.navigate(
+      'AddressForm' as keyof HomeStackParamList,
+      {
+        initialRegion: {
+          latitude: coords.latitude,
+          longitude: coords.longitude,
+          latitudeDelta: locationDelta,
+          longitudeDelta: locationDelta
+        }
+      } as HomeAddressFormRouteProps['params']
+    )
     setIsBlockingLoading(false)
   }
 

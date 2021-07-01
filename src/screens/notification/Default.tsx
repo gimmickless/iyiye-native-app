@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
-import { FlatList, SafeAreaView, StyleSheet, View, Image } from 'react-native'
+import { FlatList, SafeAreaView, StyleSheet, View } from 'react-native'
 import { Text, ThemeContext } from 'react-native-elements'
 import ListSeparator from 'components/shared/ListSeparator'
 import { MaterialCommunityIcons } from '@expo/vector-icons'

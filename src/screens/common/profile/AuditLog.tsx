@@ -9,7 +9,7 @@ import { useInAppMessage } from 'contexts/InAppMessage'
 
 export type ProfileAuditLogRouteProps = RouteProp<
   ProfileStackParamList,
-  'ProfileAuditLog'
+  'AuditLog'
 >
 
 const AuditLog: React.FC = () => {

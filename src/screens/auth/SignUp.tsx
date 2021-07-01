@@ -33,11 +33,11 @@ import {
 import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
 import { getMaxDateFor18OrMoreYearsOld } from 'utils/validations'
-import { AuthStackScreenNames } from 'types/route'
 import Auth from '@aws-amplify/auth'
 import { useColorScheme } from 'react-native-appearance'
 import { convertDateToIsoString } from 'utils/conversions'
 import { useInAppMessage } from 'contexts/InAppMessage'
+import { AuthStackParamList } from 'router/stacks/Auth'
 
 type FormData = {
   fullName: string
@@ -135,7 +135,7 @@ const SignUp: React.FC = () => {
           'custom:contactable': 'true'
         }
       })
-      navigation.navigate(AuthStackScreenNames.ConfirmAccount, {
+      navigation.navigate('ConfirmAccount' as keyof AuthStackParamList, {
         email,
         username
       })
@@ -288,7 +288,7 @@ const SignUp: React.FC = () => {
                   value={values.birthDate ?? new Date()}
                   mode="date"
                   display="default"
-                  onChange={(_, date) => {
+                  onChange={(_: any, date: any) => {
                     setShowDatePicker(false)
                     setFieldValue('birthDate', date)
                   }}
@@ -361,7 +361,9 @@ const SignUp: React.FC = () => {
           type="clear"
           style={styles.secondaryButton}
           title={t('screen.auth.signUp.button.signIn')}
-          onPress={() => navigation.navigate(AuthStackScreenNames.SignIn)}
+          onPress={() =>
+            navigation.navigate('SignIn' as keyof AuthStackParamList)
+          }
         />
 
         <Modal

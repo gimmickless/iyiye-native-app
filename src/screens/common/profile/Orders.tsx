@@ -7,10 +7,7 @@ import { ThemeContext } from 'react-native-elements'
 import { ProfileStackParamList } from 'router/stacks/Profile'
 import { useInAppMessage } from 'contexts/InAppMessage'
 
-export type ProfileOrdersRouteProps = RouteProp<
-  ProfileStackParamList,
-  'ProfileOrders'
->
+export type ProfileOrdersRouteProps = RouteProp<ProfileStackParamList, 'Orders'>
 
 const Orders: React.FC = () => {
   const navigation = useNavigation()

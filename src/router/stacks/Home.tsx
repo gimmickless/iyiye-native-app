@@ -1,33 +1,35 @@
 import React, { useContext } from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
-import { Default as HomeDefault } from 'screens/home'
+import { Default } from 'screens/home'
 import {
-  AddressList as HomeAddressList,
-  AddressLocationSearch as HomeAddressLocationSearch,
-  AddressForm as HomeAddressForm
+  AddressList,
+  AddressLocationSearch,
+  AddressForm
 } from 'screens/common/address'
 import { headerLeftContainerPaddingLeft } from 'utils/constants'
 import { Region } from 'react-native-maps'
 import { AuthUserAddressKey } from 'types/context'
 import { LocalizationContext } from 'contexts/Localization'
 
-export enum HomeStackScreenNames {
-  Default = 'HomeDefault',
-  AddressList = 'HomeAddressList',
-  AddressLocationSearch = 'HomeAddressLocationSearch',
-  AddressForm = 'HomeAddressForm'
-}
-
 export type HomeStackParamList = {
-  HomeDefault: undefined
-  HomeAddressList: { changedAddressKey?: AuthUserAddressKey } | undefined
-  HomeAddressLocationSearch: undefined
-  HomeAddressForm:
+  Default: undefined
+  AddressList: { changedAddressKey?: AuthUserAddressKey } | undefined
+  AddressLocationSearch: undefined
+  AddressForm:
     | { initialRegion: Region; edit?: { key: AuthUserAddressKey } }
     | undefined
-  HomeList: { sort: 'latest' | 'top' } | undefined
-  HomeItem: { id: string }
-  HomeAuthor?: { userId: string }
+  KitDefault: { id: string } | undefined
+  AuthorProfileDefault: { username?: string }
+  AuthorProfileKits: { username?: string }
+  AuthorProfileAuditLog: { username?: string } // In case author is the user themselves
+  AuthorProfileOrders: { username?: string } // In case author is the user themselves
+  AuthorProfileSettings: { username?: string } // In case author is the user themselves
+  Cart: undefined
+  OrderList: undefined
+  Order: undefined
+  OrderItem: undefined
+  Checkout: undefined
+  CheckoutStatus: undefined
 }
 
 const HomeStack = createStackNavigator<HomeStackParamList>()
@@ -36,7 +38,7 @@ const HomeStackScreen: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   return (
     <HomeStack.Navigator
-      initialRouteName={HomeStackScreenNames.Default}
+      initialRouteName="Default"
       screenOptions={{
         headerStyle: {
           elevation: 0,
@@ -47,25 +49,22 @@ const HomeStackScreen: React.FC = () => {
         }
       }}
     >
+      <HomeStack.Screen name="Default" component={Default} />
       <HomeStack.Screen
-        name={HomeStackScreenNames.Default}
-        component={HomeDefault}
-      />
-      <HomeStack.Screen
-        name={HomeStackScreenNames.AddressList}
-        component={HomeAddressList}
+        name="AddressList"
+        component={AddressList}
         options={{
           title: t('screen.common.address.list.title')
         }}
       />
       <HomeStack.Screen
-        name={HomeStackScreenNames.AddressLocationSearch}
-        component={HomeAddressLocationSearch}
+        name="AddressLocationSearch"
+        component={AddressLocationSearch}
         options={{}}
       />
       <HomeStack.Screen
-        name={HomeStackScreenNames.AddressForm}
-        component={HomeAddressForm}
+        name="AddressForm"
+        component={AddressForm}
         options={{}}
       />
     </HomeStack.Navigator>

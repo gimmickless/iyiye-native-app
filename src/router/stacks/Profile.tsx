@@ -1,42 +1,31 @@
 import React, { useContext } from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import {
-  Default as ProfileDefault,
-  Settings as ProfileSettings,
-  Orders as ProfileOrders,
-  Kits as ProfileKits,
-  AuditLog as ProfileAuditLog
+  Default,
+  Settings,
+  Orders,
+  Kits,
+  AuditLog
 } from 'screens/common/profile'
 import {
-  AddressList as ProfileAddressList,
-  AddressLocationSearch as ProfileAddressLocationSearch,
-  AddressForm as ProfileAddressForm
+  AddressList,
+  AddressLocationSearch,
+  AddressForm
 } from 'screens/common/address'
 import { headerLeftContainerPaddingLeft } from 'utils/constants'
 import { LocalizationContext } from 'contexts/Localization'
 import { AuthUserAddressKey } from 'types/context'
 import { Region } from 'react-native-maps'
 
-export enum ProfileStackScreenNames {
-  Default = 'ProfileDefault',
-  Orders = 'ProfileOrders',
-  Kits = 'ProfileKits',
-  AuditLog = 'ProfileAuditLog',
-  Settings = 'ProfileSettings',
-  AddressList = 'ProfileAddressList',
-  AddressLocationSearch = 'ProfileAddressLocationSearch',
-  AddressForm = 'ProfileAddressForm'
-}
-
 export type ProfileStackParamList = {
-  ProfileDefault: { username?: string }
-  ProfileSettings: { username?: string }
-  ProfileOrders: { username?: string }
-  ProfileKits: { username?: string }
-  ProfileAuditLog: { username?: string }
-  ProfileAddressList: { username?: string }
-  ProfileAddressLocationSearch: undefined
-  ProfileAddressForm:
+  Default: { username?: string }
+  Settings: { username?: string }
+  Orders: { username?: string }
+  Kits: { username?: string }
+  AuditLog: { username?: string }
+  AddressList: { username?: string }
+  AddressLocationSearch: undefined
+  AddressForm:
     | { initialRegion: Region; edit?: { key: AuthUserAddressKey } }
     | undefined
 }
@@ -47,7 +36,7 @@ const ProfileStackScreen: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   return (
     <ProfileStack.Navigator
-      initialRouteName={ProfileStackScreenNames.Default}
+      initialRouteName="Default"
       screenOptions={{
         headerStyle: {
           elevation: 0,
@@ -59,55 +48,55 @@ const ProfileStackScreen: React.FC = () => {
       }}
     >
       <ProfileStack.Screen
-        name={ProfileStackScreenNames.Default}
-        component={ProfileDefault}
+        name="Default"
+        component={Default}
         options={{
           headerTitle: ''
         }}
       />
       <ProfileStack.Screen
-        name={ProfileStackScreenNames.Settings}
-        component={ProfileSettings}
+        name="Settings"
+        component={Settings}
         options={{
           headerTitle: t('screen.common.profile.settings.title')
         }}
       />
       <ProfileStack.Screen
-        name={ProfileStackScreenNames.Orders}
-        component={ProfileOrders}
+        name="Orders"
+        component={Orders}
         options={{
           headerTitle: t('screen.common.profile.orders.title')
         }}
       />
       <ProfileStack.Screen
-        name={ProfileStackScreenNames.Kits}
-        component={ProfileKits}
+        name="Kits"
+        component={Kits}
         options={{
           headerTitle: t('screen.common.profile.kits.title')
         }}
       />
       <ProfileStack.Screen
-        name={ProfileStackScreenNames.AuditLog}
-        component={ProfileAuditLog}
+        name="AuditLog"
+        component={AuditLog}
         options={{
           headerTitle: t('screen.common.profile.auditLog.title')
         }}
       />
       <ProfileStack.Screen
-        name={ProfileStackScreenNames.AddressList}
-        component={ProfileAddressList}
+        name="AddressList"
+        component={AddressList}
         options={{
           title: t('screen.common.address.list.title')
         }}
       />
       <ProfileStack.Screen
-        name={ProfileStackScreenNames.AddressLocationSearch}
-        component={ProfileAddressLocationSearch}
+        name="AddressLocationSearch"
+        component={AddressLocationSearch}
         options={{}}
       />
       <ProfileStack.Screen
-        name={ProfileStackScreenNames.AddressForm}
-        component={ProfileAddressForm}
+        name="AddressForm"
+        component={AddressForm}
         options={{}}
       />
     </ProfileStack.Navigator>

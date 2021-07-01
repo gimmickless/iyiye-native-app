@@ -21,9 +21,9 @@ import {
 } from 'utils/constants'
 import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
-import { AuthStackScreenNames } from 'types/route'
 import Auth from '@aws-amplify/auth'
 import { useInAppMessage } from 'contexts/InAppMessage'
+import { AuthStackParamList } from 'router/stacks/Auth'
 
 type UserInfoFormData = {
   username: string
@@ -113,7 +113,7 @@ const ForgotPasword: React.FC = () => {
         confirmationCode,
         newPassword
       )
-      navigation.navigate(AuthStackScreenNames.SignIn)
+      navigation.navigate('SignIn' as keyof AuthStackParamList)
     } catch (err) {
       addInAppMessage({
         message: err.message ?? err,

@@ -19,8 +19,8 @@ import {
 import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
 import { AuthUserContext } from 'contexts/Auth'
-import { AuthStackScreenNames } from 'types/route'
 import { useInAppMessage } from 'contexts/InAppMessage'
+import { AuthStackParamList } from 'router/stacks/Auth'
 
 type FormData = {
   usernameOrEmail: string
@@ -133,7 +133,9 @@ const SignIn: React.FC = () => {
                   style={styles.passwordInlineButton}
                   title={t('screen.auth.signIn.button.forgotPassword')}
                   onPress={() =>
-                    navigation.navigate(AuthStackScreenNames.ForgotPassword)
+                    navigation.navigate(
+                      'ForgotPassword' as keyof AuthStackParamList
+                    )
                   }
                 />
               </View>
@@ -155,7 +157,9 @@ const SignIn: React.FC = () => {
           type="clear"
           style={styles.secondaryButton}
           title={t('screen.auth.signIn.button.signUp')}
-          onPress={() => navigation.navigate(AuthStackScreenNames.SignUp)}
+          onPress={() =>
+            navigation.navigate('SignUp' as keyof AuthStackParamList)
+          }
         />
       </ScrollView>
     </KeyboardAvoidingView>

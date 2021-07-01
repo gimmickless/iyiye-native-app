@@ -7,10 +7,7 @@ import { ThemeContext } from 'react-native-elements'
 import { ProfileStackParamList } from 'router/stacks/Profile'
 import { useInAppMessage } from 'contexts/InAppMessage'
 
-export type ProfileKitsRouteProps = RouteProp<
-  ProfileStackParamList,
-  'ProfileKits'
->
+export type ProfileKitsRouteProps = RouteProp<ProfileStackParamList, 'Kits'>
 
 const Kits: React.FC = () => {
   const navigation = useNavigation()

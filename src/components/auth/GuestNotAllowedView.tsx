@@ -3,7 +3,7 @@ import { LocalizationContext } from 'contexts/Localization'
 import React, { useContext } from 'react'
 import { SafeAreaView, Text, StyleSheet } from 'react-native'
 import { Button } from 'react-native-elements'
-import { AuthStackScreenNames } from 'types/route'
+import { AuthStackParamList } from 'router/stacks/Auth'
 
 const GuestNotAllowedView: React.FC = () => {
   const navigation = useNavigation()
@@ -14,7 +14,9 @@ const GuestNotAllowedView: React.FC = () => {
       <Button
         style={styles.button}
         title={t('component.auth.guestNotAllowed.button.goToLogin')}
-        onPress={() => navigation.navigate(AuthStackScreenNames.SignIn)}
+        onPress={() =>
+          navigation.navigate('SignIn' as keyof AuthStackParamList)
+        }
       />
     </SafeAreaView>
   )

@@ -19,9 +19,8 @@ export const TabBarBadgeContext = React.createContext<{
 })
 
 export const useTabBarBadgeCount = () => {
-  const { tabBarBadgeCount, setTabBarBadgeCount } = useContext(
-    TabBarBadgeContext
-  )
+  const { tabBarBadgeCount, setTabBarBadgeCount } =
+    useContext(TabBarBadgeContext)
   return { tabBarBadgeCount, setTabBarBadgeCount }
 }
 

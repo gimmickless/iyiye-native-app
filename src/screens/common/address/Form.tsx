@@ -28,7 +28,6 @@ import { useInAppMessage } from 'contexts/InAppMessage'
 
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { googlePlaceGeocodingBaseUrl } from 'utils/constants'
-import { HomeStackScreenNames } from 'types/route'
 import { AuthUserContext } from 'contexts/Auth'
 import {
   AuthUserAddress,
@@ -40,7 +39,7 @@ import { AddressSlotFullError } from 'types/customError'
 
 export type HomeAddressFormRouteProps = RouteProp<
   HomeStackParamList,
-  'HomeAddressForm'
+  'AddressForm'
 >
 
 type PlaceReverseGeocodingResult = {
@@ -285,7 +284,7 @@ const Form: React.FC = () => {
       })
       await authUserAction.updateAddresses(input)
       if (isEdit) {
-        navigation.navigate(HomeStackScreenNames.AddressList, {
+        navigation.navigate('AddressList' as keyof HomeStackParamList, {
           changedAddressKey: editObject?.key
         })
       } else {
@@ -295,11 +294,11 @@ const Form: React.FC = () => {
           fullName: authUser.props?.fullName ?? '',
           address: createdAddressKey as AuthUserAddressKey
         })
-        navigation.navigate(HomeStackScreenNames.AddressList, {
+        navigation.navigate('AddressList' as keyof HomeStackParamList, {
           changedAddressKey: Object.keys(input).sort(() => 1)[0]
         })
       }
-      navigation.navigate(HomeStackScreenNames.AddressList, {
+      navigation.navigate('AddressList' as keyof HomeStackParamList, {
         changedAddressKey: isEdit
           ? editObject?.key
           : Object.keys(input).sort(() => 1)[0]
@@ -324,7 +323,7 @@ const Form: React.FC = () => {
                 'screen.common.address.form.alert.addressSlotFull.button.backToList'
               ),
               onPress: () => {
-                navigation.navigate(HomeStackScreenNames.AddressList)
+                navigation.navigate('AddressList' as keyof HomeStackParamList)
               },
               style: 'cancel'
             }

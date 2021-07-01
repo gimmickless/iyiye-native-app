@@ -39,7 +39,7 @@ import {
 
 export type ProfileDefaultRouteProps = RouteProp<
   ProfileStackParamList,
-  'ProfileDefault'
+  'Default'
 >
 
 interface ListItemProps {

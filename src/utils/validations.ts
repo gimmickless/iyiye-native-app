@@ -1,4 +1,4 @@
-export const getMaxDateFor18OrMoreYearsOld = () => {
+export const getMaxDateFor18OrMoreYearsOld = (): Date => {
   const thisDate = new Date()
 
   return new Date(

@@ -4,17 +4,8 @@ import { Default as SearchDefault } from 'screens/search'
 import { headerLeftContainerPaddingLeft } from 'utils/constants'
 import { LocalizationContext } from 'contexts/Localization'
 
-export enum SearchStackScreenNames {
-  Default = 'SearchDefault'
-}
-
 export type SearchStackParamList = {
-  SearchDefault: undefined
-  SearchList: { sort: 'latest' | 'top' } | undefined
-  SearchItem: { id: string }
-  SearchAuthor: { userId: string }
-  SearchSummary: undefined
-  SearchCheckout: undefined
+  Default: undefined
 }
 
 const SearchStack = createStackNavigator<SearchStackParamList>()
@@ -23,7 +14,7 @@ const SearchStackScreen: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   return (
     <SearchStack.Navigator
-      initialRouteName={SearchStackScreenNames.Default}
+      initialRouteName="Default"
       screenOptions={{
         headerStyle: {
           elevation: 0,
@@ -34,10 +25,7 @@ const SearchStackScreen: React.FC = () => {
         }
       }}
     >
-      <SearchStack.Screen
-        name={SearchStackScreenNames.Default}
-        component={SearchDefault}
-      />
+      <SearchStack.Screen name="Default" component={SearchDefault} />
     </SearchStack.Navigator>
   )
 }

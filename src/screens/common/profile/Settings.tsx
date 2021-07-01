@@ -10,12 +10,12 @@ import {
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { AuthUserContext } from 'contexts/Auth'
 import { LocalizationContext } from 'contexts/Localization'
-import { HomeStackScreenNames } from 'types/route'
 import { ProfileStackParamList } from 'router/stacks/Profile'
+import { HomeStackParamList } from 'router/stacks/Home'
 
 export type ProfileSettingsRouteProps = RouteProp<
   ProfileStackParamList,
-  'ProfileSettings'
+  'Settings'
 >
 
 const Item = ({ title }: { title: string }) => (
@@ -49,7 +49,7 @@ const Settings: React.FC = () => {
           ),
           onPress: async () => {
             await authUserAction.logout()
-            navigation.navigate(HomeStackScreenNames.Default)
+            navigation.navigate('Default' as keyof HomeStackParamList)
           }
         }
       ],

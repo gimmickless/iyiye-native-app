@@ -1,12 +1,5 @@
 import React, { useContext, useEffect, useLayoutEffect, useState } from 'react'
-import {
-  Alert,
-  Image,
-  FlatList,
-  StyleSheet,
-  View,
-  Animated
-} from 'react-native'
+import { Alert, FlatList, StyleSheet, View, Animated } from 'react-native'
 import { Button, Text, ThemeContext } from 'react-native-elements'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import { AuthUserContext } from 'contexts/Auth'
@@ -16,7 +9,6 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import SwipeableListItem from 'components/shared/SwipeableListItem'
 import Checkbox from 'react-native-bouncy-checkbox'
 import { AuthUserAddress, AuthUserAddressKey } from 'types/context'
-import { HomeStackScreenNames } from 'types/route'
 import ListSeparator from 'components/shared/ListSeparator'
 import {
   headerRightButtonTextFont,
@@ -31,7 +23,7 @@ import NotFoundView from 'components/shared/NotFoundView'
 
 export type HomeAddressListRouteProps = RouteProp<
   HomeStackParamList,
-  'HomeAddressList'
+  'AddressList'
 >
 
 type AddressKeyValue = {
@@ -140,7 +132,9 @@ const AddressList: React.FC = () => {
               )
               return
             }
-            navigation.navigate(HomeStackScreenNames.AddressLocationSearch)
+            navigation.navigate(
+              'AddressLocationSearch' as keyof HomeStackParamList
+            )
           }}
         />
       )
@@ -163,17 +157,20 @@ const AddressList: React.FC = () => {
       longitude: number | undefined
     }
   }) => {
-    navigation.navigate(HomeStackScreenNames.AddressForm, {
-      edit: {
-        key: input.itemKey
-      },
-      initialRegion: {
-        latitude: input.latLng.latitude,
-        longitude: input.latLng.longitude,
-        latitudeDelta: locationDelta,
-        longitudeDelta: locationDelta
-      }
-    } as HomeAddressFormRouteProps['params'])
+    navigation.navigate(
+      'AddressForm' as keyof HomeStackParamList,
+      {
+        edit: {
+          key: input.itemKey
+        },
+        initialRegion: {
+          latitude: input.latLng.latitude,
+          longitude: input.latLng.longitude,
+          latitudeDelta: locationDelta,
+          longitudeDelta: locationDelta
+        }
+      } as HomeAddressFormRouteProps['params']
+    )
   }
 
   const deleteAction = async (itemKey: AuthUserAddressKey) => {
@@ -211,7 +208,9 @@ const AddressList: React.FC = () => {
         style={styles.nothingFoundAddNewButton}
         title={t('screen.common.address.list.button.createFirstAddress')}
         onPress={() =>
-          navigation.navigate(HomeStackScreenNames.AddressLocationSearch)
+          navigation.navigate(
+            'AddressLocationSearch' as keyof HomeStackParamList
+          )
         }
         icon={
           <MaterialCommunityIcons

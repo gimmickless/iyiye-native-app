@@ -10,11 +10,6 @@ import {
 import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
 import { MaterialIcons } from '@expo/vector-icons'
-import {
-  AuthStackScreenNames,
-  HomeStackScreenNames,
-  TabNames
-} from 'types/route'
 import LoadingView from 'components/shared/LoadingView'
 import { AddressTypeMaterialCommunityIcon } from 'types/visualization'
 import {
@@ -24,6 +19,9 @@ import {
   FaveAndRecentKitListView,
   NewKitListView
 } from 'components/home'
+import { HomeStackParamList } from 'router/stacks/Home'
+import { TabNames } from 'router'
+import { AuthStackParamList } from 'router/stacks/Auth'
 
 const Default: React.FC = () => {
   const { t } = useContext(LocalizationContext)
@@ -61,7 +59,7 @@ const Default: React.FC = () => {
   const renderHeaderRight = useMemo(() => {
     const onPress = isAuthUser
       ? () => {
-          navigation.navigate(HomeStackScreenNames.AddressList)
+          navigation.navigate('AddressList' as keyof HomeStackParamList)
         }
       : () => {
           Alert.alert(
@@ -81,7 +79,7 @@ const Default: React.FC = () => {
                 ),
                 onPress: () => {
                   navigation.navigate(TabNames.Auth, {
-                    screen: AuthStackScreenNames.SignIn
+                    screen: 'SignIn' as keyof AuthStackParamList
                   })
                 }
               }
