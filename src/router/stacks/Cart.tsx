@@ -1,19 +1,19 @@
 import React, { useContext } from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
-import { Default as SearchDefault } from 'screens/search'
+import { Default as CartDefault } from 'screens/cart'
 import { headerLeftContainerPaddingLeft } from 'utils/constants'
 import { LocalizationContext } from 'contexts/Localization'
 
-export type SearchStackParamList = {
+export type CartStackParamList = {
   Default: undefined
 }
 
-const SearchStack = createStackNavigator<SearchStackParamList>()
+const CartStack = createStackNavigator<CartStackParamList>()
 
-const SearchStackScreen: React.FC = () => {
+const CartStackScreen: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   return (
-    <SearchStack.Navigator
+    <CartStack.Navigator
       initialRouteName="Default"
       screenOptions={{
         headerStyle: {
@@ -25,9 +25,9 @@ const SearchStackScreen: React.FC = () => {
         }
       }}
     >
-      <SearchStack.Screen name="Default" component={SearchDefault} />
-    </SearchStack.Navigator>
+      <CartStack.Screen name="Default" component={CartDefault} />
+    </CartStack.Navigator>
   )
 }
 
-export default SearchStackScreen
+export default CartStackScreen

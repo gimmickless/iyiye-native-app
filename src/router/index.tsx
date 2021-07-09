@@ -9,9 +9,8 @@ import {
   HomeStackScreen,
   NotificationStackScreen,
   ProfileStackScreen,
-  SearchStackScreen
+  CartStackScreen
 } from './stacks'
-import { LocalizationContext } from 'contexts/Localization'
 import {
   IyiyeNavigationLightTheme,
   IyiyeNavigationDarkTheme
@@ -28,9 +27,10 @@ import TabBarBadgeContextProvider, {
 import { ActionSheetProvider } from '@expo/react-native-action-sheet'
 import { OverflowMenuProvider } from 'react-navigation-header-buttons'
 
-export enum TabNames {
+// eslint-disable-next-line no-shadow
+export enum BottomTabNames {
   Home = 'Home',
-  Search = 'Search',
+  Cart = 'Cart',
   Notification = 'Notification',
   Profile = 'Profile',
   Auth = 'Auth'
@@ -39,7 +39,6 @@ export enum TabNames {
 const Tab = createBottomTabNavigator()
 
 export const RootNavigator: React.FC = () => {
-  const { t } = useContext(LocalizationContext)
   const { tabBarBadgeCount } = useTabBarBadgeCount()
   const scheme = useColorScheme()
   const { theme: rneTheme } = useContext(ThemeContext)
@@ -58,19 +57,19 @@ export const RootNavigator: React.FC = () => {
           <OverflowMenuProvider>
             <TabBarBadgeContextProvider>
               <Tab.Navigator
-                initialRouteName={TabNames.Home}
+                initialRouteName={BottomTabNames.Home}
                 screenOptions={({ route }) => ({
                   tabBarIcon: ({ focused, color, size }) => {
                     let iconName
-                    if (route.name === TabNames.Home) {
+                    if (route.name === BottomTabNames.Home) {
                       iconName = focused ? 'home' : 'home-outline'
-                    } else if (route.name === TabNames.Search) {
-                      iconName = 'magnify'
-                    } else if (route.name === TabNames.Notification) {
+                    } else if (route.name === BottomTabNames.Cart) {
+                      iconName = focused ? 'cart' : 'cart-outline'
+                    } else if (route.name === BottomTabNames.Notification) {
                       iconName = focused ? 'bell' : 'bell-outline'
-                    } else if (route.name === TabNames.Profile) {
+                    } else if (route.name === BottomTabNames.Profile) {
                       iconName = focused ? 'account' : 'account-outline'
-                    } else if (route.name === TabNames.Auth) {
+                    } else if (route.name === BottomTabNames.Auth) {
                       iconName = 'login-variant'
                     }
                     return (
@@ -94,13 +93,16 @@ export const RootNavigator: React.FC = () => {
                 }}
                 backBehavior="history"
               >
-                <Tab.Screen name={TabNames.Home} component={HomeStackScreen} />
                 <Tab.Screen
-                  name={TabNames.Search}
-                  component={SearchStackScreen}
+                  name={BottomTabNames.Home}
+                  component={HomeStackScreen}
                 />
                 <Tab.Screen
-                  name={TabNames.Notification}
+                  name={BottomTabNames.Cart}
+                  component={CartStackScreen}
+                />
+                <Tab.Screen
+                  name={BottomTabNames.Notification}
                   component={NotificationStackScreen}
                   options={
                     tabBarBadgeCount?.notification
@@ -116,12 +118,12 @@ export const RootNavigator: React.FC = () => {
                 />
                 {isSignedIn ? (
                   <Tab.Screen
-                    name={TabNames.Profile}
+                    name={BottomTabNames.Profile}
                     component={ProfileStackScreen}
                   />
                 ) : (
                   <Tab.Screen
-                    name={TabNames.Auth}
+                    name={BottomTabNames.Auth}
                     component={AuthStackScreen}
                   />
                 )}

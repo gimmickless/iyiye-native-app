@@ -1,6 +1,6 @@
-import React, { useContext, useLayoutEffect, useMemo } from 'react'
+import React, { useContext, useLayoutEffect, useMemo, useState } from 'react'
 import { View, StyleSheet, Pressable, Alert } from 'react-native'
-import { Text, ThemeContext } from 'react-native-elements'
+import { SearchBar, Text, ThemeContext } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native'
 import { useAuthUser } from 'contexts/Auth'
 import {
@@ -20,7 +20,7 @@ import {
   NewKitListView
 } from 'components/home'
 import { HomeStackParamList } from 'router/stacks/Home'
-import { TabNames } from 'router'
+import { BottomTabNames } from 'router'
 import { AuthStackParamList } from 'router/stacks/Auth'
 
 const Default: React.FC = () => {
@@ -28,6 +28,7 @@ const Default: React.FC = () => {
   const navigation = useNavigation()
   const { theme: rneTheme } = useContext(ThemeContext)
   const { authUser } = useAuthUser()
+  const [searchText, setSearchText] = useState('')
 
   const isAuthUser = useMemo(() => authUser.props ?? undefined, [authUser])
   const username = useMemo(
@@ -35,28 +36,7 @@ const Default: React.FC = () => {
     [authUser.props?.username]
   )
 
-  const renderHeaderTitle = useMemo(
-    () => (
-      <View style={styles.headerTitleContainer}>
-        <Text h3 style={styles.headerTitlePrimaryText}>
-          {isAuthUser
-            ? t('screen.home.default.title.auth', {
-                username
-              })
-            : t('screen.home.default.title.unauth')}
-          &nbsp;👋
-        </Text>
-        <Text style={styles.headerTitleSecondaryText}>
-          {isAuthUser
-            ? t('screen.home.default.subtitle.auth')
-            : t('screen.home.default.subtitle.unauth')}
-        </Text>
-      </View>
-    ),
-    [isAuthUser, t, username]
-  )
-
-  const renderHeaderRight = useMemo(() => {
+  const renderAddressButton = useMemo(() => {
     const onPress = isAuthUser
       ? () => {
           navigation.navigate('AddressList' as keyof HomeStackParamList)
@@ -78,7 +58,7 @@ const Default: React.FC = () => {
                   'screen.home.default.alert.loginToAddAddress.button.ok'
                 ),
                 onPress: () => {
-                  navigation.navigate(TabNames.Auth, {
+                  navigation.navigate(BottomTabNames.Auth, {
                     screen: 'SignIn' as keyof AuthStackParamList
                   })
                 }
@@ -131,15 +111,50 @@ const Default: React.FC = () => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerStyle: { height: homeHeaderHeight, elevation: 0, shadowOpacity: 0 },
-      headerTitle: () => renderHeaderTitle,
-      headerRight: () => renderHeaderRight
+      headerTitle: () => (
+        <SearchBar
+          value={searchText}
+          onChangeText={(val: string) => setSearchText(val)}
+          containerStyle={styles.searchBarContainerStyle}
+          inputStyle={{
+            ...styles.searchBarInputStyle,
+            color: rneTheme.colors?.black
+          }}
+          autoCorrect={false}
+          placeholder={t(
+            'screen.common.address.locationSearch.titleSearchTextInput.placeholder'
+          )}
+          returnKeyType="done"
+          textContentType="streetAddressLine1"
+          cancelButtonTitle={t('common.button.cancel')}
+        />
+      )
     })
-  }, [renderHeaderRight, renderHeaderTitle, navigation])
+  }, [navigation, rneTheme.colors?.black, searchText, t])
 
-  return !authUser.loaded ? (
-    <LoadingView />
-  ) : (
+  if (!authUser.loaded) return <LoadingView />
+  return (
     <ScrollView style={styles.view}>
+      {/* Top Salutation */}
+      <View>
+        <View style={styles.headerTitleContainer}>
+          <Text h3 style={styles.headerTitlePrimaryText}>
+            {isAuthUser
+              ? t('screen.home.default.title.auth', {
+                  username
+                })
+              : t('screen.home.default.title.unauth')}
+            &nbsp;👋
+          </Text>
+          <Text style={styles.headerTitleSecondaryText}>
+            {isAuthUser
+              ? t('screen.home.default.subtitle.auth')
+              : t('screen.home.default.subtitle.unauth')}
+          </Text>
+        </View>
+        {renderAddressButton}
+      </View>
+      {/* Kits */}
       {isAuthUser && <ActiveOrderListView username={username} />}
       <CategoryListView username={username} />
       <CuratedKitListView username={username} />
@@ -153,6 +168,10 @@ const styles = StyleSheet.create({
   view: {
     flex: 1
   },
+  searchBarContainerStyle: {
+    backgroundColor: 'transparent'
+  },
+  searchBarInputStyle: {},
   headerTitleContainer: {
     flex: 1,
     height: 64,

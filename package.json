@@ -69,6 +69,7 @@
     "eslint": "^7.27.0",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-react-native": "^3.11.0",
     "husky": "^6.0.0",
     "jest-expo": "^41.0.0",
     "prettier": "^2.3.0",
@@ -78,6 +79,7 @@
   "private": true,
   "eslintConfig": {
     "plugins": [
+      "react-native",
       "prettier",
       "@typescript-eslint"
     ],
@@ -98,9 +100,8 @@
         {}
       ],
       "no-console": "off",
-      "@typescript-eslint/no-unused-vars": [
-        "warn"
-      ]
+      "@typescript-eslint/no-unused-vars": "warn",
+      "react-native/no-unused-styles": "warn"
     }
   },
   "husky": {
