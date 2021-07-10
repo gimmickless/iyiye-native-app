@@ -19,19 +19,23 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "androidNavigationBar": {
       "backgroundColor": "#000000"
     },
     "android": {
       "jsEngine": "hermes",
-      "softwareKeyboardLayoutMode": "resize"
+      "softwareKeyboardLayoutMode": "resize",
+      "package": "com.gimmickless.iyiyeapp"
     },
     "ios": {
       "infoPlist": {
         "CFBundleAllowMixedLocalizations": true
       },
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.gimmickless.iyiyeapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
