@@ -107,7 +107,6 @@ const ConfirmAccount: React.FC = () => {
                 onSubmitEditing={handleSubmit as any}
               />
               <Button
-                style={styles.formSubmitButton}
                 title={t(
                   'screen.auth.confirmAccount.button.done'
                 ).toLocaleUpperCase()}
@@ -124,7 +123,6 @@ const ConfirmAccount: React.FC = () => {
         </Text>
         <Button
           type="clear"
-          style={styles.secondaryButton}
           title={t('screen.auth.confirmAccount.button.resend')}
           onPress={onResendCode}
         />
@@ -150,12 +148,10 @@ const styles = StyleSheet.create({
   formInput: {
     flex: 1
   },
-  formSubmitButton: {},
   centeredText: {
     paddingTop: 24,
     textAlign: 'center'
-  },
-  secondaryButton: {}
+  }
 })
 
 export default ConfirmAccount

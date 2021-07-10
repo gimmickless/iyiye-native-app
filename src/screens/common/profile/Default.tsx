@@ -21,7 +21,6 @@ import { AuthUserContext } from 'contexts/Auth'
 import { Avatar, Chip, Text, ThemeContext } from 'react-native-elements'
 import * as ImagePicker from 'expo-image-picker'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { HomeStackScreenNames, ProfileStackScreenNames } from 'types/route'
 import { ProfileStackParamList } from 'router/stacks/Profile'
 import NotFoundView from 'components/shared/NotFoundView'
 import { GuestNotAllowedView } from 'components/auth'
@@ -36,6 +35,7 @@ import {
   defaultListVerticalPadding,
   getUserAvatarUrl
 } from 'utils/constants'
+import { HomeStackParamList } from 'router/stacks/Home'
 
 export type ProfileDefaultRouteProps = RouteProp<
   ProfileStackParamList,
@@ -101,7 +101,7 @@ const Profile: React.FC = () => {
           {isOwnProfile ? (
             <Pressable
               onPress={() => {
-                navigation.navigate(ProfileStackScreenNames.Settings)
+                navigation.navigate('Settings' as keyof ProfileStackParamList)
               }}
             >
               <MaterialCommunityIcons name="dots-horizontal-circle" size={23} />
@@ -219,7 +219,8 @@ const Profile: React.FC = () => {
             color: 'tomato'
           },
           title: t('screen.common.profile.default.list.orders'),
-          onPress: () => navigation.navigate(ProfileStackScreenNames.Orders)
+          onPress: () =>
+            navigation.navigate('Orders' as keyof ProfileStackParamList)
         },
         {
           isPublic: true,
@@ -228,7 +229,8 @@ const Profile: React.FC = () => {
             color: 'blueviolet'
           },
           title: t('screen.common.profile.default.list.kits'),
-          onPress: () => navigation.navigate(ProfileStackScreenNames.Kits)
+          onPress: () =>
+            navigation.navigate('Kits' as keyof ProfileStackParamList)
         },
         {
           isPublic: false,
@@ -237,7 +239,8 @@ const Profile: React.FC = () => {
             color: 'mediumvioletred'
           },
           title: t('screen.common.profile.default.list.addresses'),
-          onPress: () => navigation.navigate(HomeStackScreenNames.AddressList)
+          onPress: () =>
+            navigation.navigate('AddressList' as keyof HomeStackParamList)
         },
         {
           isPublic: false,
@@ -246,7 +249,8 @@ const Profile: React.FC = () => {
             color: 'deepskyblue'
           },
           title: t('screen.common.profile.default.list.auditLog'),
-          onPress: () => navigation.navigate(ProfileStackScreenNames.AuditLog)
+          onPress: () =>
+            navigation.navigate('AuditLog' as keyof ProfileStackParamList)
         }
       ] as Array<ListItemProps>,
     [navigation, t]

@@ -130,7 +130,6 @@ const SignIn: React.FC = () => {
                 </View>
                 <Button
                   type="clear"
-                  style={styles.passwordInlineButton}
                   title={t('screen.auth.signIn.button.forgotPassword')}
                   onPress={() =>
                     navigation.navigate(
@@ -140,7 +139,6 @@ const SignIn: React.FC = () => {
                 />
               </View>
               <Button
-                style={styles.formSubmitButton}
                 loading={signInLoading}
                 disabled={signInLoading}
                 title={t('screen.auth.signIn.button.done').toLocaleUpperCase()}
@@ -155,7 +153,6 @@ const SignIn: React.FC = () => {
         </Text>
         <Button
           type="clear"
-          style={styles.secondaryButton}
           title={t('screen.auth.signIn.button.signUp')}
           onPress={() =>
             navigation.navigate('SignUp' as keyof AuthStackParamList)
@@ -176,13 +173,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flexDirection: 'row'
   },
-  signUpArea: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-    flexWrap: 'wrap'
-  },
   title: {
     paddingVertical: 10,
     textAlign: 'center'
@@ -193,13 +183,10 @@ const styles = StyleSheet.create({
   passwordInputView: {
     flex: 1
   },
-  passwordInlineButton: {},
-  formSubmitButton: {},
   centeredText: {
     paddingTop: 24,
     textAlign: 'center'
-  },
-  secondaryButton: {}
+  }
 })
 
 export default SignIn

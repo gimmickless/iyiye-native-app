@@ -19,9 +19,7 @@ import {
   FaveAndRecentKitListView,
   NewKitListView
 } from 'components/home'
-import { HomeStackParamList } from 'router/stacks/Home'
-import { BottomTabNames } from 'router'
-import { AuthStackParamList } from 'router/stacks/Auth'
+import Carousel from 'react-native-snap-carousel'
 
 const Default: React.FC = () => {
   const { t } = useContext(LocalizationContext)
@@ -29,6 +27,13 @@ const Default: React.FC = () => {
   const { theme: rneTheme } = useContext(ThemeContext)
   const { authUser } = useAuthUser()
   const [searchText, setSearchText] = useState('')
+  const [carouselEntries] = useState([
+    {
+      title: 'Some stuff we beg the user to see',
+      backgroundColor: 'darkorchid',
+      textColor: 'white'
+    }
+  ])
 
   const isAuthUser = useMemo(() => authUser.props ?? undefined, [authUser])
   const username = useMemo(
@@ -36,76 +41,76 @@ const Default: React.FC = () => {
     [authUser.props?.username]
   )
 
-  const renderAddressButton = useMemo(() => {
-    const onPress = isAuthUser
-      ? () => {
-          navigation.navigate('AddressList' as keyof HomeStackParamList)
-        }
-      : () => {
-          Alert.alert(
-            t('screen.home.default.alert.loginToAddAddress.title'),
-            t('screen.home.default.alert.loginToAddAddress.message'),
-            [
-              {
-                text: t('common.button.cancel'),
-                onPress: () => {
-                  return
-                },
-                style: 'cancel'
-              },
-              {
-                text: t(
-                  'screen.home.default.alert.loginToAddAddress.button.ok'
-                ),
-                onPress: () => {
-                  navigation.navigate(BottomTabNames.Auth, {
-                    screen: 'SignIn' as keyof AuthStackParamList
-                  })
-                }
-              }
-            ],
-            { cancelable: true }
-          )
-        }
+  // const renderAddressButton = useMemo(() => {
+  //   const onPress = isAuthUser
+  //     ? () => {
+  //         navigation.navigate('AddressList' as keyof HomeStackParamList)
+  //       }
+  //     : () => {
+  //         Alert.alert(
+  //           t('screen.home.default.alert.loginToAddAddress.title'),
+  //           t('screen.home.default.alert.loginToAddAddress.message'),
+  //           [
+  //             {
+  //               text: t('common.button.cancel'),
+  //               onPress: () => {
+  //                 return
+  //               },
+  //               style: 'cancel'
+  //             },
+  //             {
+  //               text: t(
+  //                 'screen.home.default.alert.loginToAddAddress.button.ok'
+  //               ),
+  //               onPress: () => {
+  //                 navigation.navigate(BottomTabNames.Auth, {
+  //                   screen: 'SignIn' as keyof AuthStackParamList
+  //                 })
+  //               }
+  //             }
+  //           ],
+  //           { cancelable: true }
+  //         )
+  //       }
 
-    let buttonMaterialIcon: string
-    let bottomText: string
+  //   let buttonMaterialIcon: string
+  //   let bottomText: string
 
-    if (isAuthUser && authUser.props?.address) {
-      const defaultAddress = authUser.props[authUser.props?.address]
-      switch (defaultAddress?.kind) {
-        case 'home':
-          buttonMaterialIcon = AddressTypeMaterialCommunityIcon.Home
-          break
-        case 'office':
-          buttonMaterialIcon = AddressTypeMaterialCommunityIcon.Office
-          break
-        default:
-          buttonMaterialIcon = AddressTypeMaterialCommunityIcon.Other
-          break
-      }
-      bottomText = defaultAddress?.routeAddress ?? ''
-    } else {
-      buttonMaterialIcon = 'my-location'
-      bottomText = t('screen.home.default.button.location.current')
-    }
+  //   if (isAuthUser && authUser.props?.address) {
+  //     const defaultAddress = authUser.props[authUser.props?.address]
+  //     switch (defaultAddress?.kind) {
+  //       case 'home':
+  //         buttonMaterialIcon = AddressTypeMaterialCommunityIcon.Home
+  //         break
+  //       case 'office':
+  //         buttonMaterialIcon = AddressTypeMaterialCommunityIcon.Office
+  //         break
+  //       default:
+  //         buttonMaterialIcon = AddressTypeMaterialCommunityIcon.Other
+  //         break
+  //     }
+  //     bottomText = defaultAddress?.routeAddress ?? ''
+  //   } else {
+  //     buttonMaterialIcon = 'my-location'
+  //     bottomText = t('screen.home.default.button.location.current')
+  //   }
 
-    return (
-      <Pressable onPress={onPress} style={styles.headerRightAddressButton}>
-        <View style={styles.headerRightAddressButtonInnerContainer}>
-          <Text style={styles.headerRightAddressButtonLabelText}>
-            {t('screen.home.default.button.location.label')}
-          </Text>
-          <MaterialIcons
-            name={buttonMaterialIcon}
-            size={32}
-            color={rneTheme.colors?.grey0}
-          />
-          <Text style={styles.headerRightAddressButtonText}>{bottomText}</Text>
-        </View>
-      </Pressable>
-    )
-  }, [authUser.props, isAuthUser, navigation, rneTheme.colors?.grey0, t])
+  //   return (
+  //     <Pressable onPress={onPress} style={styles.headerRightAddressButton}>
+  //       <View style={styles.headerRightAddressButtonInnerContainer}>
+  //         <Text style={styles.headerRightAddressButtonLabelText}>
+  //           {t('screen.home.default.button.location.label')}
+  //         </Text>
+  //         <MaterialIcons
+  //           name={buttonMaterialIcon}
+  //           size={32}
+  //           color={rneTheme.colors?.grey0}
+  //         />
+  //         <Text style={styles.headerRightAddressButtonText}>{bottomText}</Text>
+  //       </View>
+  //     </Pressable>
+  //   )
+  // }, [authUser.props, isAuthUser, navigation, rneTheme.colors?.grey0, t])
 
   // Customize header
   useLayoutEffect(() => {
@@ -135,25 +140,28 @@ const Default: React.FC = () => {
   if (!authUser.loaded) return <LoadingView />
   return (
     <ScrollView style={styles.view}>
-      {/* Top Salutation */}
-      <View>
-        <View style={styles.headerTitleContainer}>
-          <Text h3 style={styles.headerTitlePrimaryText}>
-            {isAuthUser
-              ? t('screen.home.default.title.auth', {
-                  username
-                })
-              : t('screen.home.default.title.unauth')}
-            &nbsp;👋
-          </Text>
-          <Text style={styles.headerTitleSecondaryText}>
-            {isAuthUser
-              ? t('screen.home.default.subtitle.auth')
-              : t('screen.home.default.subtitle.unauth')}
-          </Text>
-        </View>
-        {renderAddressButton}
-      </View>
+      {/* Campaigns and other shit */}
+      <Carousel
+        layout={'default'}
+        data={carouselEntries}
+        renderItem={({ item }) => {
+          return (
+            <View
+              style={{
+                backgroundColor: item.backgroundColor
+              }}
+            >
+              <Text
+                style={{
+                  color: item.textColor
+                }}
+              >
+                {item.title}
+              </Text>
+            </View>
+          )
+        }}
+      />
       {/* Kits */}
       {isAuthUser && <ActiveOrderListView username={username} />}
       <CategoryListView username={username} />
@@ -171,35 +179,35 @@ const styles = StyleSheet.create({
   searchBarContainerStyle: {
     backgroundColor: 'transparent'
   },
-  searchBarInputStyle: {},
-  headerTitleContainer: {
-    flex: 1,
-    height: 64,
-    paddingVertical: 8,
-    paddingHorizontal: defaultContainerViewHorizontalPadding,
-    justifyContent: 'center'
-  },
-  headerTitlePrimaryText: {
-    alignContent: 'center'
-  },
-  headerTitleSecondaryText: {},
-  headerRightAddressButtonLabelText: {},
-  headerRightAddressButtonText: {},
-  headerRightAddressButton: {
-    height: 64,
-    borderWidth: 1,
-    borderColor: 'lightgrey',
-    borderRadius: 16,
-    marginRight: 8,
-    paddingHorizontal: 8,
-    marginVertical: 8
-  },
-  headerRightAddressButtonInnerContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'space-around'
-  }
+  searchBarInputStyle: {}
+  // headerTitleContainer: {
+  //   flex: 1,
+  //   height: 64,
+  //   paddingVertical: 8,
+  //   paddingHorizontal: defaultContainerViewHorizontalPadding,
+  //   justifyContent: 'center'
+  // },
+  // headerTitlePrimaryText: {
+  //   alignContent: 'center'
+  // },
+  // headerTitleSecondaryText: {},
+  // headerRightAddressButtonLabelText: {},
+  // headerRightAddressButtonText: {},
+  // headerRightAddressButton: {
+  //   height: 64,
+  //   borderWidth: 1,
+  //   borderColor: 'lightgrey',
+  //   borderRadius: 16,
+  //   marginRight: 8,
+  //   paddingHorizontal: 8,
+  //   marginVertical: 8
+  // },
+  // headerRightAddressButtonInnerContainer: {
+  //   flex: 1,
+  //   flexDirection: 'column',
+  //   alignItems: 'center',
+  //   justifyContent: 'space-around'
+  // }
 })
 
 export default Default

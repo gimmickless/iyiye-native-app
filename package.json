@@ -48,6 +48,7 @@
     "react-native-safe-area-context": "3.2.0",
     "react-native-screens": "~3.4.0",
     "react-native-skeleton-placeholder": "^4.0.0",
+    "react-native-snap-carousel": "^3.9.1",
     "react-native-web": "~0.13.12",
     "react-navigation-header-buttons": "^7.0.1",
     "yup": "^0.32.9"
@@ -60,6 +61,7 @@
     "@types/jest": "^26.0.23",
     "@types/react": "~16.9.35",
     "@types/react-native": "~0.63.2",
+    "@types/react-native-snap-carousel": "^3.8.4",
     "@types/react-test-renderer": "^17.0.1",
     "@types/yup": "^0.29.11",
     "@typescript-eslint/eslint-plugin": "^4.26.0",

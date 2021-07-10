@@ -1,4 +1,4 @@
-import React, { ReactElement, useContext, useRef, useState } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import {
   StyleSheet,
   Platform,
@@ -305,7 +305,6 @@ const SignUp: React.FC = () => {
                     <Pressable onPress={() => setShowTermsModal(true)}>
                       <Text
                         style={{
-                          ...styles.linkText,
                           color: getHyperlinkTextColor(scheme === 'dark')
                         }}
                       >
@@ -317,7 +316,7 @@ const SignUp: React.FC = () => {
                       &nbsp;
                     </Text>
                     <Pressable onPress={() => setShowPrivacyModal(true)}>
-                      <Text style={styles.linkText}>
+                      <Text>
                         {t('screen.auth.signUp.label.termsAgreed.privacy')}
                       </Text>
                     </Pressable>
@@ -344,7 +343,6 @@ const SignUp: React.FC = () => {
                 </Text>
               )}
               <Button
-                style={styles.formSubmitButton}
                 title={t('screen.auth.signUp.button.done').toLocaleUpperCase()}
                 loading={signUpLoading}
                 disabled={signUpLoading}
@@ -359,7 +357,6 @@ const SignUp: React.FC = () => {
         )} `}</Text>
         <Button
           type="clear"
-          style={styles.secondaryButton}
           title={t('screen.auth.signUp.button.signIn')}
           onPress={() =>
             navigation.navigate('SignIn' as keyof AuthStackParamList)
@@ -379,7 +376,6 @@ const SignUp: React.FC = () => {
               <Text>Terms of Service text here</Text>
             </ScrollView>
             <Button
-              style={styles.modalBottomButton}
               title={t('common.button.ok')}
               onPress={() => setShowTermsModal(false)}
             />
@@ -398,7 +394,6 @@ const SignUp: React.FC = () => {
               <Text>Privacy policy text here</Text>
             </ScrollView>
             <Button
-              style={styles.modalBottomButton}
               title={t('common.button.ok')}
               onPress={() => setShowPrivacyModal(false)}
             />
@@ -415,13 +410,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 8
   },
-  signUpArea: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-    flexWrap: 'wrap'
-  },
   title: {
     paddingVertical: 10,
     textAlign: 'center'
@@ -436,10 +424,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'transparent'
   },
-  passwordInputView: {
-    flex: 1
-  },
-  linkText: {},
   checkboxText: {
     flex: 1,
     flexDirection: 'row',
@@ -449,16 +433,13 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginLeft: 16
   },
-  formSubmitButton: {},
   centeredText: {
     paddingTop: 24,
     textAlign: 'center'
   },
-  secondaryButton: {},
   modalContainerView: {
     flex: 1
-  },
-  modalBottomButton: {}
+  }
 })
 
 export default SignUp

@@ -1,4 +1,4 @@
-import React, { RefObject, useContext, useRef, useState } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import {
   StyleSheet,
   Platform,
@@ -171,7 +171,6 @@ const ForgotPasword: React.FC = () => {
               </View>
               <View style={styles.inputAndButtonCol2}>
                 <Button
-                  style={styles.formSubmitButton}
                   loading={sendEmailLoading}
                   disabled={sendEmailLoading}
                   title={(!emailSent
@@ -274,7 +273,6 @@ const ForgotPasword: React.FC = () => {
                     onSubmitEditing={handleSubmit as any}
                   />
                   <Button
-                    style={styles.formSubmitButton}
                     loading={sendNewPasswordLoading}
                     disabled={sendNewPasswordLoading}
                     title={t(
@@ -316,7 +314,6 @@ const styles = StyleSheet.create({
   inputAndButtonCol2: {
     flex: 1
   },
-  formSubmitButton: {},
   dividerLine: {
     height: 2
   }
