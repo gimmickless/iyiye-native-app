@@ -19,13 +19,12 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "androidNavigationBar": {
       "backgroundColor": "#000000"
     },
     "android": {
+      "jsEngine": "hermes",
       "softwareKeyboardLayoutMode": "resize"
     },
     "ios": {
