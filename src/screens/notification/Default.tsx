@@ -54,6 +54,7 @@ const Default: React.FC = () => {
 
   const fetchNotifications = useCallback(async () => {
     try {
+      if (!authUser.props?.username) return
       setDataLoading(true)
 
       const listInAppNotificationsForUserAppSyncRequest = API.graphql(
@@ -78,7 +79,6 @@ const Default: React.FC = () => {
         ...listInAppNotificationsForUserResult
       ])
     } catch (err) {
-      console.log('Err: ' + JSON.stringify(err))
       addInAppMessage({
         message: JSON.stringify(err),
         type: 'error'

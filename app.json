@@ -19,13 +19,12 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "androidNavigationBar": {
       "backgroundColor": "#000000"
     },
     "android": {
+      "userInterfaceStyle": "automatic",
       "jsEngine": "hermes",
       "softwareKeyboardLayoutMode": "resize",
       "package": "com.gimmickless.iyiyeapp"

@@ -200,7 +200,6 @@ const Profile: React.FC = () => {
         )
       })
     } catch (err) {
-      console.log('Err: ' + JSON.stringify(err))
       addInAppMessage({
         message: JSON.stringify(err),
         type: 'error'

@@ -25,7 +25,13 @@ const CartStackScreen: React.FC = () => {
         }
       }}
     >
-      <CartStack.Screen name="Default" component={CartDefault} />
+      <CartStack.Screen
+        name="Default"
+        component={CartDefault}
+        options={{
+          title: t('screen.cart.default.title')
+        }}
+      />
     </CartStack.Navigator>
   )
 }

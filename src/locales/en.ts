@@ -323,6 +323,11 @@ const englishTranslation = {
         }
       }
     },
+    cart: {
+      default: {
+        title: 'Cart'
+      }
+    },
     recipeKits: {
       title: 'Recipe Kits',
       label: {}
@@ -335,15 +340,6 @@ const englishTranslation = {
     },
     favorites: {
       title: 'Favorites'
-    },
-    cart: {
-      title: 'Cart',
-      summary: {
-        title: 'Cart'
-      },
-      checkout: {
-        title: 'Checkout'
-      }
     }
   }
 }

@@ -1,5 +1,11 @@
 import React, { useContext, useLayoutEffect, useMemo, useState } from 'react'
-import { View, StyleSheet, Pressable, Alert } from 'react-native'
+import {
+  View,
+  StyleSheet,
+  Pressable,
+  Alert,
+  useWindowDimensions
+} from 'react-native'
 import { SearchBar, Text, ThemeContext } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native'
 import { useAuthUser } from 'contexts/Auth'
@@ -27,9 +33,15 @@ const Default: React.FC = () => {
   const { theme: rneTheme } = useContext(ThemeContext)
   const { authUser } = useAuthUser()
   const [searchText, setSearchText] = useState('')
+  const window = useWindowDimensions()
   const [carouselEntries] = useState([
     {
-      title: 'Some stuff we beg the user to see',
+      title: '✨ Ads or ...',
+      backgroundColor: 'deepskyblue',
+      textColor: 'white'
+    },
+    {
+      title: '... some stuff we beg the user to see',
       backgroundColor: 'darkorchid',
       textColor: 'white'
     }
@@ -142,25 +154,29 @@ const Default: React.FC = () => {
     <ScrollView style={styles.view}>
       {/* Campaigns and other shit */}
       <Carousel
+        autoplay
+        enableMomentum
+        lockScrollWhileSnapping
         layout={'default'}
         data={carouselEntries}
-        renderItem={({ item }) => {
-          return (
-            <View
+        sliderWidth={window.width}
+        itemWidth={window.width - 16 * defaultContainerViewHorizontalPadding}
+        renderItem={({ item }) => (
+          <View
+            style={{
+              ...styles.carouselItem,
+              backgroundColor: item.backgroundColor
+            }}
+          >
+            <Text
               style={{
-                backgroundColor: item.backgroundColor
+                color: item.textColor
               }}
             >
-              <Text
-                style={{
-                  color: item.textColor
-                }}
-              >
-                {item.title}
-              </Text>
-            </View>
-          )
-        }}
+              {item.title}
+            </Text>
+          </View>
+        )}
       />
       {/* Kits */}
       {isAuthUser && <ActiveOrderListView username={username} />}
@@ -174,10 +190,15 @@ const Default: React.FC = () => {
 
 const styles = StyleSheet.create({
   view: {
-    flex: 1
+    paddingHorizontal: defaultContainerViewHorizontalPadding
   },
   searchBarContainerStyle: {
     backgroundColor: 'transparent'
+  },
+  carouselItem: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: 75
   },
   searchBarInputStyle: {}
   // headerTitleContainer: {
