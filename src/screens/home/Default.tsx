@@ -6,7 +6,7 @@ import {
   Alert,
   useWindowDimensions
 } from 'react-native'
-import { SearchBar, Text, ThemeContext } from 'react-native-elements'
+import { Button, SearchBar, Text, ThemeContext } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native'
 import { useAuthUser } from 'contexts/Auth'
 import {
@@ -15,7 +15,7 @@ import {
 } from 'utils/constants'
 import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
-import { MaterialIcons } from '@expo/vector-icons'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 import LoadingView from 'components/shared/LoadingView'
 import { AddressTypeMaterialCommunityIcon } from 'types/visualization'
 import {
@@ -26,13 +26,13 @@ import {
   NewKitListView
 } from 'components/home'
 import Carousel from 'react-native-snap-carousel'
+import { HomeStackParamList } from 'router/stacks/Home'
 
 const Default: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
   const { theme: rneTheme } = useContext(ThemeContext)
   const { authUser } = useAuthUser()
-  const [searchText, setSearchText] = useState('')
   const window = useWindowDimensions()
   const [carouselEntries] = useState([
     {
@@ -57,26 +57,54 @@ const Default: React.FC = () => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerStyle: { height: homeHeaderHeight, elevation: 0, shadowOpacity: 0 },
+      headerLeft: () => <Text style={styles.logoText}>###</Text>,
       headerTitle: () => (
-        <SearchBar
-          value={searchText}
-          onChangeText={(val: string) => setSearchText(val)}
-          containerStyle={styles.searchBarContainerStyle}
-          inputStyle={{
-            ...styles.searchBarInputStyle,
-            color: rneTheme.colors?.black
-          }}
-          autoCorrect={false}
-          placeholder={t(
-            'screen.common.address.locationSearch.titleSearchTextInput.placeholder'
-          )}
-          returnKeyType="done"
-          textContentType="streetAddressLine1"
-          cancelButtonTitle={t('common.button.cancel')}
-        />
-      )
+        <Pressable
+          onPress={() =>
+            navigation.navigate('Search' as keyof HomeStackParamList)
+          }
+        >
+          <SearchBar
+            pointerEvents="none"
+            onChangeText={(val: string) => {
+              return
+            }}
+            value=""
+            editable={false}
+            containerStyle={styles.searchBarContainerStyle}
+            inputStyle={{
+              ...styles.searchBarInputStyle,
+              color: rneTheme.colors?.black
+            }}
+            autoCorrect={false}
+            placeholder={t('screen.home.default.placeholder.search')}
+          />
+        </Pressable>
+      ),
+      headerRight: isAuthUser
+        ? () => (
+            <Button
+              type="clear"
+              icon={
+                <MaterialCommunityIcons
+                  name="plus"
+                  size={15}
+                  color={rneTheme.colors?.primary}
+                />
+              }
+              title={t('screen.home.default.button.create')}
+              onPress={() => Alert.alert('TODO: Navigate to Add new kit page')}
+            />
+          )
+        : undefined
     })
-  }, [navigation, rneTheme.colors?.black, searchText, t])
+  }, [
+    isAuthUser,
+    navigation,
+    rneTheme.colors?.black,
+    rneTheme.colors?.primary,
+    t
+  ])
 
   if (!authUser.loaded) return <LoadingView />
   return (
@@ -123,6 +151,12 @@ const styles = StyleSheet.create({
   view: {
     paddingHorizontal: defaultContainerViewHorizontalPadding
   },
+  logoText: {
+    justifyContent: 'center',
+    color: 'tomato',
+    fontSize: 32,
+    fontWeight: 'bold'
+  },
   searchBarContainerStyle: {
     backgroundColor: 'transparent'
   },
@@ -132,34 +166,6 @@ const styles = StyleSheet.create({
     minHeight: 75
   },
   searchBarInputStyle: {}
-  // headerTitleContainer: {
-  //   flex: 1,
-  //   height: 64,
-  //   paddingVertical: 8,
-  //   paddingHorizontal: defaultContainerViewHorizontalPadding,
-  //   justifyContent: 'center'
-  // },
-  // headerTitlePrimaryText: {
-  //   alignContent: 'center'
-  // },
-  // headerTitleSecondaryText: {},
-  // headerRightAddressButtonLabelText: {},
-  // headerRightAddressButtonText: {},
-  // headerRightAddressButton: {
-  //   height: 64,
-  //   borderWidth: 1,
-  //   borderColor: 'lightgrey',
-  //   borderRadius: 16,
-  //   marginRight: 8,
-  //   paddingHorizontal: 8,
-  //   marginVertical: 8
-  // },
-  // headerRightAddressButtonInnerContainer: {
-  //   flex: 1,
-  //   flexDirection: 'column',
-  //   alignItems: 'center',
-  //   justifyContent: 'space-around'
-  // }
 })
 
 export default Default

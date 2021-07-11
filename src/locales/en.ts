@@ -308,7 +308,11 @@ const englishTranslation = {
         curatedKits: {
           title: 'Curated'
         },
+        placeholder: {
+          search: 'Search...'
+        },
         button: {
+          create: 'Create',
           location: {
             label: 'Address',
             current: 'Current'
@@ -323,6 +327,11 @@ const englishTranslation = {
               ok: 'Go to Login'
             }
           }
+        }
+      },
+      search: {
+        placeholder: {
+          search: 'Search...'
         }
       }
     },

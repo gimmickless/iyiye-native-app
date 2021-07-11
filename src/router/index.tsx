@@ -45,7 +45,7 @@ export const RootNavigator: React.FC = () => {
   const { authUser } = useAuthUser()
   const isDarkMode = scheme === 'dark'
   const isSignedIn = authUser.loaded && authUser.props?.username
-  const activeTintColor = isDarkMode ? 'lightcoral' : 'red'
+  const activeTintColor = isDarkMode ? 'lightcoral' : 'tomato'
   const inactiveTintColor = 'grey'
 
   return (

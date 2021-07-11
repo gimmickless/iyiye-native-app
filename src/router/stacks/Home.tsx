@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
-import { Default } from 'screens/home'
+import { Default, Search } from 'screens/home'
 import {
   AddressList,
   AddressLocationSearch,
@@ -13,6 +13,7 @@ import { LocalizationContext } from 'contexts/Localization'
 
 export type HomeStackParamList = {
   Default: undefined
+  Search: undefined
   AddressList: { changedAddressKey?: AuthUserAddressKey } | undefined
   AddressLocationSearch: undefined
   AddressForm:
@@ -50,6 +51,7 @@ const HomeStackScreen: React.FC = () => {
       }}
     >
       <HomeStack.Screen name="Default" component={Default} />
+      <HomeStack.Screen name="Search" component={Search} />
       <HomeStack.Screen
         name="AddressList"
         component={AddressList}
