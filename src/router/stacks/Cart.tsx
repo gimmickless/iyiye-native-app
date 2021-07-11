@@ -1,5 +1,8 @@
 import React, { useContext } from 'react'
-import { createStackNavigator } from '@react-navigation/stack'
+import {
+  CardStyleInterpolators,
+  createStackNavigator
+} from '@react-navigation/stack'
 import { Default as CartDefault } from 'screens/cart'
 import { headerLeftContainerPaddingLeft } from 'utils/constants'
 import { LocalizationContext } from 'contexts/Localization'
@@ -20,6 +23,7 @@ const CartStackScreen: React.FC = () => {
           elevation: 0,
           shadowOpacity: 0
         },
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         headerLeftContainerStyle: {
           paddingLeft: headerLeftContainerPaddingLeft
         }

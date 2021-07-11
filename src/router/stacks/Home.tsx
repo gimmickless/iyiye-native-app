@@ -1,5 +1,9 @@
 import React, { useContext } from 'react'
-import { createStackNavigator } from '@react-navigation/stack'
+import {
+  CardStyleInterpolators,
+  createStackNavigator,
+  TransitionSpecs
+} from '@react-navigation/stack'
 import { Default, Search } from 'screens/home'
 import {
   AddressList,
@@ -47,7 +51,8 @@ const HomeStackScreen: React.FC = () => {
         },
         headerLeftContainerStyle: {
           paddingLeft: headerLeftContainerPaddingLeft
-        }
+        },
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
       }}
     >
       <HomeStack.Screen name="Default" component={Default} />

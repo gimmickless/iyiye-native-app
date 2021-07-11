@@ -1,5 +1,8 @@
 import React, { useContext } from 'react'
-import { createStackNavigator } from '@react-navigation/stack'
+import {
+  CardStyleInterpolators,
+  createStackNavigator
+} from '@react-navigation/stack'
 import { ConfirmAccount, ForgotPassword, SignIn, SignUp } from 'screens/auth'
 import { LocalizationContext } from 'contexts/Localization'
 
@@ -22,7 +25,8 @@ const AuthStackScreen: React.FC = () => {
           opacity: 0.6,
           elevation: 0,
           shadowOpacity: 0
-        }
+        },
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
       }}
     >
       <AuthStack.Screen

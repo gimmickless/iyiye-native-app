@@ -1,5 +1,8 @@
 import React, { useContext } from 'react'
-import { createStackNavigator } from '@react-navigation/stack'
+import {
+  CardStyleInterpolators,
+  createStackNavigator
+} from '@react-navigation/stack'
 import {
   Default,
   Settings,
@@ -42,6 +45,7 @@ const ProfileStackScreen: React.FC = () => {
           elevation: 0,
           shadowOpacity: 0
         },
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         headerLeftContainerStyle: {
           paddingLeft: headerLeftContainerPaddingLeft
         }
