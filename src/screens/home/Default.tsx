@@ -178,9 +178,11 @@ const Default: React.FC = () => {
           </View>
         )}
       />
-      {/* Kits */}
+      {/* Orders */}
       {isAuthUser && <ActiveOrderListView username={username} />}
+      {/* Categories */}
       <CategoryListView username={username} />
+      {/* Kits */}
       <CuratedKitListView username={username} />
       {isAuthUser && <FaveAndRecentKitListView username={username} />}
       <NewKitListView />

@@ -288,7 +288,7 @@ const englishTranslation = {
           auth: 'What are we cooking today?',
           unauth: 'What are we cooking today?'
         },
-        kitCategory: {
+        kitCategories: {
           title: 'Categories',
           item: {
             burger: 'Burger',
@@ -304,6 +304,9 @@ const englishTranslation = {
             vegan: 'Vegan',
             vegetarian: 'Vegetarian'
           }
+        },
+        curatedKits: {
+          title: 'Curated'
         },
         button: {
           location: {

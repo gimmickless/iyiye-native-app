@@ -26,6 +26,7 @@ export const maxAddressCount = 5
 // Style
 export const defaultListVerticalPadding = 10
 export const defaultContainerViewHorizontalPadding = 8
+export const defaultHomeScrollViewTopMargin = 12
 
 // AWS, Amplify
 export const cognitoNotAuthenticatedMessageList = [

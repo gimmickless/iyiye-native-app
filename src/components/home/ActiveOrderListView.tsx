@@ -1,5 +1,6 @@
 import React from 'react'
-import { View, Text } from 'react-native'
+import { StyleSheet, View, Text } from 'react-native'
+import { defaultHomeScrollViewTopMargin } from 'utils/constants'
 
 interface ActiveOrderListViewProps {
   username: string
@@ -8,10 +9,19 @@ interface ActiveOrderListViewProps {
 const ActiveOrderListView: React.FC<ActiveOrderListViewProps> = (props) => {
   const { username } = props
   return (
-    <View>
+    <View style={styles.container}>
       <Text>{username}</Text>
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: defaultHomeScrollViewTopMargin
+  },
+  scrollContainer: {
+    flexDirection: 'row'
+  }
+})
 
 export default ActiveOrderListView
