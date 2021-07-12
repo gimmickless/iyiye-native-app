@@ -5,9 +5,11 @@ import { LocalizationContext } from 'contexts/Localization'
 import KitListItem from './KitListItem'
 import { defaultHomeScrollViewTopMargin } from 'utils/constants'
 
-interface NewKitListViewProps {}
+interface FaveKitListViewProps {
+  username: string
+}
 
-const NewKitListViewProps: React.FC<NewKitListViewProps> = (props) => {
+const FaveKitListView: React.FC<FaveKitListViewProps> = (props) => {
   const { username } = props
   const { t } = useContext(LocalizationContext)
   const { theme: rneTheme } = useContext(ThemeContext)
@@ -34,7 +36,7 @@ const NewKitListViewProps: React.FC<NewKitListViewProps> = (props) => {
   return (
     <View style={styles.container}>
       <Text style={[styles.listTitle, { color: rneTheme.colors?.grey1 }]}>
-        {t('screen.home.default.newKits.title')}
+        {t('screen.home.default.faveKits.title')}
       </Text>
       <ScrollView
         horizontal
@@ -68,4 +70,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default NewKitListViewProps
+export default FaveKitListView

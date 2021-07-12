@@ -21,7 +21,7 @@ import {
   ActiveOrderListView,
   CategoryListView,
   CuratedKitListView,
-  FaveAndRecentKitListView,
+  FaveKitListView,
   NewKitListView
 } from 'components/home'
 import Carousel from 'react-native-snap-carousel'
@@ -140,7 +140,7 @@ const Default: React.FC = () => {
       <CategoryListView username={username} />
       {/* Kits */}
       <CuratedKitListView username={username} />
-      {isAuthUser && <FaveAndRecentKitListView username={username} />}
+      {isAuthUser && <FaveKitListView username={username} />}
       <NewKitListView />
     </ScrollView>
   )

@@ -308,6 +308,12 @@ const englishTranslation = {
         curatedKits: {
           title: 'Curated'
         },
+        faveKits: {
+          title: 'Your Favorites'
+        },
+        newKits: {
+          title: 'Recently Added'
+        },
         placeholder: {
           search: 'Search...'
         },
