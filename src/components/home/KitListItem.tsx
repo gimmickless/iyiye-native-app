@@ -1,12 +1,15 @@
+import { useNavigation } from '@react-navigation/native'
 import React, { useContext } from 'react'
 import { Image, StyleSheet, View, Text, Pressable } from 'react-native'
 import { ThemeContext } from 'react-native-elements'
+import { ModalledHomeStackParamList } from 'router/stacks/Home'
 
 const borderRadius = 12
 const imageHeight = 100
 const imageWidth = 125
 
 interface KitListItemProps {
+  id: string
   name: string
   imageUrl?: string
   price: number
@@ -14,10 +17,19 @@ interface KitListItemProps {
 }
 
 const KitListItem: React.FC<KitListItemProps> = (props) => {
-  const { name, imageUrl, price, faved } = props
+  const { id, name, imageUrl, price, faved } = props
+  const navigation = useNavigation()
   const { theme: rneTheme } = useContext(ThemeContext)
   return (
-    <Pressable android_ripple={{ color: 'grey', radius: 64 }}>
+    <Pressable
+      android_ripple={{ color: 'grey', radius: 64 }}
+      onPress={() =>
+        navigation.navigate(
+          'KitDetailModal' as keyof ModalledHomeStackParamList,
+          { id }
+        )
+      }
+    >
       <View style={[styles.container, { borderColor: rneTheme.colors?.grey2 }]}>
         <Image
           style={[styles.image, { borderColor: rneTheme.colors?.grey1 }]}

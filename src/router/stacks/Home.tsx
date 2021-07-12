@@ -1,10 +1,9 @@
 import React, { useContext } from 'react'
 import {
   CardStyleInterpolators,
-  createStackNavigator,
-  TransitionSpecs
+  createStackNavigator
 } from '@react-navigation/stack'
-import { Default, Search } from 'screens/home'
+import { Default, KitDetailModal, Search } from 'screens/home'
 import {
   AddressList,
   AddressLocationSearch,
@@ -37,7 +36,13 @@ export type HomeStackParamList = {
   CheckoutStatus: undefined
 }
 
+export type ModalledHomeStackParamList = {
+  Home: undefined
+  KitDetailModal: { id: string }
+}
+
 const HomeStack = createStackNavigator<HomeStackParamList>()
+const ModalledHomeStack = createStackNavigator<ModalledHomeStackParamList>()
 
 const HomeStackScreen: React.FC = () => {
   const { t } = useContext(LocalizationContext)
@@ -78,4 +83,26 @@ const HomeStackScreen: React.FC = () => {
   )
 }
 
-export default HomeStackScreen
+const ModalledHomeStackScreen: React.FC = () => {
+  return (
+    <ModalledHomeStack.Navigator mode="modal">
+      <ModalledHomeStack.Screen
+        name="Home"
+        component={HomeStackScreen}
+        options={{
+          headerShown: false
+        }}
+      />
+      <ModalledHomeStack.Screen
+        name="KitDetailModal"
+        component={KitDetailModal}
+        options={{
+          headerShown: false,
+          cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS
+        }}
+      />
+    </ModalledHomeStack.Navigator>
+  )
+}
+
+export default ModalledHomeStackScreen

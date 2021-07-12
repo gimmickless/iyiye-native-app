@@ -17,7 +17,6 @@ import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import LoadingView from 'components/shared/LoadingView'
-import { AddressTypeMaterialCommunityIcon } from 'types/visualization'
 import {
   ActiveOrderListView,
   CategoryListView,

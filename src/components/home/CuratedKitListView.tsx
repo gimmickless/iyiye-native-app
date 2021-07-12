@@ -16,6 +16,7 @@ const CuratedKitListView: React.FC<CuratedKitListViewProps> = (props) => {
 
   const kits = [
     {
+      id: '1',
       name: 'Cool Burger',
       imageUrl:
         'https://iyiye-meta-files.s3-eu-west-1.amazonaws.com/images/category/burger.jpg',
@@ -23,6 +24,7 @@ const CuratedKitListView: React.FC<CuratedKitListViewProps> = (props) => {
       faved: true
     },
     {
+      id: '2',
       name: 'Hot Chicken',
       imageUrl:
         'https://iyiye-meta-files.s3-eu-west-1.amazonaws.com/images/category/chicken.jpg',
@@ -43,7 +45,8 @@ const CuratedKitListView: React.FC<CuratedKitListViewProps> = (props) => {
       >
         {kits.map((el) => (
           <KitListItem
-            key={el.name}
+            key={el.id}
+            id={el.id}
             name={el.name}
             imageUrl={el.imageUrl}
             price={el.price}
