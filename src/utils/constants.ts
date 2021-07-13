@@ -22,6 +22,7 @@ export const commentMinLength = 3
 export const commentMaxLength = 255
 
 export const maxAddressCount = 5
+export const maxKitCountPerCart = 10
 
 // Style
 export const defaultListVerticalPadding = 10

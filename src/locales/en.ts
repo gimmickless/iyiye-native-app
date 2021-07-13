@@ -339,6 +339,12 @@ const englishTranslation = {
         placeholder: {
           search: 'Search...'
         }
+      },
+      kitDetailModal: {
+        button: {
+          addToCart: 'Add to Cart',
+          removeFromCart: 'Remove'
+        }
       }
     },
     cart: {
