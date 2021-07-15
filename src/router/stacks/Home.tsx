@@ -34,15 +34,11 @@ export type HomeStackParamList = {
   OrderItem: undefined
   Checkout: undefined
   CheckoutStatus: undefined
-}
-
-export type ModalledHomeStackParamList = {
-  Home: undefined
+  // Modal
   KitDetailModal: { id: string }
 }
 
 const HomeStack = createStackNavigator<HomeStackParamList>()
-const ModalledHomeStack = createStackNavigator<ModalledHomeStackParamList>()
 
 const HomeStackScreen: React.FC = () => {
   const { t } = useContext(LocalizationContext)
@@ -60,49 +56,38 @@ const HomeStackScreen: React.FC = () => {
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
       }}
     >
-      <HomeStack.Screen name="Default" component={Default} />
-      <HomeStack.Screen name="Search" component={Search} />
-      <HomeStack.Screen
-        name="AddressList"
-        component={AddressList}
-        options={{
-          title: t('screen.common.address.list.title')
-        }}
-      />
-      <HomeStack.Screen
-        name="AddressLocationSearch"
-        component={AddressLocationSearch}
-        options={{}}
-      />
-      <HomeStack.Screen
-        name="AddressForm"
-        component={AddressForm}
-        options={{}}
-      />
+      <HomeStack.Group>
+        <HomeStack.Screen name="Default" component={Default} />
+        <HomeStack.Screen name="Search" component={Search} />
+        <HomeStack.Screen
+          name="AddressList"
+          component={AddressList}
+          options={{
+            title: t('screen.common.address.list.title')
+          }}
+        />
+        <HomeStack.Screen
+          name="AddressLocationSearch"
+          component={AddressLocationSearch}
+          options={{}}
+        />
+        <HomeStack.Screen
+          name="AddressForm"
+          component={AddressForm}
+          options={{}}
+        />
+      </HomeStack.Group>
+      <HomeStack.Group screenOptions={{ presentation: 'modal' }}>
+        <HomeStack.Screen
+          name="KitDetailModal"
+          component={KitDetailModal}
+          options={{
+            cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS
+          }}
+        />
+      </HomeStack.Group>
     </HomeStack.Navigator>
   )
 }
 
-const ModalledHomeStackScreen: React.FC = () => {
-  return (
-    <ModalledHomeStack.Navigator mode="modal">
-      <ModalledHomeStack.Screen
-        name="Home"
-        component={HomeStackScreen}
-        options={{
-          headerShown: false
-        }}
-      />
-      <ModalledHomeStack.Screen
-        name="KitDetailModal"
-        component={KitDetailModal}
-        options={{
-          headerShown: false,
-          cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS
-        }}
-      />
-    </ModalledHomeStack.Navigator>
-  )
-}
-
-export default ModalledHomeStackScreen
+export default HomeStackScreen

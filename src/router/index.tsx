@@ -79,18 +79,16 @@ export const RootNavigator: React.FC = () => {
                         color={color}
                       />
                     )
-                  }
-                })}
-                tabBarOptions={{
-                  activeTintColor: activeTintColor,
-                  inactiveTintColor: inactiveTintColor,
-                  keyboardHidesTabBar: true,
-                  showLabel: false,
-                  style: {
+                  },
+                  tabBarActiveTintColor: activeTintColor,
+                  tabBarInactiveTintColor: inactiveTintColor,
+                  tabBarHideOnKeyboard: true,
+                  tabBarShowLabel: false,
+                  tabBarStyle: {
                     elevation: 0,
                     shadowOpacity: 0
                   }
-                }}
+                })}
                 backBehavior="history"
               >
                 <Tab.Screen

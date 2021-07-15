@@ -11,15 +11,12 @@ import {
 } from 'react-native'
 import { Button, ThemeContext } from 'react-native-elements'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { ModalledHomeStackParamList } from 'router/stacks/Home'
+import { HomeStackParamList } from 'router/stacks/Home'
 import InputSpinner from 'react-native-input-spinner'
 import { maxKitCountPerCart } from 'utils/constants'
 import { useEffect } from 'react'
 
-type KitDetailModalProps = RouteProp<
-  ModalledHomeStackParamList,
-  'KitDetailModal'
->
+type KitDetailModalProps = RouteProp<HomeStackParamList, 'KitDetailModal'>
 
 const KitDetailModal: React.FC = () => {
   const navigation = useNavigation()
@@ -36,25 +33,12 @@ const KitDetailModal: React.FC = () => {
   // Customize header
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: 'Kit Name Here',
-      headerRight: () => (
-        <Button
-          type="clear"
-          icon={
-            <MaterialCommunityIcons
-              name="close-circle-outline"
-              size={15}
-              color={rneTheme.colors?.primary}
-            />
-          }
-          onPress={() => navigation.goBack()}
-        />
-      )
+      title: 'Kit Name Here'
     })
   }, [navigation, rneTheme.colors?.primary])
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       {/* Scroll View */}
       <ScrollView style={styles.scroll}>
         <Text style={{ color: rneTheme.colors?.black }}>
@@ -62,7 +46,7 @@ const KitDetailModal: React.FC = () => {
         </Text>
       </ScrollView>
       {/* Actions */}
-      <View
+      {/* <View
         style={[styles.action, { backgroundColor: rneTheme.colors?.grey5 }]}
       >
         <Text>€ XX.YY</Text>
@@ -102,8 +86,8 @@ const KitDetailModal: React.FC = () => {
             }
           />
         )}
-      </View>
-    </View>
+      </View> */}
+    </SafeAreaView>
   )
 }
 
@@ -115,7 +99,7 @@ const styles = StyleSheet.create({
   },
   scroll: {},
   action: {
-    width: '90%',
+    width: 250,
     borderRadius: 12,
     flexDirection: 'row'
   }
