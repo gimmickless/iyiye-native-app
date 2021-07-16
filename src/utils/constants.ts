@@ -47,6 +47,9 @@ export const headerRightButtonTextFont = 16
 export const listItemPrimaryFontSize = 22
 export const listItemSecondaryFontSize = 18
 
+export const defaultHeaderButtonSize = 23
+export const defaultKitImageHeight = 275
+
 export const getHyperlinkTextColor = (isDark: boolean): string => {
   return isDark ? 'lightblue' : 'blue'
 }

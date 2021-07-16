@@ -32,6 +32,7 @@ import { AuthUserState } from 'types/context'
 import { Storage } from '@aws-amplify/storage'
 import {
   defaultContainerViewHorizontalPadding,
+  defaultHeaderButtonSize,
   defaultListVerticalPadding,
   getUserAvatarUrl
 } from 'utils/constants'
@@ -104,7 +105,10 @@ const Profile: React.FC = () => {
                 navigation.navigate('Settings' as keyof ProfileStackParamList)
               }}
             >
-              <MaterialCommunityIcons name="dots-horizontal-circle" size={23} />
+              <MaterialCommunityIcons
+                name="dots-horizontal-circle"
+                size={defaultHeaderButtonSize}
+              />
             </Pressable>
           ) : undefined}
         </View>

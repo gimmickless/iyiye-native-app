@@ -52,7 +52,8 @@
     "react-native-snap-carousel": "^3.9.1",
     "react-native-web": "~0.13.12",
     "react-navigation-header-buttons": "^7.0.1",
-    "yup": "^0.32.9"
+    "yup": "^0.32.9",
+    "expo-sharing": "~9.2.1"
   },
   "devDependencies": {
     "@babel/core": "~7.9.0",

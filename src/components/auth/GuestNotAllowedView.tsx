@@ -15,6 +15,7 @@ const GuestNotAllowedView: React.FC = () => {
       <LottieView
         source={require('visuals/lottie/lock.json')}
         autoPlay
+        loop={false}
         style={styles.lottieView}
       />
       <Text style={[styles.message, { color: rneTheme.colors?.grey1 }]}>

@@ -344,6 +344,11 @@ const englishTranslation = {
         button: {
           addToCart: 'Add to Cart',
           removeFromCart: 'Remove'
+        },
+        alert: {
+          shareNotAvailable: {
+            title: 'Share not available'
+          }
         }
       }
     },

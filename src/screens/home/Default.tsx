@@ -55,7 +55,11 @@ const Default: React.FC = () => {
   // Customize header
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerStyle: { height: homeHeaderHeight, elevation: 0, shadowOpacity: 0 },
+      headerStyle: {
+        height: homeHeaderHeight,
+        elevation: 0,
+        shadowOpacity: 0
+      },
       headerLeft: () => <Text style={styles.logoText}>###</Text>,
       headerTitle: () => (
         <Pressable
@@ -157,6 +161,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   searchBarContainerStyle: {
+    minWidth: 200,
+    width: 'auto',
     backgroundColor: 'transparent'
   },
   carouselItem: {

@@ -80,6 +80,7 @@ export const RootNavigator: React.FC = () => {
                       />
                     )
                   },
+                  headerShown: false,
                   tabBarActiveTintColor: activeTintColor,
                   tabBarInactiveTintColor: inactiveTintColor,
                   tabBarHideOnKeyboard: true,

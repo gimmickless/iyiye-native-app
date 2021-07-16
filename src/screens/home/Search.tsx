@@ -57,6 +57,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: defaultContainerViewHorizontalPadding
   },
   searchBarContainerStyle: {
+    minWidth: 200,
+    width: 'auto',
     backgroundColor: 'transparent'
   },
   carouselItem: {
