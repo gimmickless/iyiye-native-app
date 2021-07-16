@@ -95,7 +95,7 @@ const KitDetailModal: React.FC = () => {
         </View>
       )
     })
-  }, [liked, navigation])
+  }, [liked, navigation, rneTheme.colors?.primary, t])
 
   return (
     <SafeAreaView style={styles.container}>
