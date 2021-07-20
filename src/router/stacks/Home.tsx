@@ -9,6 +9,8 @@ import {
   AddressLocationSearch,
   AddressForm
 } from 'screens/common/address'
+
+import { Default as AuthorProfileDefault } from 'screens/common/profile'
 import { headerLeftContainerPaddingLeft } from 'utils/constants'
 import { Region } from 'react-native-maps'
 import { AuthUserAddressKey } from 'types/context'
@@ -60,6 +62,10 @@ const HomeStackScreen: React.FC = () => {
         <HomeStack.Screen name="Default" component={Default} />
         <HomeStack.Screen name="Search" component={Search} />
         <HomeStack.Screen
+          name="AuthorProfileDefault"
+          component={AuthorProfileDefault}
+        />
+        <HomeStack.Screen
           name="AddressList"
           component={AddressList}
           options={{
@@ -82,7 +88,9 @@ const HomeStackScreen: React.FC = () => {
           name="KitDetailModal"
           component={KitDetailModal}
           options={{
-            cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS
+            title: '',
+            cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+            headerTransparent: true
           }}
         />
       </HomeStack.Group>

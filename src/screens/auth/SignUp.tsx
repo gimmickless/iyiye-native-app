@@ -309,6 +309,7 @@ const SignUp: React.FC = () => {
                         }}
                       >
                         {t('screen.auth.signUp.label.termsAgreed.terms')}
+                        &nbsp;🡥
                       </Text>
                     </Pressable>
                     <Text>

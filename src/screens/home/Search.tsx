@@ -61,11 +61,6 @@ const styles = StyleSheet.create({
     width: 'auto',
     backgroundColor: 'transparent'
   },
-  carouselItem: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    minHeight: 75
-  },
   searchBarInputStyle: {}
 })
 

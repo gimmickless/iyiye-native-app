@@ -56,16 +56,18 @@ const Default: React.FC = () => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerStyle: {
-        height: homeHeaderHeight,
-        elevation: 0,
-        shadowOpacity: 0
+        height: homeHeaderHeight
       },
+      headerTranslucent: true,
       headerLeft: () => <Text style={styles.logoText}>###</Text>,
       headerTitle: () => (
         <Pressable
           onPress={() =>
             navigation.navigate('Search' as keyof HomeStackParamList)
           }
+          style={{
+            backgroundColor: 'powderblue'
+          }}
         >
           <SearchBar
             pointerEvents="none"
@@ -161,7 +163,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   searchBarContainerStyle: {
-    minWidth: 200,
+    // minWidth: 200,
     width: 'auto',
     backgroundColor: 'transparent'
   },

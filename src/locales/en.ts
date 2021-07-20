@@ -341,6 +341,12 @@ const englishTranslation = {
         }
       },
       kitDetailModal: {
+        segmentedControl: {
+          body: {
+            ingredients: 'Ingredients',
+            preparation: 'Preparation'
+          }
+        },
         button: {
           addToCart: 'Add to Cart',
           removeFromCart: 'Remove'

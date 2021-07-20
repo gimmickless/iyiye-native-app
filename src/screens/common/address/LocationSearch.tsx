@@ -399,6 +399,7 @@ const LocationSearch: React.FC = () => {
                 {t(
                   'screen.common.address.locationSearch.quickAccessSectionList.button.clearHistory'
                 )}
+                &nbsp;🡥
               </Text>
             </Pressable>
           </View>
