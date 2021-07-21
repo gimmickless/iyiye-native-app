@@ -25,6 +25,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { HomeStackParamList } from 'router/stacks/Home'
 import InputSpinner from 'react-native-input-spinner'
 import {
+  defaultContainerViewHorizontalPadding,
   defaultHeaderButtonSize,
   defaultKitImageHeight,
   getHyperlinkTextColor,
@@ -39,6 +40,8 @@ import { useEffect } from 'react'
 type KitDetailModalProps = RouteProp<HomeStackParamList, 'KitDetailModal'>
 
 const detailViewHeight = 250
+const bottomBandHeight = 72
+const kitImageHeightPercentage = 0.4
 
 const KitDetailModal: React.FC = () => {
   const navigation = useNavigation()
@@ -81,6 +84,7 @@ const KitDetailModal: React.FC = () => {
   // TODO: Get details from AppSync call
   const isKitInUserCart = false
   const kit = {
+    price: 12.99,
     author: {
       username: 'vahdet'
     }
@@ -128,14 +132,8 @@ const KitDetailModal: React.FC = () => {
 
   useEffect(() => {
     if (!detailCarouselRef.current) return
-    if (selectedDetailTabIndex === 0) {
-      detailCarouselRef.current.scrollBy({ index: -1 })
-    } else {
-      detailCarouselRef.current.scrollBy({ index: 1 })
-    }
-    // detailCarouselRef.current.scrollToIndex({
-    //   index: selectedDetailTabIndex
-    // })
+    const scrollIndex = selectedDetailTabIndex === 0 ? -1 : 1
+    detailCarouselRef.current.scrollBy({ index: scrollIndex })
   }, [selectedDetailTabIndex])
 
   return (
@@ -168,11 +166,11 @@ const KitDetailModal: React.FC = () => {
               color: getHyperlinkTextColor(scheme === 'dark')
             }}
           >
-            {kit.author.username}&nbsp;🡥
+            {kit.author.username}&nbsp;➤
           </Text>
         </Pressable>
       </View>
-      <View>
+      <View style={styles.detailContainer}>
         <SegmentedControl
           tintColor={rneTheme.colors?.primary}
           values={kitDetailTabList.map((x) => x.text)}
@@ -293,13 +291,26 @@ const KitDetailModal: React.FC = () => {
       <View
         style={[
           styles.action,
-          { backgroundColor: rneTheme.colors?.grey5, width: window.width }
+          {
+            backgroundColor: rneTheme.colors?.grey5,
+            width: window.width,
+            paddingHorizontal: defaultContainerViewHorizontalPadding
+          }
         ]}
       >
-        <Text>€ XX.YY</Text>
-        {isKitInUserCart ? (
+        <View style={styles.priceContainer}>
+          <Text h4>€ {count ? kit.price * count : kit.price}</Text>
+          {count > 1 ? (
+            <Text>
+              {count}&nbsp;*&nbsp;{kit.price}
+            </Text>
+          ) : undefined}
+        </View>
+
+        {!isKitInUserCart ? (
           <React.Fragment>
             <InputSpinner
+              skin="modern"
               max={maxKitCountPerCart}
               min={1}
               colorMax={'red'}
@@ -311,11 +322,16 @@ const KitDetailModal: React.FC = () => {
             <Button
               type="outline"
               title={t('screen.home.kitDetailModal.button.removeFromCart')}
+              buttonStyle={[
+                styles.removeButton,
+                { borderColor: rneTheme.colors?.error }
+              ]}
+              titleStyle={{ color: rneTheme.colors?.error }}
               icon={
                 <MaterialCommunityIcons
                   name="cart-off"
                   size={15}
-                  color={rneTheme.colors?.primary}
+                  color={rneTheme.colors?.error}
                 />
               }
             />
@@ -325,11 +341,7 @@ const KitDetailModal: React.FC = () => {
             type="solid"
             title={t('screen.home.kitDetailModal.button.addToCart')}
             icon={
-              <MaterialCommunityIcons
-                name="cart"
-                size={15}
-                color={rneTheme.colors?.white}
-              />
+              <MaterialCommunityIcons name="cart" size={15} color="white" />
             }
           />
         )}
@@ -340,6 +352,7 @@ const KitDetailModal: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     paddingTop: Constants.statusBarHeight,
     alignItems: 'center',
     justifyContent: 'center'
@@ -354,12 +367,25 @@ const styles = StyleSheet.create({
     height: defaultKitImageHeight
   },
   kitTitleContainer: {
+    flex: 1,
+    alignItems: 'flex-start',
     marginBottom: 10
   },
+  detailContainer: {
+    flex: 3
+  },
   action: {
+    flex: 1,
     borderRadius: 12,
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between'
+  },
+  priceContainer: {
+    flexDirection: 'column'
+  },
+  removeButton: {
+    borderRadius: 12
   }
 })
 
