@@ -26,6 +26,7 @@ import {
   globalAsyncStorageKeyPrefix,
   googlePlaceDetailsBaseUrl,
   googlePlacesAutocompleteBaseUrl,
+  linkSuffixIcon,
   listItemPrimaryFontSize,
   listItemSecondaryFontSize,
   locationDelta
@@ -389,19 +390,18 @@ const LocationSearch: React.FC = () => {
                 'screen.common.address.locationSearch.quickAccessSectionList.listTitle.recents'
               )}
             </Text>
-            <Pressable onPress={onClearSearchHistory}>
-              <Text
-                style={{
-                  ...styles.clearAllButton,
-                  color: getHyperlinkTextColor(scheme === 'dark')
-                }}
-              >
-                {t(
-                  'screen.common.address.locationSearch.quickAccessSectionList.button.clearHistory'
-                )}
-                &nbsp;🡥
-              </Text>
-            </Pressable>
+            <Text
+              style={{
+                ...styles.clearAllButton,
+                color: getHyperlinkTextColor(scheme === 'dark')
+              }}
+              onPress={onClearSearchHistory}
+            >
+              {t(
+                'screen.common.address.locationSearch.quickAccessSectionList.button.clearHistory'
+              )}
+              &nbsp;{linkSuffixIcon}
+            </Text>
           </View>
           <FlatList
             data={recentSearchesData}

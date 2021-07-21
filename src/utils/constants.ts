@@ -54,6 +54,8 @@ export const getHyperlinkTextColor = (isDark: boolean): string => {
   return isDark ? 'lightblue' : 'blue'
 }
 
+export const linkSuffixIcon = '➤'
+
 // Place
 export const locationDelta = 0.0025
 

@@ -4,44 +4,44 @@ import React, { useContext } from 'react'
 import { Alert, Platform, ToastAndroid } from 'react-native'
 import { InAppMessageType } from 'types/context'
 
+interface ToastProps {
+  visible: boolean
+  message: string | undefined
+  type: InAppMessageType['type'] | undefined
+  dismissButtonText: string
+  dismiss: () => void
+}
+
 const Toast = ({
   visible,
   message,
   type,
   dismissButtonText,
   dismiss
-}: {
-  visible: boolean
-  message: string | undefined
-  type: InAppMessageType['type'] | undefined
-  dismissButtonText: string
-  dismiss: () => void
-}) => {
-  if (visible) {
-    if (Platform.OS === 'ios') {
-      Alert.alert(
-        type?.toUpperCase() ?? '',
-        message,
-        [
-          {
-            text: dismissButtonText,
-            onPress: () => dismiss(),
-            style: 'cancel'
-          }
-        ],
-        { cancelable: true }
-      )
-    } else {
-      ToastAndroid.showWithGravityAndOffset(
-        `${type?.toUpperCase()}: ${message}`,
-        ToastAndroid.LONG,
-        ToastAndroid.BOTTOM,
-        25,
-        50
-      )
-      dismiss()
-    }
-    return null
+}: ToastProps) => {
+  if (!visible) return null
+  if (Platform.OS === 'ios') {
+    Alert.alert(
+      type?.toUpperCase() ?? '',
+      message,
+      [
+        {
+          text: dismissButtonText,
+          onPress: () => dismiss(),
+          style: 'cancel'
+        }
+      ],
+      { cancelable: true }
+    )
+  } else {
+    dismiss()
+    ToastAndroid.showWithGravityAndOffset(
+      `${type?.toUpperCase()}: ${message}`,
+      ToastAndroid.LONG,
+      ToastAndroid.BOTTOM,
+      25,
+      50
+    )
   }
   return null
 }

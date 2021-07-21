@@ -25,6 +25,7 @@ import {
   emailMinLength,
   emailRegex,
   getHyperlinkTextColor,
+  linkSuffixIcon,
   passwordRegex,
   usernameMaxLength,
   usernameMinLength,
@@ -302,16 +303,15 @@ const SignUp: React.FC = () => {
                     <Text>
                       {t('screen.auth.signUp.label.termsAgreed.start')}&nbsp;
                     </Text>
-                    <Pressable onPress={() => setShowTermsModal(true)}>
-                      <Text
-                        style={{
-                          color: getHyperlinkTextColor(scheme === 'dark')
-                        }}
-                      >
-                        {t('screen.auth.signUp.label.termsAgreed.terms')}
-                        &nbsp;🡥
-                      </Text>
-                    </Pressable>
+                    <Text
+                      style={{
+                        color: getHyperlinkTextColor(scheme === 'dark')
+                      }}
+                      onPress={() => setShowTermsModal(true)}
+                    >
+                      {t('screen.auth.signUp.label.termsAgreed.terms')}
+                      &nbsp;{linkSuffixIcon}
+                    </Text>
                     <Text>
                       &nbsp;{t('screen.auth.signUp.label.termsAgreed.middle')}
                       &nbsp;

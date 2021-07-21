@@ -29,6 +29,7 @@ import {
   defaultHeaderButtonSize,
   defaultKitImageHeight,
   getHyperlinkTextColor,
+  linkSuffixIcon,
   maxKitCountPerCart
 } from 'utils/constants'
 import * as Sharing from 'expo-sharing'
@@ -38,10 +39,6 @@ import Constants from 'expo-constants'
 import { useEffect } from 'react'
 
 type KitDetailModalProps = RouteProp<HomeStackParamList, 'KitDetailModal'>
-
-const detailViewHeight = 250
-const bottomBandHeight = 72
-const kitImageHeightPercentage = 0.4
 
 const KitDetailModal: React.FC = () => {
   const navigation = useNavigation()
@@ -97,6 +94,7 @@ const KitDetailModal: React.FC = () => {
         <View style={styles.headerRightContainer}>
           {/* Share */}
           <Pressable
+            style={styles.headerRightButton}
             disabled={true} // TODO: Enable When ready
             onPress={async () => {
               const isShareAvailable = await Sharing.isAvailableAsync()
@@ -118,7 +116,10 @@ const KitDetailModal: React.FC = () => {
             />
           </Pressable>
           {/* Like */}
-          <Pressable onPress={() => setLiked((prev) => !prev)}>
+          <Pressable
+            style={styles.headerRightButton}
+            onPress={() => setLiked((prev) => !prev)}
+          >
             <MaterialCommunityIcons
               name={liked ? 'heart' : 'heart-outline'}
               size={defaultHeaderButtonSize}
@@ -142,6 +143,7 @@ const KitDetailModal: React.FC = () => {
         showsControls={false}
         width={window.width}
         height={defaultKitImageHeight}
+        style={styles.carousel}
       >
         {imageEntries.map((e) => (
           <Image
@@ -153,7 +155,10 @@ const KitDetailModal: React.FC = () => {
       </Carousel>
       <View style={styles.kitTitleContainer}>
         <Text h4>Kit Name</Text>
-        <Pressable
+        <Text
+          style={{
+            color: getHyperlinkTextColor(scheme === 'dark')
+          }}
           onPress={() =>
             navigation.navigate(
               'AuthorProfileDefault' as keyof HomeStackParamList,
@@ -161,14 +166,8 @@ const KitDetailModal: React.FC = () => {
             )
           }
         >
-          <Text
-            style={{
-              color: getHyperlinkTextColor(scheme === 'dark')
-            }}
-          >
-            {kit.author.username}&nbsp;➤
-          </Text>
-        </Pressable>
+          {kit.author.username}&nbsp;{linkSuffixIcon}
+        </Text>
       </View>
       <View style={styles.detailContainer}>
         <SegmentedControl
@@ -187,7 +186,6 @@ const KitDetailModal: React.FC = () => {
           showsDots={false}
           scrollEnabled={false}
           width={window.width}
-          height={detailViewHeight}
         >
           <ScrollView>
             <Text>
@@ -307,13 +305,14 @@ const KitDetailModal: React.FC = () => {
           ) : undefined}
         </View>
 
-        {!isKitInUserCart ? (
+        {isKitInUserCart ? (
           <React.Fragment>
             <InputSpinner
               skin="modern"
               max={maxKitCountPerCart}
               min={1}
-              colorMax={'red'}
+              color={rneTheme.colors?.primary}
+              colorMax={rneTheme.colors?.error}
               value={count}
               onChange={(num: number) => {
                 setCount(num)
@@ -340,6 +339,7 @@ const KitDetailModal: React.FC = () => {
           <Button
             type="solid"
             title={t('screen.home.kitDetailModal.button.addToCart')}
+            buttonStyle={styles.addButton}
             icon={
               <MaterialCommunityIcons name="cart" size={15} color="white" />
             }
@@ -353,13 +353,17 @@ const KitDetailModal: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: Constants.statusBarHeight,
-    alignItems: 'center',
-    justifyContent: 'center'
+    paddingTop: Constants.statusBarHeight
   },
   headerRightContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between'
+  },
+  headerRightButton: {
+    paddingHorizontal: defaultContainerViewHorizontalPadding
+  },
+  carousel: {
+    flex: 3
   },
   carouselImage: {
     justifyContent: 'center',
@@ -369,10 +373,10 @@ const styles = StyleSheet.create({
   kitTitleContainer: {
     flex: 1,
     alignItems: 'flex-start',
-    marginBottom: 10
+    paddingHorizontal: defaultContainerViewHorizontalPadding
   },
   detailContainer: {
-    flex: 3
+    flex: 4
   },
   action: {
     flex: 1,
@@ -383,6 +387,9 @@ const styles = StyleSheet.create({
   },
   priceContainer: {
     flexDirection: 'column'
+  },
+  addButton: {
+    borderRadius: 12
   },
   removeButton: {
     borderRadius: 12

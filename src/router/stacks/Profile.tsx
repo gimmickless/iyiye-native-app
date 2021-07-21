@@ -55,7 +55,8 @@ const ProfileStackScreen: React.FC = () => {
         name="Default"
         component={Default}
         options={{
-          headerTitle: ''
+          headerTitle: '',
+          headerTransparent: true
         }}
       />
       <ProfileStack.Screen

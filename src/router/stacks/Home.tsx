@@ -64,6 +64,10 @@ const HomeStackScreen: React.FC = () => {
         <HomeStack.Screen
           name="AuthorProfileDefault"
           component={AuthorProfileDefault}
+          options={{
+            title: '',
+            headerTransparent: true
+          }}
         />
         <HomeStack.Screen
           name="AddressList"

@@ -89,6 +89,7 @@ const Profile: React.FC = () => {
     | undefined
   >(undefined)
 
+  const isAuthUser = useMemo(() => authUser.props ?? undefined, [authUser])
   const authUsername = authUser.props?.username
   const profileUsername = route.params?.username ?? authUsername
   const isOwnProfile = authUsername === profileUsername
@@ -119,32 +120,40 @@ const Profile: React.FC = () => {
   useEffect(() => {
     !(async () => {
       try {
+        if (!isAuthUser) return
         // Collect initial user info to display
         if (isOwnProfile) {
           setProfileUserProps(authUser.props)
-        } else {
-          const getUserInfoRequest = API.graphql(
-            graphqlOperation(getUserBasicInfo, {
-              username: authUser.props?.username
-            } as GetUserBasicInfoQueryVariables)
-          ) as PromiseLike<{
-            data: GetUserBasicInfoQuery
-          }>
-          const [getUserInfoAppSyncResponse] = (await Promise.all([
-            getUserInfoRequest
-          ])) as [{ data: GetUserBasicInfoQuery }]
-          const getUserInfoResult =
-            getUserInfoAppSyncResponse.data.getUserBasicInfo ?? undefined
-          setProfileUserProps(getUserInfoResult)
+          return
         }
+        const getUserInfoRequest = API.graphql(
+          graphqlOperation(getUserBasicInfo, {
+            username: authUser.props?.username
+          } as GetUserBasicInfoQueryVariables)
+        ) as PromiseLike<{
+          data: GetUserBasicInfoQuery
+        }>
+        const [getUserInfoAppSyncResponse] = (await Promise.all([
+          getUserInfoRequest
+        ])) as [{ data: GetUserBasicInfoQuery }]
+        const getUserInfoResult =
+          getUserInfoAppSyncResponse.data.getUserBasicInfo ?? undefined
+        setProfileUserProps(getUserInfoResult)
       } catch (err) {
-        addInAppMessage({
-          message: err.message ?? err,
-          type: 'error'
-        })
+        console.log(err)
+        // addInAppMessage({
+        //   message: err.message ?? err,
+        //   type: 'error'
+        // })
       }
     })()
-  }, [addInAppMessage, authUser.props, isOwnProfile, setProfileUserProps])
+  }, [
+    addInAppMessage,
+    authUser.props,
+    isAuthUser,
+    isOwnProfile,
+    setProfileUserProps
+  ])
 
   useEffect(() => {
     if (!profileUsername) return
@@ -260,7 +269,7 @@ const Profile: React.FC = () => {
   )
 
   if (!authUser.loaded) return <LoadingView />
-  if (!authUser.props) return <GuestNotAllowedView />
+  if (!isAuthUser) return <GuestNotAllowedView />
   if (!profileUsername) return <NotFoundView />
   return (
     <SafeAreaView style={styles.view}>
@@ -288,7 +297,7 @@ const Profile: React.FC = () => {
         {profileUsername}
       </Text>
       {/* Bio */}
-      <Text style={styles.bioText}>{authUser.props.bio ?? '{No bio}'}</Text>
+      <Text style={styles.bioText}>{authUser.props?.bio ?? '{No bio}'}</Text>
       {/* TODO: Calculate badges (with a lambda function and cache it maybe) */}
       <ScrollView
         horizontal
