@@ -37,6 +37,8 @@ import SegmentedControl from '@react-native-community/segmented-control'
 import Carousel from 'pinar'
 import Constants from 'expo-constants'
 import { useEffect } from 'react'
+import { AuthUserContext } from 'contexts/Auth'
+import { AuthStackParamList } from 'router/stacks/Auth'
 
 type KitDetailModalProps = RouteProp<HomeStackParamList, 'KitDetailModal'>
 
@@ -52,6 +54,10 @@ const KitDetailModal: React.FC = () => {
   const [selectedDetailTabIndex, setSelectedDetailTabIndex] = useState(0)
   const detailCarouselRef = useRef<Carousel>(null)
   const id = route.params.id
+
+  const { state: authUser, action: authUserAction } =
+    useContext(AuthUserContext)
+  const isAuthUser = useMemo(() => authUser.props ?? undefined, [authUser])
 
   const [imageEntries] = useState([
     {
@@ -116,26 +122,101 @@ const KitDetailModal: React.FC = () => {
             />
           </Pressable>
           {/* Like */}
-          <Pressable
-            style={styles.headerRightButton}
-            onPress={() => setLiked((prev) => !prev)}
-          >
-            <MaterialCommunityIcons
-              name={liked ? 'heart' : 'heart-outline'}
-              size={defaultHeaderButtonSize}
-              color={rneTheme.colors?.primary}
-            />
-          </Pressable>
+          {isAuthUser ? (
+            <Pressable
+              style={styles.headerRightButton}
+              onPress={() => setLiked((prev) => !prev)}
+            >
+              <MaterialCommunityIcons
+                name={liked ? 'heart' : 'heart-outline'}
+                size={defaultHeaderButtonSize}
+                color={rneTheme.colors?.primary}
+              />
+            </Pressable>
+          ) : undefined}
         </View>
       )
     })
-  }, [liked, navigation, rneTheme.colors?.primary, t])
+  }, [isAuthUser, liked, navigation, rneTheme.colors?.primary, t])
 
+  // Slide Detail View on SegmentedControl change
   useEffect(() => {
     if (!detailCarouselRef.current) return
     const scrollIndex = selectedDetailTabIndex === 0 ? -1 : 1
     detailCarouselRef.current.scrollBy({ index: scrollIndex })
   }, [selectedDetailTabIndex])
+
+  // TODO: Persist item count to cart after change
+  useEffect(() => {
+    console.log(count)
+    // TODO: Persist
+  }, [count])
+
+  const renderActionRightView = () => {
+    if (!isAuthUser) {
+      return (
+        <Button
+          type="solid"
+          title={t('screen.home.kitDetailModal.button.signInToShop')}
+          onPress={() => {
+            navigation.navigate('SignIn' as keyof AuthStackParamList)
+          }}
+          buttonStyle={styles.defaultActionButton}
+          icon={
+            <MaterialCommunityIcons
+              name="login-variant"
+              size={15}
+              color="white"
+            />
+          }
+        />
+      )
+    }
+    if (!isKitInUserCart) {
+      return (
+        <Button
+          type="solid"
+          title={t('screen.home.kitDetailModal.button.addToCart')}
+          onPress={() => {
+            setCount(1)
+          }}
+          buttonStyle={styles.defaultActionButton}
+          icon={<MaterialCommunityIcons name="cart" size={15} color="white" />}
+        />
+      )
+    }
+    return (
+      <React.Fragment>
+        <InputSpinner
+          skin="modern"
+          max={maxKitCountPerCart}
+          min={1}
+          color={rneTheme.colors?.primary}
+          colorMax={rneTheme.colors?.error}
+          value={count}
+          onChange={(num: number) => {
+            setCount(num)
+          }}
+        />
+        <Button
+          type="outline"
+          title={t('screen.home.kitDetailModal.button.removeFromCart')}
+          buttonStyle={[
+            styles.removeButton,
+            { borderColor: rneTheme.colors?.error }
+          ]}
+          titleStyle={{ color: rneTheme.colors?.error }}
+          icon={
+            <MaterialCommunityIcons
+              name="cart-off"
+              size={15}
+              color={rneTheme.colors?.error}
+            />
+          }
+        />
+      </React.Fragment>
+    )
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -304,47 +385,7 @@ const KitDetailModal: React.FC = () => {
             </Text>
           ) : undefined}
         </View>
-
-        {isKitInUserCart ? (
-          <React.Fragment>
-            <InputSpinner
-              skin="modern"
-              max={maxKitCountPerCart}
-              min={1}
-              color={rneTheme.colors?.primary}
-              colorMax={rneTheme.colors?.error}
-              value={count}
-              onChange={(num: number) => {
-                setCount(num)
-              }}
-            />
-            <Button
-              type="outline"
-              title={t('screen.home.kitDetailModal.button.removeFromCart')}
-              buttonStyle={[
-                styles.removeButton,
-                { borderColor: rneTheme.colors?.error }
-              ]}
-              titleStyle={{ color: rneTheme.colors?.error }}
-              icon={
-                <MaterialCommunityIcons
-                  name="cart-off"
-                  size={15}
-                  color={rneTheme.colors?.error}
-                />
-              }
-            />
-          </React.Fragment>
-        ) : (
-          <Button
-            type="solid"
-            title={t('screen.home.kitDetailModal.button.addToCart')}
-            buttonStyle={styles.addButton}
-            icon={
-              <MaterialCommunityIcons name="cart" size={15} color="white" />
-            }
-          />
-        )}
+        {() => renderActionRightView()}
       </View>
     </SafeAreaView>
   )
@@ -388,7 +429,7 @@ const styles = StyleSheet.create({
   priceContainer: {
     flexDirection: 'column'
   },
-  addButton: {
+  defaultActionButton: {
     borderRadius: 12
   },
   removeButton: {

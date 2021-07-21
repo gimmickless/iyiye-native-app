@@ -348,6 +348,7 @@ const englishTranslation = {
           }
         },
         button: {
+          signInToShop: 'Sign In To Shop',
           addToCart: 'Add to Cart',
           removeFromCart: 'Remove'
         },
