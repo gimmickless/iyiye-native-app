@@ -3,8 +3,8 @@ import { LocalizationContext } from 'contexts/Localization'
 import React, { useContext } from 'react'
 import { SafeAreaView, Text, StyleSheet } from 'react-native'
 import { Button, ThemeContext } from 'react-native-elements'
-import { AuthStackParamList } from 'router/stacks/Auth'
 import LottieView from 'lottie-react-native'
+import { AuthStackParamList } from 'router/DefaultTabScreens'
 
 const GuestNotAllowedView: React.FC = () => {
   const navigation = useNavigation()

@@ -23,7 +23,7 @@ import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
 import Auth from '@aws-amplify/auth'
 import { useInAppMessage } from 'contexts/InAppMessage'
-import { AuthStackParamList } from 'router/stacks/Auth'
+import { AuthStackParamList } from 'router/DefaultTabScreens'
 
 type UserInfoFormData = {
   username: string

@@ -20,7 +20,7 @@ import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
 import { AuthUserContext } from 'contexts/Auth'
 import { useInAppMessage } from 'contexts/InAppMessage'
-import { AuthStackParamList } from 'router/stacks/Auth'
+import { AuthStackParamList } from 'router/DefaultTabScreens'
 
 type FormData = {
   usernameOrEmail: string

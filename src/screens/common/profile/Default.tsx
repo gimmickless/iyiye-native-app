@@ -21,7 +21,6 @@ import { AuthUserContext } from 'contexts/Auth'
 import { Avatar, Chip, Text, ThemeContext } from 'react-native-elements'
 import * as ImagePicker from 'expo-image-picker'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { ProfileStackParamList } from 'router/stacks/Profile'
 import NotFoundView from 'components/shared/NotFoundView'
 import { GuestNotAllowedView } from 'components/auth'
 import API, { graphqlOperation } from '@aws-amplify/api'
@@ -36,11 +35,12 @@ import {
   defaultListVerticalPadding,
   getUserAvatarUrl
 } from 'utils/constants'
-import { HomeStackParamList } from 'router/stacks/Home'
+import { ProfileStackParamList } from 'router/DefaultTabScreens'
+import { RootStackParamList } from 'router'
 
 export type ProfileDefaultRouteProps = RouteProp<
   ProfileStackParamList,
-  'Default'
+  'ProfileDefault'
 >
 
 interface ListItemProps {
@@ -103,7 +103,9 @@ const Profile: React.FC = () => {
           {isOwnProfile ? (
             <Pressable
               onPress={() => {
-                navigation.navigate('Settings' as keyof ProfileStackParamList)
+                navigation.navigate(
+                  'ProfileSettings' as keyof RootStackParamList
+                )
               }}
             >
               <MaterialCommunityIcons
@@ -232,7 +234,7 @@ const Profile: React.FC = () => {
           },
           title: t('screen.common.profile.default.list.orders'),
           onPress: () =>
-            navigation.navigate('Orders' as keyof ProfileStackParamList)
+            navigation.navigate('ProfileOrders' as keyof RootStackParamList)
         },
         {
           isPublic: true,
@@ -242,7 +244,7 @@ const Profile: React.FC = () => {
           },
           title: t('screen.common.profile.default.list.kits'),
           onPress: () =>
-            navigation.navigate('Kits' as keyof ProfileStackParamList)
+            navigation.navigate('ProfileKits' as keyof RootStackParamList)
         },
         {
           isPublic: false,
@@ -252,7 +254,9 @@ const Profile: React.FC = () => {
           },
           title: t('screen.common.profile.default.list.addresses'),
           onPress: () =>
-            navigation.navigate('AddressList' as keyof HomeStackParamList)
+            navigation.navigate(
+              'ProfileAddressList' as keyof RootStackParamList
+            )
         },
         {
           isPublic: false,
@@ -262,7 +266,7 @@ const Profile: React.FC = () => {
           },
           title: t('screen.common.profile.default.list.auditLog'),
           onPress: () =>
-            navigation.navigate('AuditLog' as keyof ProfileStackParamList)
+            navigation.navigate('ProfileAuditLog' as keyof RootStackParamList)
         }
       ] as Array<ListItemProps>,
     [navigation, t]

@@ -38,9 +38,9 @@ import Carousel from 'pinar'
 import Constants from 'expo-constants'
 import { useEffect } from 'react'
 import { AuthUserContext } from 'contexts/Auth'
-import { AuthStackParamList } from 'router/stacks/Auth'
+import { RootStackParamList } from 'router'
 
-type KitDetailModalProps = RouteProp<HomeStackParamList, 'KitDetailModal'>
+type KitDetailModalProps = RouteProp<RootStackParamList, 'KitDetailModal'>
 
 const KitDetailModal: React.FC = () => {
   const navigation = useNavigation()
@@ -241,10 +241,9 @@ const KitDetailModal: React.FC = () => {
             color: getHyperlinkTextColor(scheme === 'dark')
           }}
           onPress={() =>
-            navigation.navigate(
-              'AuthorProfileDefault' as keyof HomeStackParamList,
-              { username: kit.author.username }
-            )
+            navigation.navigate('AuthorProfile' as keyof RootStackParamList, {
+              username: kit.author.username
+            })
           }
         >
           {kit.author.username}&nbsp;{linkSuffixIcon}

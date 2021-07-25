@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native'
 import React, { useContext } from 'react'
 import { Image, StyleSheet, View, Text, Pressable } from 'react-native'
 import { ThemeContext } from 'react-native-elements'
-import { HomeStackParamList } from 'router/stacks/Home'
+import { RootStackParamList } from 'router'
 
 const borderRadius = 12
 const imageHeight = 100
@@ -24,7 +24,7 @@ const KitListItem: React.FC<KitListItemProps> = (props) => {
     <Pressable
       android_ripple={{ color: 'grey', radius: 64 }}
       onPress={() =>
-        navigation.navigate('KitDetailModal' as keyof HomeStackParamList, {
+        navigation.navigate('KitDetailModal' as keyof RootStackParamList, {
           id
         })
       }

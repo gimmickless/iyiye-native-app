@@ -18,7 +18,6 @@ import {
 import { GoogleConfig } from 'config'
 import MapView, { LatLng, Region } from 'react-native-maps'
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
-import { HomeStackParamList } from 'router/stacks/Home'
 import { Button, Input, ThemeContext, Card } from 'react-native-elements'
 import SegmentedControl, {
   NativeSegmentedControlIOSChangeEvent
@@ -36,10 +35,11 @@ import {
   UpdateAddressesInput
 } from 'types/context'
 import { AddressSlotFullError } from 'types/customError'
+import { RootStackParamList } from 'router'
 
-export type HomeAddressFormRouteProps = RouteProp<
-  HomeStackParamList,
-  'AddressForm'
+export type ProfileAddressFormRouteProps = RouteProp<
+  RootStackParamList,
+  'ProfileAddressForm'
 >
 
 type PlaceReverseGeocodingResult = {
@@ -160,7 +160,7 @@ const Form: React.FC = () => {
     useContext(AuthUserContext)
   const { addInAppMessage } = useInAppMessage()
   const navigation = useNavigation()
-  const route = useRoute<HomeAddressFormRouteProps>()
+  const route = useRoute<ProfileAddressFormRouteProps>()
   const initialRegion = route.params?.initialRegion
   const editObject = route.params?.edit
 
@@ -284,7 +284,7 @@ const Form: React.FC = () => {
       })
       await authUserAction.updateAddresses(input)
       if (isEdit) {
-        navigation.navigate('AddressList' as keyof HomeStackParamList, {
+        navigation.navigate('ProfileAddressList' as keyof RootStackParamList, {
           changedAddressKey: editObject?.key
         })
       } else {
@@ -294,11 +294,11 @@ const Form: React.FC = () => {
           fullName: authUser.props?.fullName ?? '',
           address: createdAddressKey as AuthUserAddressKey
         })
-        navigation.navigate('AddressList' as keyof HomeStackParamList, {
+        navigation.navigate('ProfileAddressList' as keyof RootStackParamList, {
           changedAddressKey: Object.keys(input).sort(() => 1)[0]
         })
       }
-      navigation.navigate('AddressList' as keyof HomeStackParamList, {
+      navigation.navigate('ProfileAddressList' as keyof RootStackParamList, {
         changedAddressKey: isEdit
           ? editObject?.key
           : Object.keys(input).sort(() => 1)[0]
@@ -323,7 +323,9 @@ const Form: React.FC = () => {
                 'screen.common.address.form.alert.addressSlotFull.button.backToList'
               ),
               onPress: () => {
-                navigation.navigate('AddressList' as keyof HomeStackParamList)
+                navigation.navigate(
+                  'ProfileAddressList' as keyof RootStackParamList
+                )
               },
               style: 'cancel'
             }
@@ -531,7 +533,6 @@ const Form: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {},
-  headerRightButtonText: {},
   fineTuningCard: {
     marginHorizontal: 0,
     borderWidth: 0,
@@ -558,9 +559,6 @@ const styles = StyleSheet.create({
   blockButton: {},
   addressBoxContainer: {
     marginTop: 12
-  },
-  fineTuningSectionHeader: {
-    fontSize: 12
   },
   fineTuningInputFormContainer: {
     flexDirection: 'row',

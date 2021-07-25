@@ -25,7 +25,7 @@ import {
   NewKitListView
 } from 'components/home'
 import Carousel from 'react-native-snap-carousel'
-import { HomeStackParamList } from 'router/stacks/Home'
+import { RootStackParamList } from 'router'
 
 const Default: React.FC = () => {
   const { t } = useContext(LocalizationContext)
@@ -63,7 +63,7 @@ const Default: React.FC = () => {
       headerTitle: () => (
         <Pressable
           onPress={() =>
-            navigation.navigate('Search' as keyof HomeStackParamList)
+            navigation.navigate('HomeSearch' as keyof RootStackParamList)
           }
           style={{
             backgroundColor: 'powderblue'

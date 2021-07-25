@@ -36,9 +36,10 @@ import { SearchBar, ThemeContext } from 'react-native-elements'
 import { GoogleConfig } from 'config'
 import { useDebounce } from 'hooks'
 import { Region } from 'react-native-maps'
-import { HomeAddressFormRouteProps } from './Form'
 import OverlayLoader from 'components/shared/OverlayLoader'
-import { HomeStackParamList } from 'router/stacks/Home'
+import { RootStackParamList } from 'router'
+import { ProfileAddressListRouteProps } from './List'
+import { ProfileAddressFormRouteProps } from './Form'
 
 const recentLocationSearchesKey = `${globalAsyncStorageKeyPrefix}:recentLocationSearches`
 
@@ -209,11 +210,11 @@ const LocationSearch: React.FC = () => {
     })
     const r = await getPlaceDetailAsync(placeId)
     navigation.navigate(
-      'AddressForm' as keyof HomeStackParamList,
+      'ProfileAddressForm' as keyof RootStackParamList,
       {
         initialRegion: r,
         edit: undefined
-      } as HomeAddressFormRouteProps['params']
+      } as ProfileAddressFormRouteProps['params']
     )
     setIsBlockingLoading(false)
   }
@@ -222,10 +223,10 @@ const LocationSearch: React.FC = () => {
     setIsBlockingLoading(true)
     const r = await getPlaceDetailAsync(placeId)
     navigation.navigate(
-      'AddressForm' as keyof HomeStackParamList,
+      'ProfileAddressForm' as keyof RootStackParamList,
       {
         initialRegion: r
-      } as HomeAddressFormRouteProps['params']
+      } as ProfileAddressFormRouteProps['params']
     )
     setIsBlockingLoading(false)
   }
@@ -244,7 +245,7 @@ const LocationSearch: React.FC = () => {
     }
     const { coords } = await Location.getCurrentPositionAsync({})
     navigation.navigate(
-      'AddressForm' as keyof HomeStackParamList,
+      'ProfileAddressForm' as keyof RootStackParamList,
       {
         initialRegion: {
           latitude: coords.latitude,
@@ -252,7 +253,7 @@ const LocationSearch: React.FC = () => {
           latitudeDelta: locationDelta,
           longitudeDelta: locationDelta
         }
-      } as HomeAddressFormRouteProps['params']
+      } as ProfileAddressFormRouteProps['params']
     )
     setIsBlockingLoading(false)
   }
@@ -436,9 +437,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent'
   },
   searchBarInputStyle: {},
-  sectionListHeader: {
-    fontSize: 22
-  },
   listItem: {
     flex: 1,
     flexDirection: 'row',

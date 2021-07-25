@@ -38,7 +38,7 @@ import Auth from '@aws-amplify/auth'
 import { useColorScheme } from 'react-native-appearance'
 import { convertDateToIsoString } from 'utils/conversions'
 import { useInAppMessage } from 'contexts/InAppMessage'
-import { AuthStackParamList } from 'router/stacks/Auth'
+import { AuthStackParamList } from 'router/DefaultTabScreens'
 
 type FormData = {
   fullName: string

@@ -10,20 +10,16 @@ import SwipeableListItem from 'components/shared/SwipeableListItem'
 import Checkbox from 'react-native-bouncy-checkbox'
 import { AuthUserAddress, AuthUserAddressKey } from 'types/context'
 import ListSeparator from 'components/shared/ListSeparator'
-import {
-  headerRightButtonTextFont,
-  locationDelta,
-  maxAddressCount
-} from 'utils/constants'
+import { locationDelta, maxAddressCount } from 'utils/constants'
 import { useInAppMessage } from 'contexts/InAppMessage'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { HomeStackParamList } from 'router/stacks/Home'
-import { HomeAddressFormRouteProps } from './Form'
 import NotFoundView from 'components/shared/NotFoundView'
+import { RootStackParamList } from 'router'
+import { ProfileAddressFormRouteProps } from './Form'
 
-export type HomeAddressListRouteProps = RouteProp<
-  HomeStackParamList,
-  'AddressList'
+export type ProfileAddressListRouteProps = RouteProp<
+  RootStackParamList,
+  'ProfileAddressList'
 >
 
 type AddressKeyValue = {
@@ -50,7 +46,7 @@ const AddressList: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
   const { theme: rneTheme } = useContext(ThemeContext)
-  const route = useRoute<HomeAddressListRouteProps>()
+  const route = useRoute<ProfileAddressListRouteProps>()
   const { addInAppMessage } = useInAppMessage()
   const [operationInProgress, setOperationInProgress] = useState(false)
   const { state: authUser, action: authUserAction } =
@@ -133,7 +129,7 @@ const AddressList: React.FC = () => {
               return
             }
             navigation.navigate(
-              'AddressLocationSearch' as keyof HomeStackParamList
+              'ProfileAddressLocationSearch' as keyof RootStackParamList
             )
           }}
         />
@@ -158,7 +154,7 @@ const AddressList: React.FC = () => {
     }
   }) => {
     navigation.navigate(
-      'AddressForm' as keyof HomeStackParamList,
+      'ProfileAddressForm' as keyof RootStackParamList,
       {
         edit: {
           key: input.itemKey
@@ -169,7 +165,7 @@ const AddressList: React.FC = () => {
           latitudeDelta: locationDelta,
           longitudeDelta: locationDelta
         }
-      } as HomeAddressFormRouteProps['params']
+      } as ProfileAddressFormRouteProps['params']
     )
   }
 
@@ -209,7 +205,7 @@ const AddressList: React.FC = () => {
         title={t('screen.common.address.list.button.createFirstAddress')}
         onPress={() =>
           navigation.navigate(
-            'AddressLocationSearch' as keyof HomeStackParamList
+            'ProfileAddressLocationSearch' as keyof RootStackParamList
           )
         }
         icon={
@@ -358,15 +354,6 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderRadius: 12
   },
-  headerRightButton: {
-    paddingHorizontal: 14,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
-  },
-  headerRightButtonText: {
-    fontSize: headerRightButtonTextFont
-  },
   listContainer: { paddingHorizontal: 8 },
   listItem: {
     flex: 1,
@@ -395,9 +382,6 @@ const styles = StyleSheet.create({
     fontStyle: 'italic'
   },
   listItemMainFieldSubtitleKey: {},
-  nothingFoundText: {
-    marginBottom: 10
-  },
   nothingFoundAddNewButton: {
     flex: 1
   }

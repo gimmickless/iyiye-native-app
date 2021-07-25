@@ -6,7 +6,7 @@ import { Formik } from 'formik'
 import * as Yup from 'yup'
 import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
-import { AuthStackParamList } from 'router/stacks/Auth'
+import { AuthStackParamList } from 'router/DefaultTabScreens'
 import Auth from '@aws-amplify/auth'
 import { useInAppMessage } from 'contexts/InAppMessage'
 
