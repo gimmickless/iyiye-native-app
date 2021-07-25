@@ -8,7 +8,7 @@ import { ConfirmAccount, ForgotPassword, SignIn, SignUp } from 'screens/auth'
 import { Default as HomeDefault } from 'screens/home'
 import { Default as CartDefault } from 'screens/cart'
 import { Default as NotificationDefault } from 'screens/notification'
-import { Default as ProfileDefault } from 'screens/common/profile'
+import { Default as ProfileDefault } from 'screens/profile'
 import { useTabBarBadgeCount } from 'contexts/TabBarBadge'
 import { headerLeftContainerPaddingLeft } from 'utils/constants'
 

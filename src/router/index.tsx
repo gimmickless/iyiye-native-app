@@ -17,13 +17,13 @@ import {
   Orders as ProfileOrders,
   Kits as ProfileKits,
   AuditLog as ProfileAuditLog
-} from 'screens/common/profile'
+} from 'screens/profile'
 
 import {
   AddressList as ProfileAddressList,
   AddressLocationSearch as ProfileAddressLocationSearch,
   AddressForm as ProfileAddressForm
-} from 'screens/common/address'
+} from 'screens/profile/address'
 import {
   IyiyeNavigationLightTheme,
   IyiyeNavigationDarkTheme
