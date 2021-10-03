@@ -41,7 +41,7 @@ expo upgrade
   amplify import auth
   ```
 
-### Github actions secrets
+## Github actions secrets
 
 Some
 
