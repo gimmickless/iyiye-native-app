@@ -42,6 +42,8 @@ export const globalAsyncStorageKeyPrefix = '@gimmickless:iyiye'
 
 // Styles
 export const homeHeaderHeight = 120
+export const homeHeaderSearchBarWidthSubtrahend = 144
+export const searchHeaderSearchBarWidthSubtrahend = 84
 export const headerLeftContainerPaddingLeft = 10
 export const headerRightButtonTextFont = 16
 export const listItemPrimaryFontSize = 22

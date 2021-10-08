@@ -2,12 +2,13 @@ import { useNavigation } from '@react-navigation/native'
 import { useAuthUser } from 'contexts/Auth'
 import { LocalizationContext } from 'contexts/Localization'
 import React, { useContext, useLayoutEffect, useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { Dimensions, StyleSheet, Text, View } from 'react-native'
 import { useColorScheme } from 'react-native-appearance'
 import { SearchBar, ThemeContext } from 'react-native-elements'
 import {
   defaultContainerViewHorizontalPadding,
-  homeHeaderHeight
+  homeHeaderHeight,
+  searchHeaderSearchBarWidthSubtrahend
 } from 'utils/constants'
 
 const Search: React.FC = () => {
@@ -63,9 +64,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: defaultContainerViewHorizontalPadding
   },
   searchBarContainerStyle: {
-    minWidth: 200,
-    width: 'auto',
-    backgroundColor: 'transparent'
+    width: Dimensions.get('window').width - searchHeaderSearchBarWidthSubtrahend,
+    backgroundColor: 'transparent',
+    borderTopWidth: 0,
+    borderBottomWidth: 0
   },
   searchBarInputStyle: {}
 })

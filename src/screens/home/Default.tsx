@@ -4,14 +4,16 @@ import {
   StyleSheet,
   Pressable,
   Alert,
-  useWindowDimensions
+  useWindowDimensions,
+  Dimensions
 } from 'react-native'
 import { Button, SearchBar, Text, ThemeContext } from 'react-native-elements'
 import { useNavigation } from '@react-navigation/native'
 import { useAuthUser } from 'contexts/Auth'
 import {
   defaultContainerViewHorizontalPadding,
-  homeHeaderHeight
+  homeHeaderHeight,
+  homeHeaderSearchBarWidthSubtrahend
 } from 'utils/constants'
 import { LocalizationContext } from 'contexts/Localization'
 import { ScrollView } from 'react-native-gesture-handler'
@@ -27,6 +29,8 @@ import {
 import Carousel from 'react-native-snap-carousel'
 import { RootStackParamList } from 'router'
 import { useColorScheme } from 'react-native-appearance'
+
+const headerElementColor = 'tomato'
 
 const Default: React.FC = () => {
   const { t } = useContext(LocalizationContext)
@@ -62,15 +66,12 @@ const Default: React.FC = () => {
         height: homeHeaderHeight
       },
       headerTranslucent: true,
-      headerLeft: () => <Text style={styles.logoText}>###</Text>,
+      headerLeft: () => <Text style={styles.logoText}>##</Text>,
       headerTitle: () => (
         <Pressable
           onPress={() =>
             navigation.navigate('HomeSearch' as keyof RootStackParamList)
           }
-          style={{
-            // backgroundColor: 'powderblue'
-          }}
         >
           <SearchBar
             pointerEvents="none"
@@ -79,36 +80,36 @@ const Default: React.FC = () => {
             }}
             value=""
             editable={false}
-            containerStyle={{
-              ...styles.searchBarContainerStyle
-            }}
+            containerStyle={styles.searchBarContainerStyle}
             platform="default"
             lightTheme={!isDarkMode}
             inputStyle={{
-              ...styles.searchBarInputStyle,
-              color: rneTheme.colors?.black
+              ...styles.searchBarInputStyle
+              // color: rneTheme.colors?.black
             }}
             autoCorrect={false}
             placeholder={t('screen.home.default.placeholder.search')}
           />
         </Pressable>
       ),
-      headerRight: isAuthUser
-        ? () => (
-            <Button
-              type="clear"
-              icon={
-                <MaterialCommunityIcons
-                  name="plus"
-                  size={15}
-                  color={rneTheme.colors?.primary}
-                />
-              }
-              title={t('screen.home.default.button.create')}
-              onPress={() => Alert.alert('TODO: Navigate to Add new kit page')}
+      headerRight: () => (
+        <Button
+          type="clear"
+          buttonStyle={styles.addItemButton}
+          icon={
+            <MaterialCommunityIcons
+              name="layers-plus"
+              size={32}
+              color={headerElementColor}
             />
-          )
-        : undefined
+          }
+          onPress={() => {
+            isAuthUser
+              ? Alert.alert('TODO: Navigate to Add new kit page')
+              : navigation.navigate('SignIn' as keyof AuthStackParamList)
+          }}
+        />
+      )
     })
   }, [
     isAuthUser,
@@ -165,21 +166,23 @@ const styles = StyleSheet.create({
   },
   logoText: {
     justifyContent: 'center',
-    color: 'tomato',
+    color: headerElementColor,
     fontSize: 32,
     fontWeight: 'bold'
   },
   searchBarContainerStyle: {
-    minWidth: 200, // TODO: Try to fill the field w/o using constant number (i.e. full width etc)
-    width: 'auto',
-    backgroundColor: 'transparent'
+    width: Dimensions.get('window').width - homeHeaderSearchBarWidthSubtrahend,
+    backgroundColor: 'transparent',
+    borderTopWidth: 0,
+    borderBottomWidth: 0
   },
   carouselItem: {
     justifyContent: 'center',
     alignItems: 'center',
     minHeight: 75
   },
-  searchBarInputStyle: {}
+  searchBarInputStyle: {},
+  addItemButton: {}
 })
 
 export default Default
