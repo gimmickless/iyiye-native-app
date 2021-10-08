@@ -175,6 +175,7 @@ export const RootNavigator: React.FC = () => {
                       elevation: 0,
                       shadowOpacity: 0
                     },
+                    headerBackTitleVisible: false,
                     headerLeftContainerStyle: {
                       paddingLeft: headerLeftContainerPaddingLeft
                     },

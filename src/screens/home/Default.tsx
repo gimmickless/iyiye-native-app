@@ -26,10 +26,12 @@ import {
 } from 'components/home'
 import Carousel from 'react-native-snap-carousel'
 import { RootStackParamList } from 'router'
+import { useColorScheme } from 'react-native-appearance'
 
 const Default: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
+  const scheme = useColorScheme()
   const { theme: rneTheme } = useContext(ThemeContext)
   const { authUser } = useAuthUser()
   const window = useWindowDimensions()
@@ -46,6 +48,7 @@ const Default: React.FC = () => {
     }
   ])
 
+  const isDarkMode = scheme === 'dark'
   const isAuthUser = useMemo(() => authUser.props ?? undefined, [authUser])
   const username = useMemo(
     () => authUser.props?.username ?? '',
@@ -66,7 +69,7 @@ const Default: React.FC = () => {
             navigation.navigate('HomeSearch' as keyof RootStackParamList)
           }
           style={{
-            backgroundColor: 'powderblue'
+            // backgroundColor: 'powderblue'
           }}
         >
           <SearchBar
@@ -76,7 +79,11 @@ const Default: React.FC = () => {
             }}
             value=""
             editable={false}
-            containerStyle={styles.searchBarContainerStyle}
+            containerStyle={{
+              ...styles.searchBarContainerStyle
+            }}
+            platform="default"
+            lightTheme={!isDarkMode}
             inputStyle={{
               ...styles.searchBarInputStyle,
               color: rneTheme.colors?.black
@@ -163,7 +170,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   },
   searchBarContainerStyle: {
-    // minWidth: 200,
+    minWidth: 200, // TODO: Try to fill the field w/o using constant number (i.e. full width etc)
     width: 'auto',
     backgroundColor: 'transparent'
   },

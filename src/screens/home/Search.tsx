@@ -3,6 +3,7 @@ import { useAuthUser } from 'contexts/Auth'
 import { LocalizationContext } from 'contexts/Localization'
 import React, { useContext, useLayoutEffect, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import { useColorScheme } from 'react-native-appearance'
 import { SearchBar, ThemeContext } from 'react-native-elements'
 import {
   defaultContainerViewHorizontalPadding,
@@ -12,9 +13,12 @@ import {
 const Search: React.FC = () => {
   const { t } = useContext(LocalizationContext)
   const navigation = useNavigation()
+  const scheme = useColorScheme()
   const { theme: rneTheme } = useContext(ThemeContext)
   const { authUser } = useAuthUser()
   const [searchText, setSearchText] = useState('')
+
+  const isDarkMode = scheme === 'dark'
 
   // Customize header
   useLayoutEffect(() => {
@@ -27,6 +31,8 @@ const Search: React.FC = () => {
           value={searchText}
           onChangeText={(val: string) => setSearchText(val)}
           containerStyle={styles.searchBarContainerStyle}
+          platform="default"
+          lightTheme={!isDarkMode}
           inputStyle={{
             ...styles.searchBarInputStyle,
             color: rneTheme.colors?.black
